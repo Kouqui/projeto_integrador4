@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FUT360</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <link rel="stylesheet" th:href="@{/css/style_login.css}">
+</head>
+<body>
+
+<div class="login-container">
+
+    <img th:src="@{/images/logo_fut_360.png}" alt="Logo FUT360" class="login-logo-img">
+
+    <p class="login-subtitle">Acesse sua conta para continuar</p>
+
+    <form>
+        <div class="input-group">
+            <i class='bx bxs-envelope'></i>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+        </div>
+
+        <div class="input-group">
+            <i class='bx bxs-lock-alt'></i>
+            <input type="password" id="password" name="password" placeholder="Senha" required>
+        </div>
+
+        <button type="submit" class="login-button">Entrar</button>
+
+        <a id="open-modal-link" class="forgot-password">Esqueceu sua senha?</a>
+    </form>
+</div>
+
+<div id="contact-modal" class="modal-overlay">
+    <div class="modal-content">
+        <span id="close-modal-button" class="close-button">&times;</span>
+        <h2>Suporte para Recuperação de Senha</h2>
+        <p>Para redefinir sua senha ou obter ajuda, por favor, entre em contato com nosso suporte através do número abaixo:</p>
+        <div class="contact-number">(19) 99999-8888</div>
+    </div>
+</div>
+
+<script th:src="@{/js/login.js}"></script>
+
+</body>
+</html>
