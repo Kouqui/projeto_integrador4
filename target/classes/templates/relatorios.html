@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios - Fut360</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <link rel="stylesheet" th:href="@{/css/relatorios_style.css}">
+</head>
+<body>
+<div class="dashboard-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <img th:src="@{/images/logo_fut_360.png}" alt="Logo Fut360" class="sidebar-logo">
+      <h1 class="sidebar-title">Fut360</h1>
+    </div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li><a th:href="@{/dashboard}"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
+        <li><a th:href="@{/financeiro}"><i class='bx bx-dollar-circle'></i><span>Financeiro</span></a></li>
+        <li><a th:href="@{/calendario}"><i class='bx bx-calendar'></i><span>Calendário</span></a></li>
+        <li><a th:href="@{/atletas}"><i class='bx bx-run'></i><span>Atletas</span></a></li>
+        <li class="active"><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
+      </ul>
+    </nav>
+    <div class="sidebar-footer">
+      <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="header">
+      <div class="header-title">
+        <h2>Central de Relatórios</h2>
+        <p>Gere e exporte relatórios para apoiar suas decisões</p>
+      </div>
+      <div class="user-info">
+        <span>Kauê Farias</span>
+        <div class="user-avatar">K</div>
+        <button class="logout-btn"><i class='bx bx-log-out'></i></button>
+      </div>
+    </header>
+
+    <section class="reports-grid">
+      <div class="report-card">
+        <div class="report-card-header">
+          <i class='bx bx-line-chart'></i>
+          <h3>Fluxo de Caixa Mensal</h3>
+        </div>
+        <p>Visualize todas as receitas e despesas de um período e analise o balanço financeiro do clube.</p>
+        <div class="report-controls">
+          <div class="form-group">
+            <label for="cashflow-month">Mês</label>
+            <select id="cashflow-month">
+              <option>Outubro</option>
+              <option>Setembro</option>
+              <option>Agosto</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="cashflow-year">Ano</label>
+            <select id="cashflow-year">
+              <option>2025</option>
+              <option>2024</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary"><i class='bx bx-download'></i> Gerar Relatório</button>
+      </div>
+
+      <div class="report-card">
+        <div class="report-card-header">
+          <i class='bx bx-pie-chart-alt-2'></i>
+          <h3>Custos por Categoria</h3>
+        </div>
+        <p>Analise os gastos detalhados de cada categoria esportiva (Profissional, Sub-20, etc.) em um período.</p>
+        <div class="report-controls">
+          <div class="form-group">
+            <label for="category-select">Categoria</label>
+            <select id="category-select">
+              <option>Todas</option>
+              <option>Profissional</option>
+              <option>Sub-20</option>
+              <option>Sub-17</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary"><i class='bx bx-download'></i> Gerar Relatório</button>
+      </div>
+
+      <div class="report-card">
+        <div class="report-card-header">
+          <i class='bx bx-football'></i>
+          <h3>Relatório Pós-Jogo</h3>
+        </div>
+        <p>Gere um resumo padronizado com estatísticas, escalação e observações de uma partida específica.</p>
+        <div class="report-controls">
+          <div class="form-group">
+            <label for="game-select">Selecione o Jogo</label>
+            <select id="game-select">
+              <option>15/10 - Fut360 FC vs. Adversário FC</option>
+              <option>08/10 - Jogo Amistoso</option>
+              <option>01/10 - Jogo Fora</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn-primary"><i class='bx bx-download'></i> Gerar Relatório</button>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>
