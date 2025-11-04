@@ -16,49 +16,24 @@
 
 <div class="dashboard-container">
     <aside class="sidebar">
-        <div class="sidebar-header">
-            <img th:src="@{/images/logo_fut_360.png}" alt="Logo Fut360" class="sidebar-logo">
-            <h1 class="sidebar-title">Fut360</h1>
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li><a th:href="@{/dashboard}"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
-                <li class="active"><a th:href="@{/financeiro}"><i class='bx bx-dollar-circle'></i><span>Financeiro</span></a></li>
-                <li><a th:href="@{/calendario}"><i class='bx bx-calendar'></i><span>Calendário</span></a></li>
-                <li><a th:href="@{/atletas}"><i class='bx bx-run'></i><span>Atletas</span></a></li>
-                <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
-            </ul>
-        </nav>
-        <div class="sidebar-footer">
-            <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
-        </div>
     </aside>
 
     <main class="main-content">
         <header class="header">
-            <div class="header-title">
-                <h2>Gestão Financeira</h2>
-                <p>Controle de receitas, despesas e fluxo de caixa</p>
-            </div>
-            <div class="user-info">
-                <span>Kauê Farias</span>
-                <div class="user-avatar">K</div>
-                <button class="logout-btn"><i class='bx bx-log-out'></i></button>
-            </div>
         </header>
 
         <section class="summary-cards">
             <div class="card">
                 <div class="card-header"><i class='bx bx-trending-up'></i><span>Receitas (Outubro)</span></div>
-                <p class="financial-value positive">R$ 75.800,00</p>
+                <p class="financial-value positive" id="receitas-total">R$ 0,00</p>
             </div>
             <div class="card">
                 <div class="card-header"><i class='bx bx-trending-down'></i><span>Despesas (Outubro)</span></div>
-                <p class="financial-value negative">R$ 52.350,00</p>
+                <p class="financial-value negative" id="despesas-total">R$ 0,00</p>
             </div>
             <div class="card">
                 <div class="card-header"><i class='bx bx-bar-chart-alt-2'></i><span>Balanço (Outubro)</span></div>
-                <p class="financial-value positive">R$ 23.450,00</p>
+                <p class="financial-value positive" id="balanco-total">R$ 0,00</p>
             </div>
         </section>
 
@@ -78,30 +53,25 @@
                     <th>Ações</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>12/10/2025</td>
-                    <td>Pagamento Salário - Comissão Técnica</td>
-                    <td>Folha Salarial</td>
-                    <td><span class="transaction-type negative"><i class='bx bxs-up-arrow-circle'></i> Despesa</span></td>
-                    <td class="negative">- R$ 35.000,00</td>
-                    <td class="table-actions"><a href="#"><i class='bx bx-edit'></i></a> <a href="#"><i class='bx bx-trash'></i></a></td>
-                </tr>
-                <tr>
-                    <td>10/10/2025</td>
-                    <td>Receita Bilheteria - Jogo Estadual</td>
-                    <td>Bilheteria</td>
-                    <td><span class="transaction-type positive"><i class='bx bxs-down-arrow-circle'></i> Receita</span></td>
-                    <td class="positive">+ R$ 48.500,00</td>
-                    <td class="table-actions"><a href="#"><i class='bx bx-edit'></i></a> <a href="#"><i class='bx bx-trash'></i></a></td>
-                </tr>
+                <tbody id="transactions-body">
                 </tbody>
             </table>
+            <div id="transaction-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Nova Transação</h2>
+                        <button class="close-button" id="close-modal-btn"><i class='bx bx-x'></i></button>
+                    </div>
+                    <form id="transaction-form">
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="cancel-btn">Cancelar</button>
+                            <button type="submit" class="btn-primary" id="save-btn">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </section>
     </main>
-</div>
-
-<div id="transaction-modal" class="modal-overlay">
 </div>
 
 <script th:src="@{/js/financeiro.js}"></script>
