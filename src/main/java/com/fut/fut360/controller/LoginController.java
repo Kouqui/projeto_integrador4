@@ -9,7 +9,7 @@ public class LoginController {
 
     /**
      * Este método responde à requisição GET na URL "/login".
-     * Ele diz ao Spring para renderizar a página "Login.html" da pasta /templates.
+     * Ele diz ao Spring para renderizar a página "login.html" da pasta /templates.
      * @return O nome do template HTML a ser exibido.
      */
     @GetMapping("/login")
