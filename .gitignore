@@ -27,3 +27,16 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# =======================================================
+# ARQUIVOS DE CONFIGURAÇÃO LOCAL E SEGREDOS (ADICIONE AQUI)
+# =======================================================
+
+# Ignora o arquivo que contém as senhas do banco de dados
+.env
+
+# Ignora a pasta de imagens que os usuários fazem upload
+/uploads/
+
+# Ignora a pasta de build do Maven
+/target/
