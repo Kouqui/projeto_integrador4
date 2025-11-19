@@ -28,15 +28,42 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-# =======================================================
-# ARQUIVOS DE CONFIGURAÇÃO LOCAL E SEGREDOS (ADICIONE AQUI)
-# =======================================================
+# ===========================================
+# CONFIGURAÇÕES LOCAIS / SEGREDOS
+# ===========================================
 
-# Ignora o arquivo que contém as senhas do banco de dados
+# Arquivos de ambiente com senhas, tokens e configs locais
 .env
+.env.*
+application-local.properties
+application-secret.properties
 
-# Ignora a pasta de imagens que os usuários fazem upload
+# ===========================================
+# DIRETÓRIOS GERADOS AUTOMATICAMENTE
+# ===========================================
+
+# Maven
+/target/
+
+# Gradle
+.gradle/
+/build/
+
+# Uploads de arquivos feitos pelo usuário
 /uploads/
 
-# Ignora a pasta de build do Maven
-/target/
+# Logs
+*.log
+/logs/
+/**/logs/
+
+# Cache diversos
+*.iml
+*.ipr
+*.iws
+
+# Java / Kotlin
+*.class
+
+# Arquivos de sistema
+Thumbs.db
