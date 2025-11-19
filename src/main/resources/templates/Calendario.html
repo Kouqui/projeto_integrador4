@@ -118,6 +118,58 @@
 </div>
 
 <div id="event-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Agendar Novo Evento</h3>
+            <button id="close-modal-btn" class="close-btn"><i class='bx bx-x'></i></button>
+        </div>
+        <form id="event-form">
+            <div class="form-group">
+                <label for="titulo">Título do Evento</label>
+                <input type="text" id="titulo" name="titulo" required>
+            </div>
+            <div class="form-group">
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" rows="3"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dataHora">Data e Hora</label>
+                    <input type="datetime-local" id="dataHora" name="dataHora" required>
+                </div>
+                <div class="form-group">
+                    <label for="local">Local</label>
+                    <input type="text" id="local" name="local">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="Jogo">Jogo</option>
+                        <option value="Treino">Treino</option>
+                        <option value="Reunião">Reunião</option>
+                        <option value="Evento">Evento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" name="categoria" required>
+                        <option value="">Selecione...</option>
+                        <option value="Profissional">Profissional</option>
+                        <option value="Sub-17">Sub-17</option>
+                        <option value="Sub-20">Sub-20</option>
+                        <option value="Geral">Geral</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="cancel-btn" class="btn-secondary">Cancelar</button>
+                <button type="submit" class="btn-primary">Salvar Evento</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script th:src="@{/js/calendario.js}"></script>

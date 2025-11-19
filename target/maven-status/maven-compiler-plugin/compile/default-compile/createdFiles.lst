@@ -1,0 +1,14 @@
+com\fut\fut360\model\Atleta.class
+com\fut\fut360\service\ContractService.class
+com\fut\fut360\controller\LoginController.class
+com\fut\fut360\model\Transaction.class
+com\fut\fut360\model\PayrollItem.class
+com\fut\fut360\service\PayrollService.class
+com\fut\fut360\service\TransactionService.class
+com\fut\fut360\controller\RelatoriosController.class
+com\fut\fut360\controller\DashboardController.class
+com\fut\fut360\controller\FinanceiroApiController.class
+com\fut\fut360\Fut360Application.class
+com\fut\fut360\controller\AtletasController.class
+com\fut\fut360\controller\CalendarioController.class
+com\fut\fut360\model\Contract.class

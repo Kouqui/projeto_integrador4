@@ -1,31 +1,87 @@
 package com.fut.fut360.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "atletas")
 public class Atleta {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     // Ficha Técnica
     private String name, position, category, photo, fullname, birthdate, nationality, height, weight, foot;
     private int age;
 
     // Desempenho (Temporada)
-    private int games, minutes, goals, assists, yellow, red;
+    private int games, minutes, goals, assists;
+
+    @Column(name = "yellow_cards")
+    private int yellow;
+
+    @Column(name = "red_cards")
+    private int red;
 
     // Carreira & Metas
     private String meta1, meta2, observation;
 
     // Financeiro
-    private String salary, contractStart, contractEnd, releaseClause;
+    private String salary;
+
+    @Column(name = "contract_start")
+    private String contractStart;
+
+    @Column(name = "contract_end")
+    private String contractEnd;
+
+    @Column(name = "release_clause")
+    private String releaseClause;
 
     // Análise do Último Treino
-    private double treinoNotaGeral; // A nota principal
+    @Column(name = "treino_nota_geral")
+    private double treinoNotaGeral;
+
+    @Column(name = "treino_nota_tatica")
     private double treinoNotaTatica;
+
+    @Column(name = "treino_nota_tecnica")
     private double treinoNotaTecnica;
+
+    @Column(name = "treino_nota_fisica")
     private double treinoNotaFisica;
-    private int treinoPassesCertos, treinoPassesTotal;
-    private int treinoChutesCertos, treinoChutesTotal;
-    private int treinoDriblesCertos, treinoDriblesTotal;
-    private int treinoDesarmes, treinoInterceptacoes;
+
+    @Column(name = "treino_passes_certos")
+    private int treinoPassesCertos;
+
+    @Column(name = "treino_passes_total")
+    private int treinoPassesTotal;
+
+    @Column(name = "treino_chutes_certos")
+    private int treinoChutesCertos;
+
+    @Column(name = "treino_chutes_total")
+    private int treinoChutesTotal;
+
+    @Column(name = "treino_dribles_certos")
+    private int treinoDriblesCertos;
+
+    @Column(name = "treino_dribles_total")
+    private int treinoDriblesTotal;
+
+    @Column(name = "treino_desarmes")
+    private int treinoDesarmes;
+
+    @Column(name = "treino_interceptacoes")
+    private int treinoInterceptacoes;
+
+    @Column(name = "treino_km_percorridos")
     private double treinoKmPercorridos;
+
+    @Column(name = "treino_velocidade_max")
     private double treinoVelocidadeMax;
+
+    @Column(name = "treino_sprints")
     private int treinoSprints;
 
     // Construtor vazio (Boa prática)
@@ -83,6 +139,8 @@ public class Atleta {
 
     // --- GETTERS E SETTERS COMPLETOS ---
 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getPosition() { return position; }

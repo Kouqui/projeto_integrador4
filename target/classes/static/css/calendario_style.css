@@ -11,7 +11,6 @@
     --event-professional: rgba(0, 170, 255, 0.8);
     --event-sub17: rgba(51, 255, 153, 0.8);
     --event-general: rgba(255, 255, 255, 0.6);
-    --danger-color: #dc3545; /* Nova cor para exclusão */
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: var(--text-light); display: flex; min-height: 100vh; }
@@ -126,108 +125,25 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    transition: filter 0.2s ease;
-}
-.event-item:hover {
-    filter: brightness(1.2);
 }
 
 .event-professional { background-color: var(--event-professional); }
 .event-sub17 { background-color: var(--event-sub17); }
+.event-sub20 { background-color: rgba(255, 193, 7, 0.8); }
 .event-general { background-color: var(--event-general); }
 
-/* --- ESTILOS DO MODAL ATUALIZADOS --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-.modal-overlay.visible {
-    display: flex;
-    opacity: 1;
-    visibility: visible;
-}
-.modal-content {
-    background-color: var(--bg-light);
-    border: 1px solid var(--border-color);
-    padding: 30px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 600px; /* Aumentei um pouco a largura */
-    position: relative;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
-}
-.modal-overlay.visible .modal-content {
-    transform: scale(1);
-}
-
+/* Estilos do Modal (reutilizados) */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay.visible { display: flex; }
+.modal-content { background-color: var(--bg-light); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; width: 90%; max-width: 550px; position: relative; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.modal-header h2 { font-size: 22px; }
-.close-button { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
+.modal-header h3 { font-size: 22px; }
+.close-btn { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; margin-bottom: 8px; color: var(--text-dark); }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); font-size: 16px; font-family: 'Poppins', sans-serif; }
-
-/* Adicionado para os inputs de data/hora usarem o tema escuro */
-.form-group input[type="date"],
-.form-group input[type="time"] {
-    color-scheme: dark;
-}
-
 .form-group textarea { resize: vertical; min-height: 80px; }
-
-/* NOVO: Classe para esconder campos (ex: Adversário) */
-.form-group.hidden {
-    display: none;
-}
-
-/* NOVO: Para layout de campos na mesma linha */
-.form-row {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
-    gap: 15px;
-}
-.form-row .form-group {
-    flex-grow: 1;
-    min-width: 150px; /* Garante que não fiquem muito espremidos */
-    margin-bottom: 0; /* Remove a margem de baixo quando em linha */
-}
-/* Adiciona a margem de volta para a linha inteira */
-.form-row + .form-group {
-    margin-top: 20px;
-}
-
-
-/* ATUALIZADO: Botões de Ação */
-.form-actions {
-    display: flex; /* Habilita o alinhamento flex */
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-    border-top: 1px solid var(--border-color); /* Linha divisória */
-    padding-top: 20px; /* Espaçamento acima dos botões */
-}
-.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
-/* NOVO: Botão de Excluir */
-.btn-danger {
-    background-color: var(--danger-color);
-    border: 1px solid var(--danger-color);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: auto; /* Joga ele para a esquerda */
-}
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; }

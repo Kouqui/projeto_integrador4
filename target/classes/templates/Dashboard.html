@@ -48,9 +48,28 @@
     </header>
 
     <section class="dashboard-grid">
-      <div class="card"><div class="card-header"><h3><i class='bx bx-wallet'></i> Saldo em Caixa</h3></div><div class="card-body"><p class="financial-value positive">R$ 1.250.780,50</p><span class="card-comparison">+5.2% vs. mês anterior</span></div></div>
-      <div class="card"><div class="card-header"><h3><i class='bx bx-money-withdraw'></i> Folha Salarial (Mês)</h3></div><div class="card-body"><p class="financial-value negative">R$ 450.000,00</p><span class="card-comparison">Vencimento em 5 dias</span></div></div>
-      <div class="card card-large"><div class="card-header"><h3><i class='bx bx-calendar-event'></i> Próximos Eventos</h3><a href="#" class="card-action-link">Ver Calendário Completo</a></div><div class="card-body"><ul class="event-list"><li><div class="event-date professional">15 OUT</div><div class="event-details"><p>Jogo: Fut360 FC vs. Adversário FC</p><span>Campeonato Estadual - 19:00h - Estádio Principal</span></div></li><li><div class="event-date sub-17">16 OUT</div><div class="event-details"><p>Treino Físico - Sub-17</p><span>CT Secundário - 09:00h</span></div></li><li><div class="event-date general">17 OUT</div><div class="event-details"><p>Reunião de Planejamento</p><span>Sala da Diretoria - 15:00h</span></div></li></ul></div></div>
+      <div class="card"><div class="card-header"><h3><i class='bx bx-wallet'></i> Saldo em Caixa</h3></div><div class="card-body"><p class="financial-value positive" th:text="${'R$ ' + #numbers.formatDecimal(dashboard.financeiroResumo.saldoCaixa, 1, 'POINT', 2, 'COMMA')}">R$ 1.250.780,50</p><span class="card-comparison" th:text="${dashboard.financeiroResumo.percentualComparacao + ' vs. mês anterior'}">+5.2% vs. mês anterior</span></div></div>
+      <div class="card"><div class="card-header"><h3><i class='bx bx-money-withdraw'></i> Folha Salarial (Mês)</h3></div><div class="card-body"><p class="financial-value negative" th:text="${'R$ ' + #numbers.formatDecimal(dashboard.financeiroResumo.folhaSalarial, 1, 'POINT', 2, 'COMMA')}">R$ 450.000,00</p><span class="card-comparison" th:text="${dashboard.financeiroResumo.infoVencimento}">Vencimento em 5 dias</span></div></div>
+      <div class="card card-large">
+        <div class="card-header">
+          <h3><i class='bx bx-calendar-event'></i> Próximos Eventos</h3>
+          <a th:href="@{/calendario}" class="card-action-link">Ver Calendário Completo</a>
+        </div>
+        <div class="card-body">
+          <ul class="event-list-new">
+            <li th:each="evento : ${dashboard.proximosEventos}" class="event-item-new">
+              <div class="event-date-badge" th:classappend="${'badge-' + evento.categoria}">
+                <span class="event-day" th:text="${evento.dia}">15</span>
+                <span class="event-month" th:text="${evento.mes}">OUT</span>
+              </div>
+              <div class="event-info">
+                <h4 class="event-title" th:text="${evento.titulo}">Jogo: Fut360 FC vs. Adversário FC</h4>
+                <p class="event-description" th:text="${evento.descricao}">Campeonato Estadual - 19:00h - Estádio Principal</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
       <div class="card card-full-width">
         <div class="card-header">
           <h3><i class='bx bx-line-chart'></i> Desempenho Recente no Treino</h3>
@@ -68,40 +87,12 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/9d4edd/FFFFFF?text=GR" alt="Gabriel Reis"><div class="player-cell-info"><span>Gabriel Reis</span><p>Profissional</p></div></div></td>
-              <td>Atacante</td>
-              <td><span class="rating-badge rating-perfect">10.0</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 100%;"></div></div></td>
-              <td><div class="trend-icon trend-up"><i class='bx bxs-up-arrow'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/00aaff/FFFFFF?text=CE" alt="Carlos Eduardo"><div class="player-cell-info"><span>Carlos Eduardo</span><p>Profissional</p></div></div></td>
-              <td>Atacante</td>
-              <td><span class="rating-badge rating-great">9.2</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 95%;"></div></div></td>
-              <td><div class="trend-icon trend-up"><i class='bx bxs-up-arrow'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/33ff99/000000?text=LM" alt="Lucas Martins"><div class="player-cell-info"><span>Lucas Martins</span><p>Profissional</p></div></div></td>
-              <td>Zagueiro</td>
-              <td><span class="rating-badge rating-good">8.5</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 92%;"></div></div></td>
-              <td><div class="trend-icon trend-stable"><i class='bx bxs-minus-square'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/ffc107/000000?text=BS" alt="Bruno Silva"><div class="player-cell-info"><span>Bruno Silva</span><p>Profissional</p></div></div></td>
-              <td>Meio-Campo</td>
-              <td><span class="rating-badge rating-medium">7.8</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 80%;"></div></div></td>
-              <td><div class="trend-icon trend-stable"><i class='bx bxs-minus-square'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/ff4d4d/FFFFFF?text=FL" alt="Fernando Lima"><div class="player-cell-info"><span>Fernando Lima</span><p>Sub-20</p></div></div></td>
-              <td>Lateral</td>
-              <td><span class="rating-badge rating-low">4.8</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 55%;"></div></div></td>
-              <td><div class="trend-icon trend-down"><i class='bx bxs-down-arrow'></i></div></td>
+            <tr th:each="atleta : ${dashboard.desempenhoAtletas}">
+              <td><div class="player-cell"><img th:src="${atleta.photoUrl}" th:alt="${atleta.nome}"><div class="player-cell-info"><span th:text="${atleta.nome}">Gabriel Reis</span><p th:text="${atleta.categoria}">Profissional</p></div></div></td>
+              <td th:text="${atleta.posicao}">Atacante</td>
+              <td><span class="rating-badge" th:classappend="${atleta.notaClass}" th:text="${#numbers.formatDecimal(atleta.notaTreino, 1, 1)}">10.0</span></td>
+              <td><div class="performance-bar-container"><div class="performance-bar" th:style="${'width: ' + atleta.desempenhoFisicoPercentual + '%;'}"></div></div></td>
+              <td><div class="trend-icon" th:classappend="${'trend-' + atleta.tendencia}"><i class='bx' th:classappend="${atleta.tendencia == 'up' ? 'bxs-up-arrow' : (atleta.tendencia == 'down' ? 'bxs-down-arrow' : 'bxs-minus-square')}"></i></div></td>
             </tr>
             </tbody>
           </table>

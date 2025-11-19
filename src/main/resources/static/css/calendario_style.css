@@ -129,6 +129,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 
 .event-professional { background-color: var(--event-professional); }
 .event-sub17 { background-color: var(--event-sub17); }
+.event-sub20 { background-color: rgba(255, 193, 7, 0.8); }
 .event-general { background-color: var(--event-general); }
 
 /* Estilos do Modal (reutilizados) */
@@ -136,11 +137,13 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .modal-overlay.visible { display: flex; }
 .modal-content { background-color: var(--bg-light); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; width: 90%; max-width: 550px; position: relative; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.modal-header h2 { font-size: 22px; }
-.close-button { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
+.modal-header h3 { font-size: 22px; }
+.close-btn { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
 .form-group { margin-bottom: 20px; }
 .form-group label { display: block; margin-bottom: 8px; color: var(--text-dark); }
 .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); font-size: 16px; font-family: 'Poppins', sans-serif; }
 .form-group textarea { resize: vertical; min-height: 80px; }
-.form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+.form-row { display: flex; gap: 15px; }
+.form-row .form-group { flex: 1; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
+.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; }

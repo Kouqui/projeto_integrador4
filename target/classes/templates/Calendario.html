@@ -74,74 +74,38 @@
             <div class="calendar-header">Sex</div>
             <div class="calendar-header">Sab</div>
 
-            <div class="calendar-day"><span class="day-number">3</span>
-                <div class="event-item event-sub17"
-                     data-title="Treino Sub-17"
-                     data-type="TREINO"
-                     data-category="SUB17"
-                     data-date="2025-10-03"
-                     data-time-start="16:00"
-                     data-time-end="18:00"
-                     data-location="CT Fut360 - Campo 2"
-                     data-opponent=""
-                     data-description="Treino tático focado em finalização.">
-                    Treino Sub-17
-                </div>
-            </div>
-            <div class="calendar-day"><span class="day-number">8</span>
-                <div class="event-item event-professional"
-                     data-title="Jogo Amistoso"
-                     data-type="JOGO"
-                     data-category="PROFISSIONAL"
-                     data-date="2025-10-08"
-                     data-time-start="15:30"
-                     data-time-end=""
-                     data-location="Estádio Municipal"
-                     data-opponent="Time Visitante FC"
-                     data-description="Jogo amistoso contra time visitante. Relacionar 18 jogadores.">
-                    Jogo Amistoso
-                </div>
-            </div>
-            <div class="calendar-day day-today"><span class="day-number">14</span>
-                <div class="event-item event-general"
-                     data-title="Reunião"
-                     data-type="REUNIAO"
-                     data-category="GERAL"
-                     data-date="2025-10-14"
-                     data-time-start="10:00"
-                     data-time-end="11:00"
-                     data-location="Sala de imprensa"
-                     data-opponent=""
-                     data-description="Reunião de planejamento com a comissão técnica.">
-                    Reunião
-                </div>
-            </div>
-
             <div class="calendar-day day-other-month"><span class="day-number">28</span></div>
             <div class="calendar-day day-other-month"><span class="day-number">29</span></div>
             <div class="calendar-day day-other-month"><span class="day-number">30</span></div>
             <div class="calendar-day"><span class="day-number">1</span></div>
             <div class="calendar-day"><span class="day-number">2</span></div>
+            <div class="calendar-day"><span class="day-number">3</span><div class="event-item event-sub17">Treino Sub-17</div></div>
             <div class="calendar-day"><span class="day-number">4</span></div>
+
             <div class="calendar-day"><span class="day-number">5</span></div>
             <div class="calendar-day"><span class="day-number">6</span></div>
             <div class="calendar-day"><span class="day-number">7</span></div>
+            <div class="calendar-day"><span class="day-number">8</span><div class="event-item event-professional">Jogo Amistoso</div></div>
             <div class="calendar-day"><span class="day-number">9</span></div>
             <div class="calendar-day"><span class="day-number">10</span></div>
             <div class="calendar-day"><span class="day-number">11</span></div>
+
             <div class="calendar-day"><span class="day-number">12</span></div>
             <div class="calendar-day"><span class="day-number">13</span></div>
-            <div class="calendar-day"><span class="day-number">15</span><div class="event-item event-professional" data-title="Jogo Estadual" data-type="JOGO" data-category="PROFISSIONAL" data-date="2025-10-15" data-time-start="20:00" data-location="Arena Fut360" data-opponent="Adversário Estadual" data-description="Jogo em casa.">Jogo Estadual</div></div>
-            <div class="calendar-day"><span class="day-number">16</span><div class="event-item event-sub17" data-title="Treino Físico" data-type="TREINO" data-category="SUB17" data-date="2025-10-16" data-time-start="09:00" data-location="Academia" data-description="Foco em força.">Treino Físico</div></div>
+            <div class="calendar-day day-today"><span class="day-number">14</span><div class="event-item event-general">Reunião</div></div>
+            <div class="calendar-day"><span class="day-number">15</span><div class="event-item event-professional">Jogo Estadual</div></div>
+            <div class="calendar-day"><span class="day-number">16</span><div class="event-item event-sub17">Treino Físico</div></div>
             <div class="calendar-day"><span class="day-number">17</span></div>
             <div class="calendar-day"><span class="day-number">18</span></div>
+
             <div class="calendar-day"><span class="day-number">19</span></div>
             <div class="calendar-day"><span class="day-number">20</span></div>
             <div class="calendar-day"><span class="day-number">21</span></div>
             <div class="calendar-day"><span class="day-number">22</span></div>
             <div class="calendar-day"><span class="day-number">23</span></div>
             <div class="calendar-day"><span class="day-number">24</span></div>
-            <div class="calendar-day"><span class="day-number">25</span><div class="event-item event-professional" data-title="Jogo Fora" data-type="JOGO" data-category="PROFISSIONAL" data-date="2025-10-25" data-time-start="16:00" data-location="Estádio Adversário" data-opponent="Time da Capital" data-description="Viagem no dia anterior.">Jogo Fora</div></div>
+            <div class="calendar-day"><span class="day-number">25</span><div class="event-item event-professional">Jogo Fora</div></div>
+
             <div class="calendar-day"><span class="day-number">26</span></div>
             <div class="calendar-day"><span class="day-number">27</span></div>
             <div class="calendar-day"><span class="day-number">28</span></div>
@@ -156,72 +120,53 @@
 <div id="event-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
-            <h2 id="modal-title">Agendar Evento</h2>
-            <button id="close-modal-btn" class="close-button">&times;</button>
+            <h3>Agendar Novo Evento</h3>
+            <button id="close-modal-btn" class="close-btn"><i class='bx bx-x'></i></button>
         </div>
-
         <form id="event-form">
             <div class="form-group">
-                <label for="event-title">Título do Evento</label>
-                <input type="text" id="event-title" required>
+                <label for="titulo">Título do Evento</label>
+                <input type="text" id="titulo" name="titulo" required>
             </div>
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 2;">
-                    <label for="event-date">Data</label>
-                    <input type="date" id="event-date" required>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label for="event-time-start">Início</label>
-                    <input type="time" id="event-time-start">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label for="event-time-end">Fim</label>
-                    <input type="time" id="event-time-end">
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label for="event-type">Tipo</label>
-                    <select id="event-type">
-                        <option value="JOGO">Jogo</option>
-                        <option value="TREINO">Treino</option>
-                        <option value="REUNIAO">Reunião</option>
-                        <option value="OUTRO">Outro</option>
-                    </select>
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <label for="event-category">Categoria</label>
-                    <select id="event-category">
-                        <option value="PROFISSIONAL">Profissional</option>
-                        <option value="SUB17">Sub-17</option>
-                        <option value="GERAL">Geral</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group" style="flex: 1;">
-                    <label for="event-location">Local</label>
-                    <input type="text" id="event-location" placeholder="Ex: CT Fut360, Campo 2">
-                </div>
-                <div class="form-group hidden" id="opponent-group" style="flex: 1;">
-                    <label for="event-opponent">Adversário</label>
-                    <input type="text" id="event-opponent" placeholder="Ex: Time Visitante FC">
-                </div>
-            </div>
-
             <div class="form-group">
-                <label for="event-description">Descrição / Observações</label>
-                <textarea id="event-description" rows="3"></textarea>
+                <label for="descricao">Descrição</label>
+                <textarea id="descricao" name="descricao" rows="3"></textarea>
             </div>
-
-            <div class="form-actions">
-                <button type="button" id="delete-btn" class="btn-danger">Excluir</button>
-
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dataHora">Data e Hora</label>
+                    <input type="datetime-local" id="dataHora" name="dataHora" required>
+                </div>
+                <div class="form-group">
+                    <label for="local">Local</label>
+                    <input type="text" id="local" name="local">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="tipo">Tipo</label>
+                    <select id="tipo" name="tipo" required>
+                        <option value="">Selecione...</option>
+                        <option value="Jogo">Jogo</option>
+                        <option value="Treino">Treino</option>
+                        <option value="Reunião">Reunião</option>
+                        <option value="Evento">Evento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="categoria">Categoria</label>
+                    <select id="categoria" name="categoria" required>
+                        <option value="">Selecione...</option>
+                        <option value="Profissional">Profissional</option>
+                        <option value="Sub-17">Sub-17</option>
+                        <option value="Sub-20">Sub-20</option>
+                        <option value="Geral">Geral</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
                 <button type="button" id="cancel-btn" class="btn-secondary">Cancelar</button>
-                <button type="submit" class="btn-primary">Salvar</button>
+                <button type="submit" class="btn-primary">Salvar Evento</button>
             </div>
         </form>
     </div>

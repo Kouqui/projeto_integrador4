@@ -1,13 +1,17 @@
 package com.fut.fut360.model;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-// Modelo de dados para transações financeiras (Receita/Despesa)
+@Entity
+@Table(name = "transactions")
 public class Transaction {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String type;        // 'receita' ou 'despesa'
     private String description;
     private BigDecimal value;   // Valor monetário
@@ -15,7 +19,9 @@ public class Transaction {
     private String category;
     private String responsible;
 
-    // Construtor padrão (necessário)
+    public Transaction() {}
+
+    // Construtor com parâmetros
     public Transaction(Long id, String type, String description, BigDecimal value, LocalDate date, String category, String responsible) {
         this.id = id;
         this.type = type;

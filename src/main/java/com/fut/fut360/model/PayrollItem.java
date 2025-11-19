@@ -1,17 +1,26 @@
 package com.fut.fut360.model;
 
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-// Modelo de dados para itens da Folha Salarial (Salários de Atletas/Funcionários)
+@Entity
+@Table(name = "payroll_items")
 public class PayrollItem {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;        // Nome do funcionário ou atleta
     private String role;        // Cargo / Função
     private BigDecimal value;   // Valor do pagamento (salário)
     private String status;      // 'pago' ou 'pendente'
+
+    @Column(name = "payment_date")
     private LocalDate paymentDate; // Data de pagamento
+
+    public PayrollItem() {}
 
     public PayrollItem(Long id, String name, String role, BigDecimal value, String status, LocalDate paymentDate) {
         this.id = id;
