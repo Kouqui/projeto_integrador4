@@ -67,3 +67,4 @@ application-secret.properties
 
 # Arquivos de sistema
 Thumbs.db
+/target/
