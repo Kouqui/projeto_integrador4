@@ -41,9 +41,12 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .controls-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
 .search-filter-group { display: flex; gap: 15px; flex-wrap: wrap; }
 .search-bar { position: relative; }
-.search-bar input { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); padding: 10px 15px 10px 40px; font-size: 14px; width: 250px; }
+
+/* CORREÇÃO: Removida a borda do search e select */
+.search-bar input { background-color: var(--card-bg); border: none; border-radius: 8px; color: var(--text-light); padding: 10px 15px 10px 40px; font-size: 14px; width: 250px; }
 .search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dark); }
-.controls-bar select { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); padding: 10px 15px; font-family: 'Poppins', sans-serif; }
+.controls-bar select { background-color: var(--card-bg); border: none; border-radius: 8px; color: var(--text-light); padding: 10px 15px; font-family: 'Poppins', sans-serif; }
+
 .btn-primary { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3); }
 
@@ -56,10 +59,33 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .athlete-info { color: var(--text-dark); font-size: 14px; }
 .athlete-category { font-size: 12px; font-weight: 500; color: var(--primary-color); background: rgba(0, 170, 255, 0.1); padding: 3px 8px; border-radius: 20px; display: inline-block; margin-top: 10px; }
 
-/* --- MODAL DE DETALHES DO ATLETA v2.0 --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 1000; overflow-y: auto; padding: 20px 0; }
+/* ===== MODAL (CORREÇÃO DE CENTRALIZAÇÃO) ===== */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center;     /* Centra verticalmente */
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 2rem;
+}
 .modal-overlay.visible { display: flex; }
-.modal-content { background-color: var(--bg-light); border: 1px solid var(--border-color); border-radius: 15px; width: 90%; max-width: 900px; display: flex; gap: 30px; padding: 30px; position: relative; margin: auto; }
+
+.modal-content {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 900px;
+    display: flex;
+    gap: 30px;
+    padding: 30px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
 .close-button { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
 .modal-left { text-align: center; min-width: 200px; }
 .modal-photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); margin-bottom: 15px; }
@@ -88,97 +114,136 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .observation-log blockquote { border-left: 3px solid var(--primary-color); padding-left: 15px; margin: 0; font-style: italic; color: var(--text-dark); }
 .observation-log span { display: block; font-size: 12px; color: var(--text-dark); margin-top: 8px; }
 
-/* --- NOVOS ESTILOS: SOFASCORE DE TREINO --- */
+/* --- SOFASCORE DE TREINO --- */
 .rating-badge {
-    font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 6px;
-    text-align: center;
-    width: 50px; /* Largura ajustada para (9.2) */
-    display: inline-block;
-    font-size: 16px;
+    font-weight: 600; padding: 5px 10px; border-radius: 6px; text-align: center;
+    width: 50px; display: inline-block; font-size: 16px;
 }
-.rating-low { background-color: rgba(255, 77, 77, 0.2); color: var(--negative-value); } /* < 5: Vermelho */
-.rating-medium { background-color: rgba(255, 193, 7, 0.2); color: var(--stable-value); }   /* 5 a 7.9: Amarelo */
-.rating-good { background-color: rgba(51, 255, 153, 0.2); color: var(--positive-value); } /* >= 8: Verde */
-.rating-great { background-color: rgba(0, 170, 255, 0.2); color: var(--rating-blue); }     /* > 9: Azul */
-.rating-perfect { background-color: rgba(157, 78, 221, 0.2); color: var(--rating-purple); }  /* = 10: Roxo */
+.rating-low { background-color: rgba(255, 77, 77, 0.2); color: var(--negative-value); }
+.rating-medium { background-color: rgba(255, 193, 7, 0.2); color: var(--stable-value); }
+.rating-good { background-color: rgba(51, 255, 153, 0.2); color: var(--positive-value); }
+.rating-great { background-color: rgba(0, 170, 255, 0.2); color: var(--rating-blue); }
+.rating-perfect { background-color: rgba(157, 78, 221, 0.2); color: var(--rating-purple); }
 
-.main-rating-box {
-    background-color: var(--card-bg);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    grid-column: 1 / -1; /* Ocupa a linha toda */
-    margin-bottom: 15px;
-}
+.main-rating-box { background-color: var(--card-bg); border-radius: 12px; padding: 20px; text-align: center; grid-column: 1 / -1; margin-bottom: 15px; }
 .main-rating-box label { font-size: 14px; color: var(--text-dark); text-transform: uppercase; }
 .main-rating-box p { font-size: 42px; font-weight: 700; line-height: 1.2; }
-
-.sub-rating-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    grid-column: 1 / -1;
-    margin-bottom: 20px;
-}
-.sub-rating-box {
-    background-color: var(--card-bg);
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-}
+.sub-rating-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; grid-column: 1 / -1; margin-bottom: 20px; }
+.sub-rating-box { background-color: var(--card-bg); border-radius: 8px; padding: 15px; text-align: center; }
 .sub-rating-box label { font-size: 12px; color: var(--text-dark); text-transform: uppercase; }
 .sub-rating-box p { font-size: 24px; font-weight: 600; }
-
 .stats-list { list-style: none; grid-column: 1 / -1; }
 .stat-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 14px; }
 .stat-item-label { color: var(--text-dark); }
 .stat-item-value { font-weight: 500; }
-.stat-bar-container {
-    background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 20px;
-    height: 8px;
+.stat-bar-container { background-color: rgba(0, 0, 0, 0.3); border-radius: 20px; height: 8px; width: 100%; margin-top: 5px; }
+.stat-bar-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color)); }
+
+/* ===== NOVOS ESTILOS DE FORMULÁRIO (Refatorado) ===== */
+.modal-form-body {
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    margin-top: 5px;
 }
-.stat-bar-fill {
-    height: 100%;
-    border-radius: 20px;
-    background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+.form-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+/* O primeiro título da seção não tem margem no topo */
+.modal-right .form-section-title:first-of-type,
+.modal-form-body .form-section-title:first-of-type {
+    margin-top: 0;
 }
 
-/* --- NOVOS ESTILOS PARA O FORMULÁRIO DE ADICIONAR --- */
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px; /* Adiciona espaço entre as linhas do formulário */
+}
+.form-group label {
+    font-size: 13px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
 
-/* Faz os dropdowns (select) terem o mesmo estilo dos inputs */
-.modal-content .info-item select {
+/* CORREÇÃO AGRESSIVA: Removida a borda e outline */
+.form-group input,
+.form-group select,
+.modal-content .info-item input {
     width: 100%;
-    padding: 10px; /* Ajuste para bater com o input */
+    padding: 12px 15px;
     background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
+    border: none; /* SEM BORDA */
+    outline: none; /* SEM OUTLINE */
     border-radius: 8px;
     color: var(--text-light);
-    font-size: 14px; /* Ajuste para bater com o input */
-    font-family: 'Poppins', sans-serif;
-}
-
-/* Estilo para os grupos do formulário */
-.form-fieldset {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.form-legend {
-    color: var(--primary-color);
-    font-weight: 500;
-    padding: 0 10px;
-    margin-left: 10px;
-}
-
-/* Corrige o padding do input do formulário para bater com o select */
-.modal-content .info-item input {
     font-size: 14px;
-    padding: 10px 15px;
+    font-family: 'Poppins', sans-serif;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+/* Aumenta a especificidade para garantir que a borda do fieldset não afete os inputs */
+fieldset .form-group input,
+fieldset .form-group select {
+    border: none;
+    outline: none;
+}
+
+/* Esconde as setas do input[type=number] */
+.form-group input[type="number"]::-webkit-inner-spin-button,
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.form-group input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Efeito :focus usa apenas box-shadow */
+.form-group input:focus,
+.form-group select:focus,
+.modal-content .info-item input:focus {
+    outline: none;
+    border: none;
+    box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.2);
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+/* CORREÇÃO: Removendo a borda do fieldset */
+.form-fieldset {
+    border: none; /* Borda do fieldset removida */
+    padding: 0;
+    margin: 0;
+}
+.form-legend {
+    display: none; /* Não precisamos mais da legenda */
+}
+
+/* CORREÇÃO: Estilo do input de arquivo */
+.modal-content .info-item input[type="file"] {
+    font-size: 12px;
+    padding: 10px;
+    background-color: var(--card-bg);
+    border: none;
 }
