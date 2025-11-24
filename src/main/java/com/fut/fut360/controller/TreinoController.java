@@ -9,38 +9,58 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import java.time.LocalDate;
 import java.util.Optional;
 
-@Controller // ESSA ANOTAÇÃO É OBRIGATÓRIA
+@Controller
 public class TreinoController {
+    @Autowired private TreinoRepository treinoRepository;
+    @Autowired private AtletaRepository atletaRepository;
 
-    @Autowired
-    private TreinoRepository treinoRepository;
-
-    @Autowired
-    private AtletaRepository atletaRepository;
-
-    // ESTE MAPEAMENTO TEM QUE SER EXATAMENTE IGUAL AO DO FORMULÁRIO
     @PostMapping("/treino/salvar")
-    public String salvarNovoTreino(@ModelAttribute("treinoNovo") Treino treinoNovo,
+    public String salvarNovoTreino(@ModelAttribute("treinoNovo") Treino treinoRecebido,
                                    @RequestParam("atletaId") Long atletaId) {
 
-        // Busca o atleta pai pelo ID
         Optional<Atleta> atletaOptional = atletaRepository.findById(atletaId);
 
         if (atletaOptional.isPresent()) {
             Atleta atleta = atletaOptional.get();
+            Treino treinoParaSalvar;
 
-            // Configura o treino
-            treinoNovo.setDataTreino(LocalDate.now());
-            treinoNovo.setAtleta(atleta); // Amarra ao atleta
+            // LÓGICA DE ATUALIZAÇÃO (UPDATE)
+            // Se o formulário enviou um ID, buscamos o treino existente para atualizar
+            if (treinoRecebido.getId() != null) {
+                Optional<Treino> treinoExistente = treinoRepository.findById(treinoRecebido.getId());
+                if (treinoExistente.isPresent()) {
+                    treinoParaSalvar = treinoExistente.get();
+                    // Atualizamos os campos com os novos valores do formulário
+                    treinoParaSalvar.setTreinoNotaTatica(treinoRecebido.getTreinoNotaTatica());
+                    treinoParaSalvar.setTreinoNotaFisica(treinoRecebido.getTreinoNotaFisica());
+                    treinoParaSalvar.setTreinoPassesCertos(treinoRecebido.getTreinoPassesCertos());
+                    treinoParaSalvar.setTreinoPassesTotal(treinoRecebido.getTreinoPassesTotal());
+                    treinoParaSalvar.setTreinoChutesCertos(treinoRecebido.getTreinoChutesCertos());
+                    treinoParaSalvar.setTreinoChutesTotal(treinoRecebido.getTreinoChutesTotal());
+                    treinoParaSalvar.setTreinoDriblesCertos(treinoRecebido.getTreinoDriblesCertos());
+                    treinoParaSalvar.setTreinoDriblesTotal(treinoRecebido.getTreinoDriblesTotal());
+                    treinoParaSalvar.setTreinoDesarmes(treinoRecebido.getTreinoDesarmes());
+                    treinoParaSalvar.setTreinoInterceptacoes(treinoRecebido.getTreinoInterceptacoes());
+                    treinoParaSalvar.setTreinoKmPercorridos(treinoRecebido.getTreinoKmPercorridos());
+                    treinoParaSalvar.setTreinoVelocidadeMax(treinoRecebido.getTreinoVelocidadeMax());
+                    treinoParaSalvar.setTreinoSprints(treinoRecebido.getTreinoSprints());
+                } else {
+                    // Se não achou (estranho), cria novo
+                    treinoParaSalvar = treinoRecebido;
+                    treinoParaSalvar.setDataTreino(LocalDate.now());
+                }
+            } else {
+                // LÓGICA DE CRIAÇÃO (INSERT)
+                treinoParaSalvar = treinoRecebido;
+                treinoParaSalvar.setDataTreino(LocalDate.now());
+            }
 
-            // Salva no banco
-            treinoRepository.save(treinoNovo);
+            treinoParaSalvar.setAtleta(atleta);
+            treinoRepository.save(treinoParaSalvar);
         }
-
         return "redirect:/atletas";
     }
 }

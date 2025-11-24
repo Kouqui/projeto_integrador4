@@ -2,8 +2,8 @@ package com.fut.fut360.controller;
 
 import com.fut.fut360.Model.Atleta;
 import com.fut.fut360.Model.Contrato;
-import com.fut.fut360.Model.RegistroCarreira; // Importe
-import com.fut.fut360.Model.Treino; // Importe
+import com.fut.fut360.Model.EstatisticaTemporada;
+import com.fut.fut360.Model.Treino;
 import com.fut.fut360.Repository.AtletaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,15 +30,15 @@ public class AtletasController {
     private AtletaRepository atletaRepository;
 
     @GetMapping("/atletas")
-    public String exibirPaginaAtletas(Model model) {
+    public String exibirPaginaAtletas(Model Model) {
         List<Atleta> listaDeAtletas = atletaRepository.findAll();
-        model.addAttribute("atletas", listaDeAtletas);
+        Model.addAttribute("atletas", listaDeAtletas);
 
-        // Prepara os objetos vazios para TODOS os modais da página
-        model.addAttribute("atletaNovo", new Atleta());
-        model.addAttribute("contratoNovo", new Contrato());
-        model.addAttribute("treinoNovo", new Treino());
-        model.addAttribute("registroNovo", new RegistroCarreira());
+        // Objetos para os formulários
+        Model.addAttribute("atletaNovo", new Atleta());
+        Model.addAttribute("contratoNovo", new Contrato());
+        Model.addAttribute("estatisticaNova", new EstatisticaTemporada());
+        Model.addAttribute("treinoNovo", new Treino());
 
         return "atletas";
     }
@@ -47,10 +47,9 @@ public class AtletasController {
     public String salvarNovoAtleta(
             @ModelAttribute("atletaNovo") Atleta atletaNovo,
             @ModelAttribute("contratoNovo") Contrato contratoNovo,
-            // O treinoNovo foi REMOVIDO daqui
             @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
-        // --- 1. Lógica de Upload da Imagem ---
+        // 1. Upload
         if (imageFile != null && !imageFile.isEmpty()) {
             String originalFilename = imageFile.getOriginalFilename();
             String extension = "";
@@ -70,11 +69,11 @@ public class AtletasController {
             atletaNovo.setPhoto("default.png");
         }
 
-        // --- 2. Amarra o Contrato ao Atleta ---
+        // 2. Contrato
         contratoNovo.setAtivo(true);
-        atletaNovo.addContrato(contratoNovo); // Usa o método helper
+        atletaNovo.addContrato(contratoNovo);
 
-        // --- 3. Salva o Atleta (e o Contrato por cascata) ---
+        // 3. Salvar (Sem estatísticas agora)
         atletaRepository.save(atletaNovo);
 
         return "redirect:/atletas";

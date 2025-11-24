@@ -1,233 +1,260 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    // --- LÓGICA DO MODAL DE DETALHES (VISUALIZAÇÃO) ---
-    const modal = document.getElementById('athlete-modal');
-    if (modal) {
-        const athleteCards = document.querySelectorAll('.athlete-card');
-        const closeModalBtn = document.getElementById('close-modal-btn');
+    // ==================================================================
+    // 0. LÓGICA DE FILTROS (BUSCA EM TEMPO REAL) - RESTAURADA
+    // ==================================================================
+    const searchInput = document.getElementById('search-input');
+    const categoryFilter = document.getElementById('category-filter');
+    const positionFilter = document.getElementById('position-filter');
+    const athleteCards = document.querySelectorAll('.athlete-card');
 
-        // Elementos do Modal de Detalhes
-        const modalPhoto = document.getElementById('modal-photo');
-        const modalName = document.getElementById('modal-name');
-        const modalPosition = document.getElementById('modal-position');
-        const modalFullname = document.getElementById('modal-fullname');
-        const modalBirthdate = document.getElementById('modal-birthdate');
-        const modalAge = document.getElementById('modal-age');
-        const modalNationality = document.getElementById('modal-nationality');
-        const modalHeight = document.getElementById('modal-height');
-        const modalWeight = document.getElementById('modal-weight');
-        const modalFoot = document.getElementById('modal-foot');
-        const modalGames = document.getElementById('modal-games');
-        const modalMinutes = document.getElementById('modal-minutes');
-        const modalGoals = document.getElementById('modal-goals');
-        const modalAssists = document.getElementById('modal-assists');
-        const modalYellow = document.getElementById('modal-yellow');
-        const modalRed = document.getElementById('modal-red');
+    function filterAthletes() {
+        const term = searchInput.value.toLowerCase();
+        const category = categoryFilter.value;
+        const position = positionFilter.value;
 
-        const modalTreinoNotaGeral = document.getElementById('modal-treino-nota-geral');
-        const modalTreinoNotaTatica = document.getElementById('modal-treino-nota-tatica');
-        const modalTreinoNotaTecnica = document.getElementById('modal-treino-nota-tecnica');
-        const modalTreinoNotaFisica = document.getElementById('modal-treino-nota-fisica');
-        const modalTreinoPasses = document.getElementById('modal-treino-passes');
-        const modalTreinoPassesBar = document.getElementById('modal-treino-passes-bar');
-        const modalTreinoChutes = document.getElementById('modal-treino-chutes');
-        const modalTreinoChutesBar = document.getElementById('modal-treino-chutes-bar');
-        const modalTreinoDribles = document.getElementById('modal-treino-dribles');
-        const modalTreinoDriblesBar = document.getElementById('modal-treino-dribles-bar');
-        const modalTreinoDesarmes = document.getElementById('modal-treino-desarmes');
-        const modalTreinoInterceptacoes = document.getElementById('modal-treino-interceptacoes');
-        const modalTreinoKm = document.getElementById('modal-treino-km');
-        const modalTreinoVelMax = document.getElementById('modal-treino-vel-max');
-        const modalTreinoSprints = document.getElementById('modal-treino-sprints');
-
-        const modalMeta1 = document.getElementById('modal-meta-1');
-        const modalMeta2 = document.getElementById('modal-meta-2');
-        const modalObservation = document.getElementById('modal-observation');
-        const modalSalary = document.getElementById('modal-salary');
-        const modalContractStart = document.getElementById('modal-contract-start');
-        const modalContractEnd = document.getElementById('modal-contract-end');
-        const modalReleaseClause = document.getElementById('modal-release-clause');
-
-        // Botões para abrir os novos modais
-        const showAddTreinoBtn = document.getElementById('show-add-treino-modal-btn');
-        const addTreinoModal = document.getElementById('add-treino-modal');
-        const hiddenAtletaIdInput = document.getElementById('treino-atleta-id');
-
-        // Função para aplicar cor da nota
-        function applyRatingColor(element, nota) {
-            element.className = 'rating-badge'; // Reseta
-            if (nota == 10) { element.classList.add('rating-perfect'); }
-            else if (nota > 9) { element.classList.add('rating-great'); }
-            else if (nota >= 8) { element.classList.add('rating-good'); }
-            else if (nota >= 5) { element.classList.add('rating-medium'); }
-            else { element.classList.add('rating-low'); }
-        }
-
-        // Função segura para calcular porcentagem
-        function calculatePercentage(certos, total) {
-            const numCertos = parseInt(certos) || 0;
-            const numTotal = parseInt(total) || 1;
-            if (numTotal === 0 || numCertos === 0) return 0;
-            return (numCertos / numTotal * 100);
-        }
-
-        // Abrir o modal de DETALHES
         athleteCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const data = card.dataset;
+            // Pega os dados escondidos no card (garante que não seja null)
+            const name = (card.dataset.name || '').toLowerCase();
+            const cat = card.dataset.category || '';
+            const pos = card.dataset.position || '';
 
-                // --- Preenche o modal de Detalhes ---
-                modalPhoto.src = data.photo || '';
-                modalName.textContent = data.name || 'N/A';
-                modalPosition.textContent = data.position || 'N/A';
-                modalFullname.textContent = data.fullname || 'N/A';
-                modalBirthdate.textContent = data.birthdate || 'N/A';
-                modalAge.textContent = (data.age || 0) + ' anos';
-                modalNationality.textContent = data.nationality || 'N/A';
-                modalHeight.textContent = data.height || 'N/A';
-                modalWeight.textContent = data.weight || 'N/A';
-                modalFoot.textContent = data.foot || 'N/A';
-                modalGames.textContent = data.games || 0;
-                modalMinutes.textContent = data.minutes || 0;
-                modalGoals.textContent = data.goals || 0;
-                modalAssists.textContent = data.assists || 0;
-                modalYellow.textContent = data.yellow || 0;
-                modalRed.textContent = data.red || 0;
+            // Verifica se corresponde aos filtros
+            const matchesTerm = name.includes(term);
+            const matchesCat = (category === 'all' || cat === category);
+            const matchesPos = (position === 'all' || pos === position);
 
-                const notaGeral = parseFloat(data.treinoNotaGeral) || 0;
-                modalTreinoNotaGeral.textContent = notaGeral.toFixed(1);
-                applyRatingColor(modalTreinoNotaGeral, notaGeral);
-
-                modalTreinoNotaTatica.textContent = (parseFloat(data.treinoNotaTatica) || 0).toFixed(1);
-                modalTreinoNotaTecnica.textContent = (parseFloat(data.treinoNotaTecnica) || 0).toFixed(1);
-                modalTreinoNotaFisica.textContent = (parseFloat(data.treinoNotaFisica) || 0).toFixed(1);
-                const passesCertos = data.treinoPassesCertos || 0;
-                const passesTotal = data.treinoPassesTotal || 1;
-                const passesPct = calculatePercentage(passesCertos, passesTotal);
-                modalTreinoPasses.textContent = `${passesCertos} / ${passesTotal} (${passesPct.toFixed(0)}%)`;
-                modalTreinoPassesBar.style.width = passesPct + '%';
-                const chutesCertos = data.treinoChutesCertos || 0;
-                const chutesTotal = data.treinoChutesTotal || 1;
-                const chutesPct = calculatePercentage(chutesCertos, chutesTotal);
-                modalTreinoChutes.textContent = `${chutesCertos} / ${chutesTotal} (${chutesPct.toFixed(0)}%)`;
-                modalTreinoChutesBar.style.width = chutesPct + '%';
-                const driblesCertos = data.treinoDriblesCertos || 0;
-                const driblesTotal = data.treinoDriblesTotal || 1;
-                const driblesPct = calculatePercentage(driblesCertos, driblesTotal);
-                modalTreinoDribles.textContent = `${driblesCertos} / ${driblesTotal} (${driblesPct.toFixed(0)}%)`;
-                modalTreinoDriblesBar.style.width = driblesPct + '%';
-                modalTreinoDesarmes.textContent = data.treinoDesarmes || 0;
-                modalTreinoInterceptacoes.textContent = data.treinoInterceptacoes || 0;
-                modalTreinoKm.textContent = (data.treinoKmPercorridos || 0) + ' km';
-                modalTreinoVelMax.textContent = (data.treinoVelocidadeMax || 0) + ' km/h';
-                modalTreinoSprints.textContent = data.treinoSprints || 0;
-                modalMeta1.textContent = data.meta1 || 'N/A';
-                modalMeta2.textContent = data.meta2 || '';
-                modalObservation.textContent = data.observation || 'Sem observações.';
-                modalSalary.textContent = data.salary || 'N/A';
-                modalContractStart.textContent = data.contractStart || 'N/A';
-                modalContractEnd.textContent = data.contractEnd || 'N/A';
-                modalReleaseClause.textContent = data.releaseClause || 'N/A';
-
-                // --- Prepara o modal de Adicionar Treino ---
-                // Pega o ID do atleta e coloca no campo escondido do formulário de treino
-                if(hiddenAtletaIdInput) {
-                    hiddenAtletaIdInput.value = data.id;
-                }
-
-                modal.classList.add('visible');
-            });
-        });
-
-        // Fechar o modal de DETALHES
-        const closeModal = () => { modal.classList.remove('visible'); };
-        if(closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (event) => {
-            if (event.target === modal) { closeModal(); }
-        });
-
-        // Lógica das Abas do modal de DETALHES
-        const tabLinks = document.querySelectorAll('#athlete-modal .tab-link');
-        const tabContents = document.querySelectorAll('#athlete-modal .tab-content');
-        tabLinks.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                tabLinks.forEach(l => l.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
-                const tabId = link.dataset.tab;
-                const contentToShow = document.getElementById(tabId);
-                if(contentToShow) {
-                    link.classList.add('active');
-                    contentToShow.classList.add('active');
-                }
-            });
-        });
-
-        // Lógica para abrir o NOVO modal de TREINO (a partir do modal de Detalhes)
-        if (showAddTreinoBtn && addTreinoModal) {
-            showAddTreinoBtn.addEventListener('click', () => {
-                modal.classList.remove('visible'); // Fecha o modal de detalhes
-                addTreinoModal.classList.add('visible'); // Abre o modal de treino
-            });
-        }
-
-    } // Fim do 'if (modal)'
-
-
-    // --- LÓGICA DO MODAL DE ADICIONAR ATLETA ---
-    const addModal = document.getElementById('add-athlete-modal');
-    if (addModal) {
-        const addAthleteBtn = document.getElementById('add-athlete-btn');
-        const closeAddModalBtn = document.getElementById('close-add-modal-btn');
-
-        if (addAthleteBtn) {
-            addAthleteBtn.addEventListener('click', () => {
-                addModal.classList.add('visible');
-            });
-        }
-
-        const closeAddModal = () => {
-            addModal.classList.remove('visible');
-        }
-        if(closeAddModalBtn) closeAddModalBtn.addEventListener('click', closeAddModal);
-        addModal.addEventListener('click', (event) => {
-            if (event.target === addModal) {
-                closeAddModal();
-            }
-        });
-
-        // Lógica das Abas do modal de ADICIONAR
-        const addModalTabs = document.querySelectorAll('#add-athlete-modal .tab-link');
-        const addModalTabContents = document.querySelectorAll('#add-athlete-modal .tab-content');
-
-        addModalTabs.forEach(link => {
-            link.addEventListener('click', (event) => {
-                event.preventDefault();
-                addModalTabs.forEach(l => l.classList.remove('active'));
-                addModalTabContents.forEach(c => c.classList.remove('active'));
-
-                const tabId = link.dataset.tab;
-                const contentToShow = document.getElementById(tabId);
-                if(contentToShow) {
-                    link.classList.add('active');
-                    contentToShow.classList.add('active');
-                }
-            });
-        });
-    } // Fim do 'if (addModal)'
-
-    // --- LÓGICA DO NOVO MODAL DE ADICIONAR TREINO ---
-    const addTreinoModal = document.getElementById('add-treino-modal');
-    if (addTreinoModal) {
-        const closeAddTreinoModalBtn = document.getElementById('close-add-treino-modal-btn');
-        const closeAddTreinoModal = () => {
-            addTreinoModal.classList.remove('visible');
-        }
-        if(closeAddTreinoModalBtn) closeAddTreinoModalBtn.addEventListener('click', closeAddTreinoModal);
-        addTreinoModal.addEventListener('click', (event) => {
-            if (event.target === addTreinoModal) {
-                closeAddModal();
+            // Mostra ou esconde o card
+            if (matchesTerm && matchesCat && matchesPos) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
             }
         });
     }
+
+    // Ativa os filtros quando o usuário digita ou muda a opção
+    if (searchInput) searchInput.addEventListener('input', filterAthletes);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterAthletes);
+    if (positionFilter) positionFilter.addEventListener('change', filterAthletes);
+
+
+    // ==================================================================
+    // 1. FUNÇÕES AUXILIARES (PARA O MODAL DE DETALHES)
+    // ==================================================================
+    function setText(id, text) { const el = document.getElementById(id); if(el) el.textContent = text || (text === 0 ? '0' : ''); }
+    function setSrc(id, src) { const el = document.getElementById(id); if(el) el.src = src || ''; }
+    function setHtml(id, html) { const el = document.getElementById(id); if(el) el.innerHTML = html || ''; }
+    function setStyleWidth(id, percent) { const el = document.getElementById(id); if(el) el.style.width = percent + '%'; }
+
+    function applyRatingColor(id, nota) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.className = 'rating-badge';
+        if (nota == 10) element.classList.add('rating-perfect');
+        else if (nota > 9) element.classList.add('rating-great');
+        else if (nota >= 8) element.classList.add('rating-good');
+        else if (nota >= 5) element.classList.add('rating-medium');
+        else element.classList.add('rating-low');
+        element.textContent = nota.toFixed(1);
+    }
+
+    function calculatePercentage(certos, total) {
+        const c = parseInt(certos) || 0;
+        const t = parseInt(total) || 1;
+        if (t === 0) return 0;
+        return (c / t * 100);
+    }
+
+    // Variável para guardar os dados do atleta clicado (para edição)
+    let currentAthleteData = {};
+
+
+    // ==================================================================
+    // 2. LÓGICA DO MODAL DE DETALHES (CLIQUE NO CARD)
+    // ==================================================================
+    const modalDetails = document.getElementById('athlete-modal');
+
+    if (modalDetails) {
+        const closeBtn = document.getElementById('close-modal-btn');
+
+        athleteCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const d = card.dataset;
+                currentAthleteData = d; // Salva para usar nos formulários de edição
+
+                // --- Preenchimento dos Campos ---
+                setSrc('modal-photo', d.photo);
+                setText('modal-name', d.name);
+                setText('modal-position', d.position);
+
+                // Aba Ficha
+                setText('modal-fullname', d.fullname);
+                setText('modal-birthdate', d.birthdate);
+                setText('modal-age', (d.age || '0') + ' anos');
+                setText('modal-nationality', d.nationality);
+                setText('modal-height', d.height);
+                setText('modal-weight', d.weight);
+                setText('modal-foot', d.foot);
+
+                // Aba Desempenho (SofaScore)
+                const nota = parseFloat(d.treinoNotaGeral) || 0;
+                applyRatingColor('modal-treino-nota-geral', nota);
+
+                setText('modal-treino-nota-tatica', (parseFloat(d.treinoNotaTatica)||0).toFixed(1));
+                setText('modal-treino-nota-tecnica', (parseFloat(d.treinoNotaTecnica)||0).toFixed(1));
+                setText('modal-treino-nota-fisica', (parseFloat(d.treinoNotaFisica)||0).toFixed(1));
+
+                const pPct = calculatePercentage(d.treinoPassesCertos, d.treinoPassesTotal);
+                setHtml('modal-treino-passes', `${d.treinoPassesCertos||0} / ${d.treinoPassesTotal||0}`);
+                setStyleWidth('modal-treino-passes-bar', pPct);
+
+                const cPct = calculatePercentage(d.treinoChutesCertos, d.treinoChutesTotal);
+                setHtml('modal-treino-chutes', `${d.treinoChutesCertos||0} / ${d.treinoChutesTotal||0}`);
+                setStyleWidth('modal-treino-chutes-bar', cPct);
+
+                const drPct = calculatePercentage(d.treinoDriblesCertos, d.treinoDriblesTotal);
+                setHtml('modal-treino-dribles', `${d.treinoDriblesCertos||0} / ${d.treinoDriblesTotal||0}`);
+                setStyleWidth('modal-treino-dribles-bar', drPct);
+
+                setText('modal-treino-desarmes', d.treinoDesarmes);
+                setText('modal-treino-interceptacoes', d.treinoInterceptacoes);
+                setText('modal-treino-km', (d.treinoKmPercorridos||0) + ' km');
+                setText('modal-treino-vel-max', (d.treinoVelocidadeMax||0) + ' km/h');
+                setText('modal-treino-sprints', d.treinoSprints);
+
+                // Aba Desempenho (Temporada)
+                setText('modal-games', d.games);
+                setText('modal-minutes', d.minutes);
+                setText('modal-goals', d.goals);
+                setText('modal-assists', d.assists);
+                setText('modal-yellow', d.yellow);
+                setText('modal-red', d.red);
+
+                // Aba Carreira
+                setText('modal-meta-1', d.meta1);
+                setText('modal-meta-2', d.meta2);
+                setText('modal-observation', d.observation);
+
+                // Aba Financeiro
+                setText('modal-salary', d.salary);
+                setText('modal-release-clause', d.releaseClause);
+                setText('modal-contract-start', d.contractStart);
+                setText('modal-contract-end', d.contractEnd);
+
+                // Passa IDs para os inputs escondidos dos formulários
+                const hiddenTreinoId = document.getElementById('treino-atleta-id');
+                if(hiddenTreinoId) hiddenTreinoId.value = d.id;
+                const hiddenStatsId = document.getElementById('stats-atleta-id');
+                if(hiddenStatsId) hiddenStatsId.value = d.id;
+
+                modalDetails.classList.add('visible');
+            });
+        });
+
+        if(closeBtn) closeBtn.addEventListener('click', () => modalDetails.classList.remove('visible'));
+        modalDetails.addEventListener('click', (e) => { if (e.target === modalDetails) modalDetails.classList.remove('visible'); });
+
+        // Lógica das Abas Internas
+        const tabs = document.querySelectorAll('#athlete-modal .tab-link');
+        const contents = document.querySelectorAll('#athlete-modal .tab-content');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+                const target = document.getElementById(tab.dataset.tab);
+                if(target) {
+                    tab.classList.add('active');
+                    target.classList.add('active');
+                }
+            });
+        });
+    }
+
+
+    // ==================================================================
+    // 3. LÓGICA GENÉRICA PARA OS MODAIS DE FORMULÁRIO
+    // ==================================================================
+    function setupFormModal(modalId, openBtnId, closeBtnId, prefillCallback) {
+        const modal = document.getElementById(modalId);
+        const openBtn = document.getElementById(openBtnId);
+        const closeBtn = document.getElementById(closeBtnId);
+
+        if (modal && openBtn) {
+            openBtn.addEventListener('click', () => {
+                if (prefillCallback) prefillCallback(); // Preenche dados se necessário
+                if (modalDetails && modalDetails.classList.contains('visible')) {
+                    modalDetails.classList.remove('visible'); // Fecha o perfil se estiver aberto
+                }
+                modal.classList.add('visible');
+            });
+
+            if(closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('visible'));
+            modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('visible'); });
+
+            // Abas internas dos formulários
+            const tabs = modal.querySelectorAll('.tab-link');
+            const contents = modal.querySelectorAll('.tab-content');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    const target = modal.querySelector('#' + tab.dataset.tab);
+                    if(target) {
+                        tab.classList.add('active');
+                        target.classList.add('active');
+                    }
+                });
+            });
+        }
+    }
+
+    // Configura Modal: ADICIONAR ATLETA
+    setupFormModal('add-athlete-modal', 'add-athlete-btn', 'close-add-modal-btn');
+
+    // Configura Modal: NOVO TREINO (Preenche com dados atuais para edição)
+    setupFormModal('add-treino-modal', 'show-add-treino-modal-btn', 'close-add-treino-modal-btn', () => {
+        const d = currentAthleteData;
+        // IDs
+        document.getElementById('treino-atleta-id').value = d.id;
+        document.getElementById('form-treino-id').value = d.treinoId || '';
+
+        // Notas
+        document.getElementById('input-treino-tatica').value = d.treinoNotaTatica || '';
+        document.getElementById('input-treino-fisica').value = d.treinoNotaFisica || '';
+
+        // Técnicos
+        document.getElementById('input-treino-passes-c').value = d.treinoPassesCertos || '';
+        document.getElementById('input-treino-passes-t').value = d.treinoPassesTotal || '';
+        document.getElementById('input-treino-chutes-c').value = d.treinoChutesCertos || '';
+        document.getElementById('input-treino-chutes-t').value = d.treinoChutesTotal || '';
+        document.getElementById('input-treino-dribles-c').value = d.treinoDriblesCertos || '';
+        document.getElementById('input-treino-dribles-t').value = d.treinoDriblesTotal || '';
+        document.getElementById('input-treino-desarmes').value = d.treinoDesarmes || '';
+        document.getElementById('input-treino-interceptacoes').value = d.treinoInterceptacoes || '';
+
+        // Físicos
+        document.getElementById('input-treino-km').value = d.treinoKmPercorridos || '';
+        document.getElementById('input-treino-vel').value = d.treinoVelocidadeMax || '';
+        document.getElementById('input-treino-sprints').value = d.treinoSprints || '';
+    });
+
+    // Configura Atualizar Stats (com preenchimento)
+        setupFormModal('add-stats-modal', 'show-add-stats-modal-btn', 'close-add-stats-modal-btn', () => {
+            const d = currentAthleteData;
+            document.getElementById('stats-atleta-id').value = d.id;
+            document.getElementById('stats-id').value = d.statsId || '';
+
+            document.getElementById('input-stats-temp').value = '2025';
+            document.getElementById('input-stats-jogos').value = d.games || '';
+            document.getElementById('input-stats-gols').value = d.goals || '';
+            document.getElementById('input-stats-assists').value = d.assists || '';
+            document.getElementById('input-stats-min').value = d.minutes || '';
+            // CERTIFIQUE-SE QUE ESTAS LINHAS ESTÃO AQUI:
+            document.getElementById('input-stats-y').value = d.yellow || '';
+            document.getElementById('input-stats-r').value = d.red || '';
+        });
+
 });

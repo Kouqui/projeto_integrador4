@@ -85,6 +85,11 @@ public class Atleta {
         treino.setAtleta(this); // Amarra o filho ao pai
     }
 
+    public void addEstatistica(EstatisticaTemporada est) {
+        this.estatisticas.add(est);
+        est.setAtleta(this);
+    }
+
     // --- GETTERS E SETTERS COMPLETOS ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
