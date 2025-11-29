@@ -158,6 +158,23 @@
     </div>
 </div>
 
+<div id="delete-modal" class="modal-overlay" style="z-index: 2000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <div class="modal-header" style="justify-content: center; margin-bottom: 10px;">
+            <h2 style="color: var(--danger-color); font-size: 20px;">Excluir Evento?</h2>
+        </div>
+
+        <p style="color: var(--text-dark); margin-bottom: 25px;">
+            Tem certeza que deseja excluir este evento? <br> Essa ação não pode ser desfeita.
+        </p>
+
+        <div class="form-actions" style="display: flex; gap: 15px; width: 100%;">
+            <button id="cancel-delete-btn" class="btn-secondary" style="flex: 1; justify-content: center;">Cancelar</button>
+            <button id="confirm-delete-btn" class="btn-danger" style="flex: 1; justify-content: center;">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+
 <script th:src="@{/js/calendario.js}"></script>
 </body>
 </html>

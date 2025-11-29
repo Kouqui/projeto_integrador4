@@ -1,73 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- ESTADO DA APLICAÇÃO ---
-    let currentViewDate = new Date(); // Começa na data de hoje
-
-    // Lista de Eventos
-    let events = [
-        {
-            id: 1,
-            title: "Treino Sub-17",
-            date: "2025-10-03",
-            type: "TREINO",
-            category: "SUB17",
-            timeStart: "16:00",
-            timeEnd: "18:00",
-            location: "CT Fut360",
-            description: "Treino tático"
-        },
-        {
-            id: 2,
-            title: "Jogo Amistoso",
-            date: "2025-10-08",
-            type: "JOGO",
-            category: "PROFISSIONAL",
-            timeStart: "15:30",
-            location: "Estádio Municipal",
-            opponent: "Visitante FC",
-            description: "Amistoso"
-        },
-        {
-            id: 3,
-            title: "Reunião",
-            date: "2025-10-14",
-            type: "REUNIAO",
-            category: "GERAL",
-            timeStart: "10:00",
-            location: "Sala 1",
-            description: "Planejamento mensal"
-        },
-        {
-            id: 4,
-            title: "Jogo Estadual",
-            date: "2025-10-15",
-            type: "JOGO",
-            category: "PROFISSIONAL",
-            timeStart: "20:00",
-            location: "Arena Fut360",
-            opponent: "Rival Estadual",
-            description: "Valendo classificação"
-        }
-    ];
+    let currentViewDate = new Date();
+    let events = [];
 
     // --- ELEMENTOS DO DOM ---
     const grid = document.getElementById('calendar-grid');
     const monthDisplay = document.getElementById('current-month-display');
     const prevBtn = document.getElementById('prev-month-btn');
     const nextBtn = document.getElementById('next-month-btn');
-
     const filterCategory = document.getElementById('filter-category');
     const filterType = document.getElementById('filter-type');
 
-    // Modal Elements
+    // Modais
     const eventModal = document.getElementById('event-modal');
+    const deleteModal = document.getElementById('delete-modal'); // NOVO
+
+    // Botões de fechar e ação
     const closeModalBtn = document.getElementById('close-modal-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const eventForm = document.getElementById('event-form');
     const addEventBtn = document.getElementById('add-event-btn');
     const deleteBtn = document.getElementById('delete-btn');
 
-    // Inputs do Formulário
+    // Botões do Modal de Confirmação (NOVO)
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+
+    // Inputs
     const inputId = document.getElementById('event-id');
     const inputTitle = document.getElementById('event-title');
     const inputDate = document.getElementById('event-date');
@@ -80,8 +40,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDesc = document.getElementById('event-description');
     const opponentGroup = document.getElementById('opponent-group');
 
+    // --- FUNÇÃO PARA BUSCAR EVENTOS ---
+    async function fetchEvents() {
+        try {
+            const response = await fetch('/api/eventos');
+            if (response.ok) {
+                events = await response.json();
+                renderCalendar();
+            }
+        } catch (error) {
+            console.error("Erro de conexão:", error);
+        }
+    }
 
-    // --- FUNÇÃO DE RENDERIZAÇÃO PRINCIPAL ---
+    // --- RENDERIZAÇÃO ---
     function renderCalendar() {
         const existingDays = grid.querySelectorAll('.calendar-day');
         existingDays.forEach(day => day.remove());
@@ -89,18 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const year = currentViewDate.getFullYear();
         const month = currentViewDate.getMonth();
 
-        // Atualiza título do Mês
         const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
         monthDisplay.textContent = `${monthNames[month]} ${year}`;
 
-        // Cálculos de Data
         const firstDayIndex = new Date(year, month, 1).getDay();
         const lastDay = new Date(year, month + 1, 0).getDate();
         const prevLastDay = new Date(year, month, 0).getDate();
-
         const today = new Date();
 
-        // 1. Dias do Mês Anterior (Cinza)
         for (let i = firstDayIndex; i > 0; i--) {
             const dayDiv = document.createElement('div');
             dayDiv.classList.add('calendar-day', 'day-other-month');
@@ -108,27 +76,23 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(dayDiv);
         }
 
-        // 2. Dias do Mês Atual
         for (let i = 1; i <= lastDay; i++) {
             const dayDiv = document.createElement('div');
             dayDiv.classList.add('calendar-day');
-
             const currentDayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
 
             if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
                 dayDiv.classList.add('day-today');
             }
-
             dayDiv.innerHTML = `<span class="day-number">${i}</span>`;
 
-            // --- FILTRO E EVENTOS ---
             const catVal = filterCategory.value;
             const typeVal = filterType.value;
 
             const daysEvents = events.filter(ev => {
-                const dateMatch = ev.date === currentDayString;
-                const catMatch = catVal === 'all' || ev.category === catVal;
-                const typeMatch = typeVal === 'all' || ev.type === typeVal;
+                const dateMatch = ev.dataEvento === currentDayString;
+                const catMatch = catVal === 'all' || ev.categoria === catVal;
+                const typeMatch = typeVal === 'all' || ev.tipo === typeVal;
                 return dateMatch && catMatch && typeMatch;
             });
 
@@ -136,19 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 const evEl = document.createElement('div');
                 evEl.classList.add('event-item');
 
-                // --- CORREÇÃO AQUI: USA O TIPO PARA DEFINIR A COR ---
-                const typeClass = 'event-' + ev.type.toLowerCase();
-
-                // Verifica se o tipo existe no CSS, senão usa 'outro'
-                if (['jogo', 'reuniao', 'treino'].includes(ev.type.toLowerCase())) {
+                const typeClass = 'event-' + ev.tipo.toLowerCase();
+                if (['jogo', 'reuniao', 'treino'].includes(ev.tipo.toLowerCase())) {
                     evEl.classList.add(typeClass);
                 } else {
                     evEl.classList.add('event-outro');
                 }
 
-                evEl.textContent = ev.title;
+                evEl.textContent = ev.titulo;
 
-                // Clique para Editar
                 evEl.addEventListener('click', (e) => {
                     e.stopPropagation();
                     openModalEdit(ev);
@@ -160,10 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
             grid.appendChild(dayDiv);
         }
 
-        // 3. Dias do Próximo Mês
         const totalSlots = firstDayIndex + lastDay;
         const nextDays = 42 - totalSlots;
-
         for (let i = 1; i <= nextDays; i++) {
             const dayDiv = document.createElement('div');
             dayDiv.classList.add('calendar-day', 'day-other-month');
@@ -172,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- OUTRAS FUNÇÕES (Mantidas iguais) ---
+    // --- FUNÇÕES AUXILIARES ---
     function toggleOpponentField() {
         if (inputType.value === 'JOGO') {
             opponentGroup.classList.remove('hidden');
@@ -181,34 +139,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function openModal() {
-        eventModal.classList.add('visible');
-    }
-
-    function closeModal() {
-        eventModal.classList.remove('visible');
-    }
+    function openModal() { eventModal.classList.add('visible'); }
+    function closeModal() { eventModal.classList.remove('visible'); }
 
     function resetForm() {
         eventForm.reset();
         inputId.value = '';
         document.getElementById('modal-title').textContent = 'Agendar Novo Evento';
         deleteBtn.style.display = 'none';
-        inputDate.value = new Date().toISOString().split('T')[0];
+
+        const now = new Date();
+        const todayString = now.toISOString().split('T')[0];
+        inputDate.value = todayString;
+        inputDate.setAttribute('min', todayString);
+
         toggleOpponentField();
     }
 
     function openModalEdit(ev) {
         document.getElementById('modal-title').textContent = 'Editar Evento';
+        inputDate.removeAttribute('min');
+
         inputId.value = ev.id;
-        inputTitle.value = ev.title;
-        inputDate.value = ev.date;
-        inputStart.value = ev.timeStart || '';
-        inputEnd.value = ev.timeEnd || '';
-        inputType.value = ev.type;
-        inputCategory.value = ev.category;
-        inputLocation.value = ev.location || '';
-        inputOpponent.value = ev.opponent || '';
+        inputTitle.value = ev.titulo;
+        inputDate.value = ev.dataEvento;
+        inputStart.value = ev.horaInicio || '';
+        inputEnd.value = ev.horaFim || '';
+        inputType.value = ev.tipo;
+        inputCategory.value = ev.categoria;
+        inputLocation.value = ev.local || '';
+        inputOpponent.value = ev.adversario || '';
         inputDesc.value = ev.description || '';
 
         deleteBtn.style.display = 'block';
@@ -221,66 +181,98 @@ document.addEventListener('DOMContentLoaded', () => {
         currentViewDate.setMonth(currentViewDate.getMonth() - 1);
         renderCalendar();
     });
-
     nextBtn.addEventListener('click', () => {
         currentViewDate.setMonth(currentViewDate.getMonth() + 1);
         renderCalendar();
     });
-
     filterCategory.addEventListener('change', renderCalendar);
     filterType.addEventListener('change', renderCalendar);
-
-    addEventBtn.addEventListener('click', () => {
-        resetForm();
-        openModal();
-    });
-
+    addEventBtn.addEventListener('click', () => { resetForm(); openModal(); });
     closeModalBtn.addEventListener('click', closeModal);
     cancelBtn.addEventListener('click', closeModal);
-
-    eventModal.addEventListener('click', (e) => {
-        if (e.target === eventModal) closeModal();
-    });
-
+    eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeModal(); });
     inputType.addEventListener('change', toggleOpponentField);
 
-    eventForm.addEventListener('submit', (e) => {
+
+    // --- SALVAR ---
+    eventForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const idAtual = inputId.value;
+        if (!inputId.value) {
+            const selectedDate = new Date(inputDate.value + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                alert("Não é possível agendar eventos em datas passadas.");
+                return;
+            }
+        }
 
         const eventData = {
-            id: idAtual ? parseInt(idAtual) : Date.now(),
-            title: inputTitle.value,
-            date: inputDate.value,
-            timeStart: inputStart.value,
-            timeEnd: inputEnd.value,
-            type: inputType.value,
-            category: inputCategory.value,
-            location: inputLocation.value,
-            opponent: inputOpponent.value,
-            description: inputDesc.value
+            id: inputId.value ? parseInt(inputId.value) : null,
+            titulo: inputTitle.value,
+            dataEvento: inputDate.value,
+            horaInicio: inputStart.value || null,
+            horaFim: inputEnd.value || null,
+            tipo: inputType.value,
+            categoria: inputCategory.value,
+            local: inputLocation.value,
+            adversario: inputOpponent.value,
+            descricao: inputDesc.value
         };
 
-        if (idAtual) {
-            const index = events.findIndex(ev => ev.id == idAtual);
-            if (index !== -1) events[index] = eventData;
-        } else {
-            events.push(eventData);
-        }
+        try {
+            const response = await fetch('/api/eventos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(eventData)
+            });
 
-        renderCalendar();
-        closeModal();
+            if (response.ok) {
+                fetchEvents();
+                closeModal();
+            } else {
+                alert("Erro ao salvar evento.");
+            }
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
+        }
     });
 
+    // --- LÓGICA DO MODAL DE EXCLUSÃO (NOVA) ---
+
+    // 1. Quando clicar em "Excluir" no formulário, ABRE o modalzinho
     deleteBtn.addEventListener('click', () => {
+        deleteModal.classList.add('visible');
+    });
+
+    // 2. Botão "Cancelar" do modalzinho
+    cancelDeleteBtn.addEventListener('click', () => {
+        deleteModal.classList.remove('visible');
+    });
+
+    // 3. Botão "Sim, Excluir" do modalzinho (Faz o DELETE real)
+    confirmDeleteBtn.addEventListener('click', async () => {
         const idAtual = inputId.value;
-        if (idAtual && confirm('Tem certeza que deseja excluir este evento?')) {
-            events = events.filter(ev => ev.id != idAtual);
-            renderCalendar();
-            closeModal();
+        if (idAtual) {
+            try {
+                const response = await fetch(`/api/eventos/${idAtual}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    fetchEvents(); // Recarrega calendário
+                    deleteModal.classList.remove('visible'); // Fecha modalzinho
+                    closeModal(); // Fecha modal grande
+                } else {
+                    alert("Erro ao excluir.");
+                }
+            } catch (error) {
+                console.error("Erro ao excluir:", error);
+            }
         }
     });
 
-    renderCalendar();
+    // Inicialização
+    fetchEvents();
 });
