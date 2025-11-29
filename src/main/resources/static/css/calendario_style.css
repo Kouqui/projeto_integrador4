@@ -213,7 +213,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: var(--text-light);
+    color: var(--text-light);git pull origin feature/calendario-dinamico
     font-family: 'Poppins', sans-serif;
 }
 .form-group input[type="date"], .form-group input[type="time"] { color-scheme: dark; }
