@@ -1,11 +1,11 @@
-package com.fut.fut360.controller; // PACOTE CORRETO DO CONTROLLER
+package com.fut.fut360.controller;
 
-import com.fut.fut360.model.Contract; // PACOTE CORRIGIDO
-import com.fut.fut360.model.PayrollItem; // PACOTE CORRIGIDO
-import com.fut.fut360.model.Transaction; // PACOTE CORRIGIDO
-import com.fut.fut360.service.ContractService; // PACOTE CORRIGIDO
-import com.fut.fut360.service.PayrollService; // PACOTE CORRIGIDO
-import com.fut.fut360.service.TransactionService; // PACOTE CORRIGIDO
+import com.fut.fut360.Model.Contract;
+import com.fut.fut360.Model.PayrollItem;
+import com.fut.fut360.Model.Transaction;
+import com.fut.fut360.service.ContractService;
+import com.fut.fut360.service.PayrollService;
+import com.fut.fut360.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

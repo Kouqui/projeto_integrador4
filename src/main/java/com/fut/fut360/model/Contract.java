@@ -1,4 +1,4 @@
-package com.fut.fut360.model;
+package com.fut.fut360.Model;
 
 import java.time.LocalDate;
 
