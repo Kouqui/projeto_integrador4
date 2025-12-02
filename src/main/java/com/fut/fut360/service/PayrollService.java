@@ -1,6 +1,6 @@
 package com.fut.fut360.service;
 
-import com.fut.fut360.model.PayrollItem;
+import com.fut.fut360.Model.PayrollItem;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

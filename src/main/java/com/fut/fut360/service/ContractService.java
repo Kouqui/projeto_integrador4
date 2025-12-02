@@ -1,6 +1,6 @@
 package com.fut.fut360.service;
 
-import com.fut.fut360.model.Contract;
+import com.fut.fut360.Model.Contract;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
