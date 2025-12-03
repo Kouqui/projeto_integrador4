@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Acesso Restrito - Fut360</title>
+    <link rel="stylesheet" href="/css/dashboard_style.css">
+    <style>
+        body {
+            background-color: #0f0f15; /* Fundo bem escuro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-card {
+            background-color: #1e1e2d;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        .login-card h2 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-group label {
+            color: #aaa;
+            font-size: 14px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            background-color: #2b2b3c;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: white;
+            box-sizing: border-box; /* Garante que padding não estoure a largura */
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .btn-entrar {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .btn-entrar:hover {
+            background-color: #0056b3;
+        }
+        .error-msg {
+            background-color: rgba(255, 85, 85, 0.2);
+            color: #ff5555;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            border: 1px solid #ff5555;
+        }
+    </style>
+</head>
+<body>
+
+<div class="login-card">
+    <h2 style="color: #007bff;">🛡️ Área Administrativa</h2>
+    <p style="color: #888; margin-bottom: 30px;">Acesso restrito e Configurações</p>
+
+    <div th:if="${erro}" class="error-msg">
+        <span th:text="${erro}"></span>
+    </div>
+
+    <form action="/admin/entrar" method="POST">
+        <div class="form-group">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" name="usuario" class="form-control" placeholder="digite seu nome de usuário"  required>
+        </div>
+
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" class="form-control" placeholder="••••••" required>
+        </div>
+
+        <button type="submit" class="btn-entrar">Acessar Sistema</button>
+    </form>
+
+    <p style="margin-top: 20px; font-size: 12px; color: #555;">
+        Fut360 Security System v1.0
+    </p>
+    <p style="margin-top: 20px; font-size: 12px; color: #555;">
+        Em caso de problemas técnicos com o acesso ao sistema, entre em contato com a equipe de TI.
+    </p>
+</div>
+
+</body>
+</html>
