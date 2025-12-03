@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Fut360 - Admin Center</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/dashboard_style.css">
+    <style>
+        /* Layout Principal */
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Esquerda Larga, Direita Estreita */
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        /* Classe para o gráfico de baixo ocupar tudo */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* Estilo dos Cards */
+        .card-dark {
+            background-color: #1e1e2d;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #2b2b3c;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            color: #fff; font-size: 14px; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 15px; border-bottom: 1px solid #333;
+            padding-bottom: 10px; display: flex; justify-content: space-between;
+        }
+
+        /* Gráficos Redondos */
+        .resources-row { display: flex; justify-content: space-around; align-items: center; }
+        .chart-wrapper { position: relative; width: 90px; height: 90px; }
+        .chart-val { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-weight: bold; font-size: 13px; }
+        .chart-sub { text-align: center; color: #888; font-size: 10px; margin-top: 5px; }
+
+        /* Barra de Disco */
+        .disk-container { margin-top: 20px; }
+        .disk-label { display: flex; justify-content: space-between; font-size: 11px; color: #aaa; margin-bottom: 5px; }
+        .progress-bg { background: #333; height: 6px; border-radius: 3px; overflow: hidden; }
+        .progress-fill { background: #ffbb00; height: 100%; width: 0%; transition: width 1s; }
+
+        /* Terminal de Logs */
+        .log-terminal {
+            background: #0f0f15; padding: 10px; border-radius: 6px; height: 150px;
+            overflow-y: hidden; font-family: 'Courier New', monospace; font-size: 11px; border-left: 2px solid #007bff;
+        }
+        .log-line { color: #00ff88; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .log-line:first-child { color: #fff; font-weight: bold; }
+
+        /* Botões de Ação */
+        .btn-control {
+            background-color: #2b2b3c; color: #fff; border: 1px solid #444; padding: 8px;
+            border-radius: 6px; cursor: pointer; font-size: 11px; width: 100%; transition: 0.2s;
+        }
+        .btn-control:hover { background-color: #007bff; border-color: #007bff; }
+        .btn-control:active { transform: scale(0.95); }
+
+        /* Tabela Scout */
+        .scout-table { width: 100%; border-collapse: collapse; color: #ddd; font-size: 13px; }
+        .scout-table th { text-align: left; color: #666; font-size: 11px; border-bottom: 1px solid #444; padding: 10px 0; }
+        .scout-table td { padding: 12px 0; border-bottom: 1px solid #2b2b3c; }
+
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .badge-fire { background: rgba(255, 85, 85, 0.2); color: #ff5555; border: 1px solid #ff5555; }
+        .badge-ok { background: rgba(0, 255, 136, 0.2); color: #00ff88; border: 1px solid #00ff88; }
+        .badge-warn { background: rgba(255, 187, 0, 0.2); color: #ffbb00; border: 1px solid #ffbb00; }
+    </style>
+</head>
+<body>
+
+<div class="main-content" style="margin-left: 20px; padding: 40px;">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div>
+            <h2 style="color: white; margin: 0;">Fut360 Admin</h2>
+            <p style="color: #666; margin: 5px 0 0 0; font-size: 13px;">Painel de Controle e Monitoramento.</p>
+        </div>
+        <div style="text-align: right;">
+                <span style="background: #2b2b3c; padding: 5px 10px; border-radius: 4px; color: #00ff88; font-size: 12px; border: 1px solid #00ff88;">
+                    ● Sistema Online
+                </span>
+            <div style="margin-top: 5px; font-size: 11px; color: #666;">
+                PING: <span id="ping-txt" style="color: #fff;">0ms</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-dashboard">
+
+        <div class="card-dark">
+            <div class="card-header">
+                <span>Relatório de Elenco (Scout)</span>
+                <span style="font-size: 10px; color: #666;">Top Performance</span>
+            </div>
+            <table class="scout-table">
+                <thead>
+                <tr>
+                    <th width="25%">ATLETA</th>
+                    <th width="15%">FASE</th>
+                    <th width="15%">SCORE</th>
+                    <th width="20%">VALOR</th>
+                    <th width="25%">VEREDITO</th>
+                </tr>
+                </thead>
+                <tbody id="tabela-scout">
+                <tr><td colspan="5">Carregando dados...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="display: flex; flex-direction: column;">
+
+            <div class="card-dark">
+                <div class="card-header"><span>Ações Rápidas</span><span></span></div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <button onclick="executarAcao('/api/ranking/sistema/otimizar-ram')" class="btn-control">🧹 RAM</button>
+                    <button onclick="executarAcao('/api/ranking/sistema/limpar-logs')" class="btn-control">🗑️ Logs</button>
+                    <button onclick="executarAcao('/api/ranking/sistema/resetar-views')" class="btn-control">🔄 Views</button>
+                </div>
+            </div>
+
+            <div class="card-dark">
+                <div class="card-header">
+                    <span>Recursos</span>
+                    <span id="uptime-txt" style="color: #007bff;">00:00:00</span>
+                </div>
+                <div class="resources-row">
+                    <div>
+                        <div class="chart-wrapper"><canvas id="cpuChart"></canvas><div class="chart-val" id="val-cpu">0%</div></div>
+                        <div class="chart-sub">CPU</div>
+                    </div>
+                    <div>
+                        <div class="chart-wrapper"><canvas id="ramChart"></canvas><div class="chart-val" id="val-ram">0%</div></div>
+                        <div class="chart-sub">RAM</div>
+                    </div>
+                </div>
+                <div class="disk-container">
+                    <div class="disk-label"><span>ARMAZENAMENTO (HD)</span><span id="disk-txt">0GB</span></div>
+                    <div class="progress-bg"><div id="disk-bar" class="progress-fill"></div></div>
+                </div>
+            </div>
+
+            <div class="card-dark" style="flex-grow: 1;">
+                <div class="card-header"><span>Console</span><span></span></div>
+                <div id="log-box" class="log-terminal"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; gap: 10px;">
+                <div class="card-dark" style="flex: 1; text-align: center; padding: 10px; margin-bottom: 0;">
+                    <span id="total-atletas" style="font-size: 18px; color: white; font-weight: bold; display: block;">0</span>
+                    <span style="font-size: 9px; color: #888;">ATLETAS</span>
+                </div>
+                <div class="card-dark" style="flex: 1; text-align: center; padding: 10px; margin-bottom: 0;">
+                    <span id="total-eventos" style="font-size: 18px; color: white; font-weight: bold; display: block;">0</span>
+                    <span style="font-size: 9px; color: #888;">EVENTOS</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-dark full-width">
+            <div class="card-header">
+                <span>Tráfego de Páginas (Views)</span>
+                <span style="font-size: 10px; color: #666;">Analytics Tempo Real</span>
+            </div>
+            <div style="height: 200px; width: 100%;">
+                <canvas id="trafficChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Config Charts
+    Chart.defaults.color = '#888';
+    Chart.defaults.borderColor = '#333';
+
+    // Desliga Tooltip Globalmente (para não atrapalhar os velocímetros CPU/RAM)
+    Chart.defaults.plugins.tooltip.enabled = false;
+    Chart.defaults.plugins.legend.display = false;
+
+    const cpuChart = new Chart(document.getElementById('cpuChart'), { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#ff5555', '#2b2b3c'], borderWidth: 0, cutout: '85%' }] } });
+    const ramChart = new Chart(document.getElementById('ramChart'), { type: 'doughnut', data: { datasets: [{ data: [0, 100], backgroundColor: ['#007bff', '#2b2b3c'], borderWidth: 0, cutout: '85%' }] } });
+
+    // --- CONFIGURAÇÃO ESPECIAL PARA O GRÁFICO DE BARRAS (COM TOOLTIP) ---
+    const trafficChart = new Chart(document.getElementById('trafficChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'Visualizações',
+                data: [],
+                backgroundColor: '#00ff88', // Verde Hacker
+                borderRadius: 4,
+                barThickness: 50,
+                hoverBackgroundColor: '#00cc6a' // Cor ao passar o mouse
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                // AQUI LIGAMOS O TOOLTIP SÓ PARA ESSE GRÁFICO
+                tooltip: {
+                    enabled: true,
+                    backgroundColor: '#1e1e2d', // Fundo do tooltip
+                    titleColor: '#fff',
+                    bodyColor: '#00ff88',
+                    borderColor: '#333',
+                    borderWidth: 1,
+                    displayColors: false, // Remove quadradinho de cor
+                    callbacks: {
+                        title: function(context) {
+                            return context[0].label.toUpperCase();
+                        },
+                        label: function(context) {
+                            return ' ' + context.parsed.y + ' Visualizações';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: '#333' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    function getBadge(fase) {
+        if (fase.includes("AUGE")) return "badge-fire";
+        if (fase.includes("REGULAR")) return "badge-ok";
+        return "badge-warn";
+    }
+
+    async function executarAcao(url) {
+        try { await fetch(url, { method: 'POST' }); atualizar(); } catch (e) { alert("Erro: " + e); }
+    }
+
+    async function atualizar() {
+        try {
+            // 1. Dados Sistema
+            const resSys = await fetch('/api/ranking/sistema');
+            const sys = await resSys.json();
+
+            // CPU & RAM
+            const cpu = sys.saude.cpuRaw || 0;
+            cpuChart.data.datasets[0].data = [cpu, 100-cpu]; cpuChart.update();
+            document.getElementById('val-cpu').innerText = Math.round(cpu) + '%';
+
+            const ramU = sys.saude.ramUsed; const ramT = sys.saude.ramTotal;
+            ramChart.data.datasets[0].data = [ramU, ramT-ramU]; ramChart.update();
+            document.getElementById('val-ram').innerText = Math.round((ramU/ramT)*100) + '%';
+
+            // Disco & Ping
+            document.getElementById('disk-bar').style.width = sys.saude.diskPercent + '%';
+            document.getElementById('disk-txt').innerText = sys.saude.diskTxt;
+            document.getElementById('ping-txt').innerText = sys.saude.ping;
+            document.getElementById('uptime-txt').innerText = sys.saude.uptime;
+
+            // Stats
+            document.getElementById('total-atletas').innerText = sys.saude.totalAtletas;
+            document.getElementById('total-eventos').innerText = sys.saude.totalEventos;
+
+            // Logs
+            let logHtml = "";
+            sys.saude.logs.forEach(l => { logHtml += `<div class="log-line">> ${l}</div>`; });
+            document.getElementById('log-box').innerHTML = logHtml;
+
+            // --- ATUALIZAÇÃO DO GRÁFICO DE TRÁFEGO ---
+            const paginas = Object.keys(sys.acessos);
+            const views = Object.values(sys.acessos);
+
+            trafficChart.data.labels = paginas;
+            trafficChart.data.datasets[0].data = views;
+            trafficChart.update();
+
+            // 2. Dados Scout
+            const resScout = await fetch('/api/ranking/geral');
+            const scout = await resScout.json();
+            let tableHtml = "";
+            scout.forEach(p => {
+                tableHtml += `<tr>
+                    <td><strong style="color:white">${p.nome}</strong><br><span style="color:#666; font-size:10px">${p.posicao}</span></td>
+                    <td><span class="badge ${getBadge(p.fase)}">${p.fase}</span></td>
+                    <td style="color:#007bff; font-weight:bold">${p.score.toFixed(1)}</td>
+                    <td style="color:#00ff88">${p.valor}</td>
+                    <td style="color:#ccc; font-size:11px">${p.veredito}</td>
+                </tr>`;
+            });
+            document.getElementById('tabela-scout').innerHTML = tableHtml;
+
+        } catch (e) { console.error(e); }
+    }
+
+    window.onload = () => { atualizar(); setInterval(atualizar, 2000); }
+</script>
+</body>
+</html>

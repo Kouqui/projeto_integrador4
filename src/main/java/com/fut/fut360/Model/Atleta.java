@@ -121,4 +121,5 @@ public class Atleta {
     public void setEstatisticas(List<EstatisticaTemporada> estatisticas) { this.estatisticas = estatisticas; }
     public List<RegistroCarreira> getRegistros() { return registros; }
     public void setRegistros(List<RegistroCarreira> registros) { this.registros = registros; }
+
 }
