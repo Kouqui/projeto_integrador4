@@ -31,7 +31,14 @@
     <main class="main-content">
         <header class="header">
             <div class="header-title"><h2>Gestão de Atletas</h2><p>Elenco Profissional</p></div>
-            <div class="user-info"><span>Kauê Farias</span><div class="user-avatar">K</div></div>
+            <div class="user-info">
+                <span>Kauê Farias</span>
+                <div class="user-avatar">K</div>
+
+                <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
+                    <i class='bx bx-log-out'></i>
+                </a>
+            </div>
         </header>
 
         <div class="controls-bar">
