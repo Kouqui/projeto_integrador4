@@ -8,7 +8,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" th:href="@{/css/financeiro_style.css}">
 </head>
@@ -36,53 +39,57 @@
         <header class="header">
             <div class="header-title">
                 <h2>Gestão Financeira</h2>
-                <p>Controle de receitas, despesas e balanço</p>
+                <p>Controle completo do clube</p>
             </div>
-
             <div class="user-info">
-                <span>Kauê Farias</span>
-                <div class="user-avatar">K</div>
-
-                <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
-                    <i class='bx bx-log-out'></i>
-                </a>
+                <span>Usuário</span>
+                <div class="user-avatar">U</div>
+                <button class="logout-btn"><i class='bx bx-log-out'></i></button>
             </div>
         </header>
-        <section class="summary-cards">
-            <div class="card">
-                <div class="card-header"><i class='bx bx-trending-up'></i><span>Receitas (Outubro)</span></div>
-                <p class="financial-value positive" id="receitas-total">R$ 0,00</p>
-            </div>
-            <div class="card">
-                <div class="card-header"><i class='bx bx-trending-down'></i><span>Despesas (Outubro)</span></div>
-                <p class="financial-value negative" id="despesas-total">R$ 0,00</p>
-            </div>
-            <div class="card">
-                <div class="card-header"><i class='bx bx-bar-chart-alt-2'></i><span>Balanço (Outubro)</span></div>
-                <p class="financial-value positive" id="balanco-total">R$ 0,00</p>
-            </div>
-        </section>
 
-        <section class="transactions-section">
-            <div class="transactions-header">
-                <h3>Últimas Transações</h3>
-                <button class="btn-primary" id="add-transaction-btn"><i class='bx bx-plus'></i> Adicionar Transação</button>
+        <div class="view-navigation" style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <button id="btn-tab-cashflow" class="btn-primary" onclick="mudarAba('cashflow')">Fluxo de Caixa</button>
+            <button id="btn-tab-payroll" class="btn-secondary" onclick="mudarAba('payroll')">Folha Salarial</button>
+            <button id="btn-tab-contracts" class="btn-secondary" onclick="mudarAba('contracts')">Contratos</button>
+        </div>
+
+        <section id="cashflow-view">
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-header"><i class='bx bx-trending-up'></i><span>Receitas</span></div>
+                    <p class="financial-value positive" id="receitas-total">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class='bx bx-trending-down'></i><span>Despesas</span></div>
+                    <p class="financial-value negative" id="despesas-total">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><i class='bx bx-bar-chart-alt-2'></i><span>Balanço</span></div>
+                    <p class="financial-value positive" id="balanco-total">R$ 0,00</p>
+                </div>
             </div>
 
-            <table class="transactions-table">
-                <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Descrição</th>
-                    <th>Categoria</th>
-                    <th>Tipo</th>
-                    <th>Valor</th>
-                    <th>Ações</th>
-                </tr>
-                </thead>
-                <tbody id="transactions-body">
-                </tbody>
-            </table>
+            <div class="transactions-section">
+                <div class="transactions-header">
+                    <h3>Histórico de Transações</h3>
+                    <button class="btn-primary" id="add-transaction-btn"><i class='bx bx-plus'></i> Nova Transação</button>
+                </div>
+                <table class="transactions-table">
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Descrição</th>
+                        <th>Categoria</th>
+                        <th>Tipo</th>
+                        <th>Valor</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="transactions-body"></tbody>
+                </table>
+            </div>
+
             <div id="transaction-modal" class="modal-overlay">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -90,6 +97,14 @@
                         <button class="close-button" id="close-modal-btn"><i class='bx bx-x'></i></button>
                     </div>
                     <form id="transaction-form">
+                        <div class="form-group"><label>Tipo</label>
+                            <select id="input-tipo" required><option value="receita">Receita</option><option value="despesa">Despesa</option></select>
+                        </div>
+                        <div class="form-group"><label>Descrição</label><input type="text" id="input-descricao" required></div>
+                        <div class="form-group"><label>Valor (R$)</label><input type="number" id="input-valor" required min="0.01" step="0.01"></div>
+                        <div class="form-group"><label>Data</label><input type="date" id="input-data" required></div>
+                        <div class="form-group"><label>Categoria</label><input type="text" id="input-categoria" required></div>
+                        <div class="form-group"><label>Responsável</label><input type="text" id="input-responsavel" required></div>
                         <div class="form-actions">
                             <button type="button" class="btn-secondary" id="cancel-btn">Cancelar</button>
                             <button type="submit" class="btn-primary" id="save-btn">Salvar</button>
@@ -98,6 +113,135 @@
                 </div>
             </div>
         </section>
+
+        <section id="payroll-view" style="display: none;">
+            <div class="summary-cards">
+                <div class="card">
+                    <div class="card-header"><span>Custo Mensal (Pago + Pendente)</span></div>
+                    <p class="financial-value negative" id="payroll-total">R$ 0,00</p>
+                </div>
+                <div class="card">
+                    <div class="card-header"><span>Total Pendente</span></div>
+                    <p class="financial-value" style="color: orange" id="payroll-pending">R$ 0,00</p>
+                </div>
+            </div>
+
+            <div class="transactions-section">
+                <div class="transactions-header">
+                    <h3>Folha de Pagamento</h3>
+                    <button class="btn-primary" onclick="abrirModalPayroll()"><i class='bx bx-plus'></i> Registrar Pagamento</button>
+                </div>
+                <table class="transactions-table">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Cargo</th>
+                        <th>Valor</th>
+                        <th>Data Pgto</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="payroll-body"></tbody>
+                </table>
+            </div>
+
+            <div id="payroll-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Registrar Pagamento</h2>
+                        <button class="close-button" onclick="fecharModalPayroll()"><i class='bx bx-x'></i></button>
+                    </div>
+                    <form id="payroll-form">
+                        <div class="form-group"><label>Nome</label><input type="text" id="pay-name" required></div>
+                        <div class="form-group"><label>Cargo</label><input type="text" id="pay-role" required></div>
+                        <div class="form-group"><label>Valor (R$)</label><input type="number" id="pay-value" step="0.01" required></div>
+                        <div class="form-group"><label>Data</label><input type="date" id="pay-date" required></div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="pay-status">
+                                <option value="pendente">Pendente</option>
+                                <option value="pago">Pago</option>
+                            </select>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="fecharModalPayroll()">Cancelar</button>
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="contracts-view" style="display: none;">
+            <div class="transactions-section">
+                <div class="transactions-header">
+                    <h3>Contratos de Atletas</h3>
+                    <button class="btn-primary" onclick="abrirModalContract()"><i class='bx bx-plus'></i> Novo Contrato</button>
+                </div>
+
+                <table class="transactions-table">
+                    <thead>
+                    <tr>
+                        <th>Nome Atleta</th>
+                        <th>Posição</th>
+                        <th>Salário</th>
+                        <th>Início</th>
+                        <th>Fim</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody id="contracts-body"></tbody>
+                </table>
+            </div>
+
+            <div id="contract-modal" class="modal-overlay">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h2>Novo Contrato</h2>
+                        <button class="close-button" onclick="fecharModalContract()"><i class='bx bx-x'></i></button>
+                    </div>
+                    <form id="contract-form">
+                        <div class="form-group">
+                            <label for="cont-nome">Nome do Atleta</label>
+                            <input type="text" id="cont-nome" required placeholder="Ex: Neymar">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-idade">Idade</label>
+                            <input type="number" id="cont-idade" required min="16" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-posicao">Posição</label>
+                            <input type="text" id="cont-posicao" required placeholder="Ex: Atacante">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-salary">Salário (R$)</label>
+                            <input type="number" id="cont-salary" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-start">Data Início</label>
+                            <input type="date" id="cont-start" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-end">Data Fim</label>
+                            <input type="date" id="cont-end" required>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" onclick="fecharModalContract()">Cancelar</button>
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
     </main>
 </div>
 
