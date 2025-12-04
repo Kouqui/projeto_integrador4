@@ -29,15 +29,25 @@
                 <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
             </ul>
         </nav>
-        <div class="sidebar-footer">
-            <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
-        </div>
+
     </aside>
 
     <main class="main-content">
         <header class="header">
-        </header>
+            <div class="header-title">
+                <h2>Gestão Financeira</h2>
+                <p>Controle de receitas, despesas e balanço</p>
+            </div>
 
+            <div class="user-info">
+                <span>Kauê Farias</span>
+                <div class="user-avatar">K</div>
+
+                <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
+                    <i class='bx bx-log-out'></i>
+                </a>
+            </div>
+        </header>
         <section class="summary-cards">
             <div class="card">
                 <div class="card-header"><i class='bx bx-trending-up'></i><span>Receitas (Outubro)</span></div>
@@ -58,6 +68,7 @@
                 <h3>Últimas Transações</h3>
                 <button class="btn-primary" id="add-transaction-btn"><i class='bx bx-plus'></i> Adicionar Transação</button>
             </div>
+
             <table class="transactions-table">
                 <thead>
                 <tr>
