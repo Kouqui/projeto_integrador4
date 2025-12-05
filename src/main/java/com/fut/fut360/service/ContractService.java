@@ -25,7 +25,7 @@ public class ContractService {
     }
 
     public List<Contract> findAll() {
-        return repository.findAll();
+        return repository.findBySalarioIsNotNull();
     }
 
     public Contract save(Contract contract) {
