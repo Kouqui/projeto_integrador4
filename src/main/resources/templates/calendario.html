@@ -1,3 +1,5 @@
+<!--CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788, E KAUÃ KOUQUI UEMURA RA:24027746-->
+
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -29,9 +31,7 @@
                 <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
             </ul>
         </nav>
-        <div class="sidebar-footer">
-            <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
-        </div>
+
     </aside>
 
     <main class="main-content">
@@ -43,29 +43,40 @@
             <div class="user-info">
                 <span>Kauê Farias</span>
                 <div class="user-avatar">K</div>
-                <button class="logout-btn"><i class='bx bx-log-out'></i></button>
+
+                <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
+                    <i class='bx bx-log-out'></i>
+                </a>
             </div>
         </header>
 
         <div class="calendar-controls">
             <div class="calendar-nav">
-                <button><i class='bx bx-chevron-left'></i></button>
-                <h3>Outubro 2025</h3>
-                <button><i class='bx bx-chevron-right'></i></button>
+                <button id="prev-month-btn"><i class='bx bx-chevron-left'></i></button>
+                <h3 id="current-month-display">Carregando...</h3>
+                <button id="next-month-btn"><i class='bx bx-chevron-right'></i></button>
             </div>
-            <div class="calendar-filters">
-                <select><option>Todas Categorias</option><option>Profissional</option><option>Sub-17</option></select>
-                <select><option>Todos Tipos</option><option>Jogo</option><option>Treino</option><option>Reunião</option></select>
-                <div class="view-switcher">
-                    <button class="active">Mês</button>
-                    <button>Semana</button>
-                    <button>Dia</button>
+
+            <div class="header-right-actions">
+                <div class="calendar-filters">
+                    <select id="filter-category">
+                        <option value="all">Todas Categorias</option>
+                        <option value="PROFISSIONAL">Profissional</option>
+                        <option value="SUB17">Sub-17</option>
+                        <option value="GERAL">Geral</option>
+                    </select>
+                    <select id="filter-type">
+                        <option value="all">Todos Tipos</option>
+                        <option value="JOGO">Jogo</option>
+                        <option value="TREINO">Treino</option>
+                        <option value="REUNIAO">Reunião</option>
+                    </select>
                 </div>
+                <button class="btn-primary" id="add-event-btn"><i class='bx bx-plus'></i> Agendar Evento</button>
             </div>
-            <button class="btn-primary" id="add-event-btn"><i class='bx bx-plus'></i> Agendar Evento</button>
         </div>
 
-        <div class="calendar-grid">
+        <div class="calendar-grid" id="calendar-grid">
             <div class="calendar-header">Dom</div>
             <div class="calendar-header">Seg</div>
             <div class="calendar-header">Ter</div>
@@ -73,53 +84,101 @@
             <div class="calendar-header">Qui</div>
             <div class="calendar-header">Sex</div>
             <div class="calendar-header">Sab</div>
-
-            <div class="calendar-day day-other-month"><span class="day-number">28</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">29</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">30</span></div>
-            <div class="calendar-day"><span class="day-number">1</span></div>
-            <div class="calendar-day"><span class="day-number">2</span></div>
-            <div class="calendar-day"><span class="day-number">3</span><div class="event-item event-sub17">Treino Sub-17</div></div>
-            <div class="calendar-day"><span class="day-number">4</span></div>
-
-            <div class="calendar-day"><span class="day-number">5</span></div>
-            <div class="calendar-day"><span class="day-number">6</span></div>
-            <div class="calendar-day"><span class="day-number">7</span></div>
-            <div class="calendar-day"><span class="day-number">8</span><div class="event-item event-professional">Jogo Amistoso</div></div>
-            <div class="calendar-day"><span class="day-number">9</span></div>
-            <div class="calendar-day"><span class="day-number">10</span></div>
-            <div class="calendar-day"><span class="day-number">11</span></div>
-
-            <div class="calendar-day"><span class="day-number">12</span></div>
-            <div class="calendar-day"><span class="day-number">13</span></div>
-            <div class="calendar-day day-today"><span class="day-number">14</span><div class="event-item event-general">Reunião</div></div>
-            <div class="calendar-day"><span class="day-number">15</span><div class="event-item event-professional">Jogo Estadual</div></div>
-            <div class="calendar-day"><span class="day-number">16</span><div class="event-item event-sub17">Treino Físico</div></div>
-            <div class="calendar-day"><span class="day-number">17</span></div>
-            <div class="calendar-day"><span class="day-number">18</span></div>
-
-            <div class="calendar-day"><span class="day-number">19</span></div>
-            <div class="calendar-day"><span class="day-number">20</span></div>
-            <div class="calendar-day"><span class="day-number">21</span></div>
-            <div class="calendar-day"><span class="day-number">22</span></div>
-            <div class="calendar-day"><span class="day-number">23</span></div>
-            <div class="calendar-day"><span class="day-number">24</span></div>
-            <div class="calendar-day"><span class="day-number">25</span><div class="event-item event-professional">Jogo Fora</div></div>
-
-            <div class="calendar-day"><span class="day-number">26</span></div>
-            <div class="calendar-day"><span class="day-number">27</span></div>
-            <div class="calendar-day"><span class="day-number">28</span></div>
-            <div class="calendar-day"><span class="day-number">29</span></div>
-            <div class="calendar-day"><span class="day-number">30</span></div>
-            <div class="calendar-day"><span class="day-number">31</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">1</span></div>
         </div>
     </main>
 </div>
 
 <div id="event-modal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">Agendar Evento</h2>
+            <button id="close-modal-btn" class="close-button">&times;</button>
+        </div>
+
+        <form id="event-form">
+            <input type="hidden" id="event-id"> <div class="form-group">
+            <label for="event-title">Título do Evento</label>
+            <input type="text" id="event-title" required>
+        </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                    <label for="event-date">Data</label>
+                    <input type="date" id="event-date" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="event-time-start">Início</label>
+                    <input type="time" id="event-time-start">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="event-time-end">Fim</label>
+                    <input type="time" id="event-time-end">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label for="event-type">Tipo</label>
+                    <select id="event-type">
+                        <option value="JOGO">Jogo</option>
+                        <option value="TREINO">Treino</option>
+                        <option value="REUNIAO">Reunião</option>
+                        <option value="OUTRO">Outro</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label for="event-category">Categoria</label>
+                    <select id="event-category">
+                        <option value="PROFISSIONAL">Profissional</option>
+                        <option value="SUB17">Sub-17</option>
+                        <option value="GERAL">Geral</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                    <label for="event-location">Local</label>
+                    <input type="text" id="event-location" placeholder="Ex: CT Fut360, Campo 2">
+                </div>
+                <div class="form-group hidden" id="opponent-group" style="flex: 1;">
+                    <label for="event-opponent">Adversário</label>
+                    <input type="text" id="event-opponent" placeholder="Ex: Time Visitante FC">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="event-description">Descrição / Observações</label>
+                <textarea id="event-description" rows="3"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" id="delete-btn" class="btn-danger" style="display: none;">Excluir</button>
+                <button type="button" id="cancel-btn" class="btn-secondary">Cancelar</button>
+                <button type="submit" class="btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="delete-modal" class="modal-overlay" style="z-index: 2000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <div class="modal-header" style="justify-content: center; margin-bottom: 10px;">
+            <h2 style="color: var(--danger-color); font-size: 20px;">Excluir Evento?</h2>
+        </div>
+
+        <p style="color: var(--text-dark); margin-bottom: 25px;">
+            Tem certeza que deseja excluir este evento? <br> Essa ação não pode ser desfeita.
+        </p>
+
+        <div class="form-actions" style="display: flex; gap: 15px; width: 100%;">
+            <button id="cancel-delete-btn" class="btn-secondary" style="flex: 1; justify-content: center;">Cancelar</button>
+            <button id="confirm-delete-btn" class="btn-danger" style="flex: 1; justify-content: center;">Sim, Excluir</button>
+        </div>
+    </div>
 </div>
 
 <script th:src="@{/js/calendario.js}"></script>
+
 </body>
 </html>

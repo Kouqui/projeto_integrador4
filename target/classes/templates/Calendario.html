@@ -29,9 +29,7 @@
                 <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
             </ul>
         </nav>
-        <div class="sidebar-footer">
-            <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
-        </div>
+
     </aside>
 
     <main class="main-content">
@@ -43,29 +41,40 @@
             <div class="user-info">
                 <span>Kauê Farias</span>
                 <div class="user-avatar">K</div>
-                <button class="logout-btn"><i class='bx bx-log-out'></i></button>
+
+                <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
+                    <i class='bx bx-log-out'></i>
+                </a>
             </div>
         </header>
 
         <div class="calendar-controls">
             <div class="calendar-nav">
-                <button><i class='bx bx-chevron-left'></i></button>
-                <h3>Outubro 2025</h3>
-                <button><i class='bx bx-chevron-right'></i></button>
+                <button id="prev-month-btn"><i class='bx bx-chevron-left'></i></button>
+                <h3 id="current-month-display">Carregando...</h3>
+                <button id="next-month-btn"><i class='bx bx-chevron-right'></i></button>
             </div>
-            <div class="calendar-filters">
-                <select><option>Todas Categorias</option><option>Profissional</option><option>Sub-17</option></select>
-                <select><option>Todos Tipos</option><option>Jogo</option><option>Treino</option><option>Reunião</option></select>
-                <div class="view-switcher">
-                    <button class="active">Mês</button>
-                    <button>Semana</button>
-                    <button>Dia</button>
+
+            <div class="header-right-actions">
+                <div class="calendar-filters">
+                    <select id="filter-category">
+                        <option value="all">Todas Categorias</option>
+                        <option value="PROFISSIONAL">Profissional</option>
+                        <option value="SUB17">Sub-17</option>
+                        <option value="GERAL">Geral</option>
+                    </select>
+                    <select id="filter-type">
+                        <option value="all">Todos Tipos</option>
+                        <option value="JOGO">Jogo</option>
+                        <option value="TREINO">Treino</option>
+                        <option value="REUNIAO">Reunião</option>
+                    </select>
                 </div>
+                <button class="btn-primary" id="add-event-btn"><i class='bx bx-plus'></i> Agendar Evento</button>
             </div>
-            <button class="btn-primary" id="add-event-btn"><i class='bx bx-plus'></i> Agendar Evento</button>
         </div>
 
-        <div class="calendar-grid">
+        <div class="calendar-grid" id="calendar-grid">
             <div class="calendar-header">Dom</div>
             <div class="calendar-header">Seg</div>
             <div class="calendar-header">Ter</div>
@@ -73,82 +82,6 @@
             <div class="calendar-header">Qui</div>
             <div class="calendar-header">Sex</div>
             <div class="calendar-header">Sab</div>
-
-            <div class="calendar-day"><span class="day-number">3</span>
-                <div class="event-item event-sub17"
-                     data-title="Treino Sub-17"
-                     data-type="TREINO"
-                     data-category="SUB17"
-                     data-date="2025-10-03"
-                     data-time-start="16:00"
-                     data-time-end="18:00"
-                     data-location="CT Fut360 - Campo 2"
-                     data-opponent=""
-                     data-description="Treino tático focado em finalização.">
-                    Treino Sub-17
-                </div>
-            </div>
-            <div class="calendar-day"><span class="day-number">8</span>
-                <div class="event-item event-professional"
-                     data-title="Jogo Amistoso"
-                     data-type="JOGO"
-                     data-category="PROFISSIONAL"
-                     data-date="2025-10-08"
-                     data-time-start="15:30"
-                     data-time-end=""
-                     data-location="Estádio Municipal"
-                     data-opponent="Time Visitante FC"
-                     data-description="Jogo amistoso contra time visitante. Relacionar 18 jogadores.">
-                    Jogo Amistoso
-                </div>
-            </div>
-            <div class="calendar-day day-today"><span class="day-number">14</span>
-                <div class="event-item event-general"
-                     data-title="Reunião"
-                     data-type="REUNIAO"
-                     data-category="GERAL"
-                     data-date="2025-10-14"
-                     data-time-start="10:00"
-                     data-time-end="11:00"
-                     data-location="Sala de imprensa"
-                     data-opponent=""
-                     data-description="Reunião de planejamento com a comissão técnica.">
-                    Reunião
-                </div>
-            </div>
-
-            <div class="calendar-day day-other-month"><span class="day-number">28</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">29</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">30</span></div>
-            <div class="calendar-day"><span class="day-number">1</span></div>
-            <div class="calendar-day"><span class="day-number">2</span></div>
-            <div class="calendar-day"><span class="day-number">4</span></div>
-            <div class="calendar-day"><span class="day-number">5</span></div>
-            <div class="calendar-day"><span class="day-number">6</span></div>
-            <div class="calendar-day"><span class="day-number">7</span></div>
-            <div class="calendar-day"><span class="day-number">9</span></div>
-            <div class="calendar-day"><span class="day-number">10</span></div>
-            <div class="calendar-day"><span class="day-number">11</span></div>
-            <div class="calendar-day"><span class="day-number">12</span></div>
-            <div class="calendar-day"><span class="day-number">13</span></div>
-            <div class="calendar-day"><span class="day-number">15</span><div class="event-item event-professional" data-title="Jogo Estadual" data-type="JOGO" data-category="PROFISSIONAL" data-date="2025-10-15" data-time-start="20:00" data-location="Arena Fut360" data-opponent="Adversário Estadual" data-description="Jogo em casa.">Jogo Estadual</div></div>
-            <div class="calendar-day"><span class="day-number">16</span><div class="event-item event-sub17" data-title="Treino Físico" data-type="TREINO" data-category="SUB17" data-date="2025-10-16" data-time-start="09:00" data-location="Academia" data-description="Foco em força.">Treino Físico</div></div>
-            <div class="calendar-day"><span class="day-number">17</span></div>
-            <div class="calendar-day"><span class="day-number">18</span></div>
-            <div class="calendar-day"><span class="day-number">19</span></div>
-            <div class="calendar-day"><span class="day-number">20</span></div>
-            <div class="calendar-day"><span class="day-number">21</span></div>
-            <div class="calendar-day"><span class="day-number">22</span></div>
-            <div class="calendar-day"><span class="day-number">23</span></div>
-            <div class="calendar-day"><span class="day-number">24</span></div>
-            <div class="calendar-day"><span class="day-number">25</span><div class="event-item event-professional" data-title="Jogo Fora" data-type="JOGO" data-category="PROFISSIONAL" data-date="2025-10-25" data-time-start="16:00" data-location="Estádio Adversário" data-opponent="Time da Capital" data-description="Viagem no dia anterior.">Jogo Fora</div></div>
-            <div class="calendar-day"><span class="day-number">26</span></div>
-            <div class="calendar-day"><span class="day-number">27</span></div>
-            <div class="calendar-day"><span class="day-number">28</span></div>
-            <div class="calendar-day"><span class="day-number">29</span></div>
-            <div class="calendar-day"><span class="day-number">30</span></div>
-            <div class="calendar-day"><span class="day-number">31</span></div>
-            <div class="calendar-day day-other-month"><span class="day-number">1</span></div>
         </div>
     </main>
 </div>
@@ -161,10 +94,10 @@
         </div>
 
         <form id="event-form">
-            <div class="form-group">
-                <label for="event-title">Título do Evento</label>
-                <input type="text" id="event-title" required>
-            </div>
+            <input type="hidden" id="event-id"> <div class="form-group">
+            <label for="event-title">Título do Evento</label>
+            <input type="text" id="event-title" required>
+        </div>
 
             <div class="form-row">
                 <div class="form-group" style="flex: 2;">
@@ -218,8 +151,7 @@
             </div>
 
             <div class="form-actions">
-                <button type="button" id="delete-btn" class="btn-danger">Excluir</button>
-
+                <button type="button" id="delete-btn" class="btn-danger" style="display: none;">Excluir</button>
                 <button type="button" id="cancel-btn" class="btn-secondary">Cancelar</button>
                 <button type="submit" class="btn-primary">Salvar</button>
             </div>
@@ -227,6 +159,24 @@
     </div>
 </div>
 
+<div id="delete-modal" class="modal-overlay" style="z-index: 2000;">
+    <div class="modal-content" style="max-width: 400px; text-align: center;">
+        <div class="modal-header" style="justify-content: center; margin-bottom: 10px;">
+            <h2 style="color: var(--danger-color); font-size: 20px;">Excluir Evento?</h2>
+        </div>
+
+        <p style="color: var(--text-dark); margin-bottom: 25px;">
+            Tem certeza que deseja excluir este evento? <br> Essa ação não pode ser desfeita.
+        </p>
+
+        <div class="form-actions" style="display: flex; gap: 15px; width: 100%;">
+            <button id="cancel-delete-btn" class="btn-secondary" style="flex: 1; justify-content: center;">Cancelar</button>
+            <button id="confirm-delete-btn" class="btn-danger" style="flex: 1; justify-content: center;">Sim, Excluir</button>
+        </div>
+    </div>
+</div>
+
 <script th:src="@{/js/calendario.js}"></script>
+
 </body>
 </html>

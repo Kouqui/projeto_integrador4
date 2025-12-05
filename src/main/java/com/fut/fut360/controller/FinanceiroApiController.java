@@ -1,11 +1,11 @@
-package com.fut.fut360.controller; // PACOTE CORRETO DO CONTROLLER
+package com.fut.fut360.controller;
 
-import com.fut.fut360.model.Contract; // PACOTE CORRIGIDO
-import com.fut.fut360.model.PayrollItem; // PACOTE CORRIGIDO
-import com.fut.fut360.model.Transaction; // PACOTE CORRIGIDO
-import com.fut.fut360.service.ContractService; // PACOTE CORRIGIDO
-import com.fut.fut360.service.PayrollService; // PACOTE CORRIGIDO
-import com.fut.fut360.service.TransactionService; // PACOTE CORRIGIDO
+import com.fut.fut360.Model.Contract;
+import com.fut.fut360.Model.PayrollItem;
+import com.fut.fut360.Model.Transaction;
+import com.fut.fut360.service.ContractService;
+import com.fut.fut360.service.PayrollService;
+import com.fut.fut360.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -107,10 +107,6 @@ public class FinanceiroApiController {
         return ResponseEntity.ok(payrollService.calculatePayrollSummary());
     }
 
-    // ======================================================================
-    // MÓDULO 3: CONTRATOS DE ATLETAS (RECURSOS HUMANOS)
-    // ======================================================================
-
     @GetMapping("/api/rh/contracts")
     @ResponseBody
     public ResponseEntity<List<Contract>> listarContratos() {
@@ -119,8 +115,13 @@ public class FinanceiroApiController {
 
     @PostMapping("/api/rh/contracts")
     @ResponseBody
-    public ResponseEntity<Contract> salvarContrato(@RequestBody Contract contract) {
-        // ... (Lógica de validação do contrato) ...
+    public ResponseEntity<?> salvarContrato(@RequestBody Contract contract) {
+
+        if (contract.getAge() < 16 || contract.getAge() > 120) {
+            return ResponseEntity.badRequest().body("Erro: A idade deve ser entre 16 e 120 anos.");
+        }
+
+
         Contract salva = contractService.save(contract);
         return new ResponseEntity<>(salva, HttpStatus.CREATED);
     }

@@ -1,4 +1,4 @@
-/* --- ESTILOS GLOBAIS E VARIÁVEIS (Reutilizados) --- */
+/* --- ESTILOS GLOBAIS E VARIÁVEIS --- */
 :root {
     --primary-color: #00aaff;
     --secondary-color: #0072ff;
@@ -8,15 +8,13 @@
     --text-dark: #8892b0;
     --card-bg: rgba(255, 255, 255, 0.05);
     --border-color: rgba(255, 255, 255, 0.2);
-    --event-professional: rgba(0, 170, 255, 0.8);
-    --event-sub17: rgba(51, 255, 153, 0.8);
-    --event-general: rgba(255, 255, 255, 0.6);
-    --danger-color: #dc3545; /* Nova cor para exclusão */
+    --danger-color: #dc3545;
 }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); color: var(--text-light); display: flex; min-height: 100vh; }
 
-/* --- LAYOUT PRINCIPAL (Reutilizado) --- */
+/* --- SIDEBAR --- */
 .dashboard-container { display: flex; width: 100%; }
 .sidebar { width: 260px; background-color: var(--bg-light); display: flex; flex-direction: column; padding: 20px; border-right: 1px solid var(--border-color); }
 .sidebar-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
@@ -27,6 +25,8 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .sidebar-nav li a:hover, .sidebar-nav li.active a { background-color: var(--card-bg); color: var(--text-light); }
 .sidebar-nav i { font-size: 22px; }
 .sidebar-footer { margin-top: auto; }
+
+/* --- MAIN CONTENT --- */
 .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; }
 .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .header-title h2 { font-size: 28px; font-weight: 600; }
@@ -35,7 +35,7 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; justify-content: center; align-items: center; font-weight: 600; }
 .logout-btn { background: none; border: none; color: var(--text-dark); font-size: 24px; cursor: pointer; }
 
-/* --- ESTILOS ESPECÍFICOS DA PÁGINA DE CALENDÁRIO --- */
+/* --- CALENDAR CONTROLS & HEADER --- */
 .calendar-controls {
     display: flex;
     justify-content: space-between;
@@ -49,25 +49,39 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
 .calendar-nav button { background: none; border: 1px solid var(--border-color); color: var(--text-light); width: 35px; height: 35px; border-radius: 8px; cursor: pointer; font-size: 20px; }
 .calendar-nav h3 { font-size: 20px; width: 180px; text-align: center; }
 
+/* Grupo da Direita (Filtros + Botão) */
+.header-right-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
 .calendar-filters { display: flex; align-items: center; gap: 15px; }
 .calendar-filters select, .view-switcher button {
-    background-color: var(--card-bg);
+    background-color: #1e4d6b; /* Cor de fundo dos botões */
     border: 1px solid var(--border-color);
     border-radius: 8px;
     color: var(--text-light);
     padding: 8px 12px;
     font-family: 'Poppins', sans-serif;
 }
-.view-switcher button.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+.view-switcher button.active {
+    background-color: var(--primary-color);
+    border-radius: 8px; /* CORRIGIDO AQUI */
+    color: white;
+    border-color: var(--primary-color);
+}
+
 .btn-primary { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3); }
 
-/* GRID DO CALENDÁRIO */
+/* --- CALENDAR GRID --- */
 .calendar-grid {
     flex-grow: 1;
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: auto repeat(5, 1fr); /* Header + 5 semanas */
+    grid-template-rows: 40px repeat(6, 1fr);
     gap: 1px;
     background-color: var(--border-color);
     border: 1px solid var(--border-color);
@@ -75,35 +89,37 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
     overflow: hidden;
 }
 
-.calendar-header, .calendar-day {
+.calendar-header {
     background-color: var(--bg-dark);
     padding: 10px;
-}
-
-.calendar-header {
     text-align: center;
     font-weight: 600;
     color: var(--text-dark);
-    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calendar-day {
+    background-color: var(--bg-dark);
     position: relative;
-    padding-top: 30px;
-    min-height: 120px;
+    padding: 30px 5px 5px 5px;
+    min-height: 100px;
+    transition: background-color 0.2s;
+}
+
+.calendar-day:hover {
+    background-color: rgba(255, 255, 255, 0.02);
 }
 
 .day-number {
     position: absolute;
-    top: 10px;
+    top: 8px;
     right: 10px;
     font-size: 14px;
 }
 
-.day-other-month .day-number {
-    color: var(--text-dark);
-    opacity: 0.5;
-}
+.day-other-month .day-number { color: var(--text-dark); opacity: 0.5; }
 
 .day-today .day-number {
     background-color: var(--primary-color);
@@ -116,9 +132,10 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
     align-items: center;
 }
 
+/* --- CORES DOS EVENTOS (NOVO SISTEMA) --- */
 .event-item {
-    font-size: 12px;
-    padding: 4px 8px;
+    font-size: 11px;
+    padding: 4px 6px;
     border-radius: 4px;
     margin-bottom: 4px;
     color: white;
@@ -126,108 +143,94 @@ body { font-family: 'Poppins', sans-serif; background-color: var(--bg-dark); col
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: pointer;
-    transition: filter 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: filter 0.2s;
 }
-.event-item:hover {
-    filter: brightness(1.2);
+.event-item:hover { filter: brightness(1.2); }
+
+/* Cores por TIPO */
+.event-jogo {
+    background-color: #ff8c00;
+    color: white;
+    border-left: 3px solid #ffd700;
 }
 
-.event-professional { background-color: var(--event-professional); }
-.event-sub17 { background-color: var(--event-sub17); }
-.event-general { background-color: var(--event-general); }
+.event-reuniao {
+    background-color: #28a745;
+    color: white;
+    border-left: 3px solid #1e7e34;
+}
 
-/* --- ESTILOS DO MODAL ATUALIZADOS --- */
+.event-treino {
+    background-color: #00b4d8;
+    color: #000;
+    font-weight: 600;
+    border-left: 3px solid #0077b6;
+}
+
+.event-outro {
+    background-color: #9b59b6;
+    color: white;
+}
+
+/* --- MODAL --- */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: none;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: all 0.3s ease;
 }
-.modal-overlay.visible {
-    display: flex;
-    opacity: 1;
-    visibility: visible;
-}
+.modal-overlay.visible { opacity: 1; visibility: visible; }
+
 .modal-content {
     background-color: var(--bg-light);
     border: 1px solid var(--border-color);
     padding: 30px;
     border-radius: 15px;
     width: 90%;
-    max-width: 600px; /* Aumentei um pouco a largura */
+    max-width: 600px;
     position: relative;
     transform: scale(0.9);
     transition: transform 0.3s ease;
+    max-height: 90vh;
+    overflow-y: auto;
 }
-.modal-overlay.visible .modal-content {
-    transform: scale(1);
-}
+.modal-overlay.visible .modal-content { transform: scale(1); }
 
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.modal-header h2 { font-size: 22px; }
 .close-button { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
-.form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; color: var(--text-dark); }
-.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); font-size: 16px; font-family: 'Poppins', sans-serif; }
 
-/* Adicionado para os inputs de data/hora usarem o tema escuro */
-.form-group input[type="date"],
-.form-group input[type="time"] {
-    color-scheme: dark;
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 6px; color: var(--text-dark); font-size: 14px; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 10px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-light);git pull origin feature/calendario-dinamico
+    font-family: 'Poppins', sans-serif;
 }
-
+.form-group input[type="date"], .form-group input[type="time"] { color-scheme: dark; }
 .form-group textarea { resize: vertical; min-height: 80px; }
 
-/* NOVO: Classe para esconder campos (ex: Adversário) */
-.form-group.hidden {
-    display: none;
-}
+/* Auxiliares */
+.hidden { display: none !important; }
+.form-row { display: flex; flex-wrap: wrap; gap: 15px; }
+.form-row .form-group { flex-grow: 1; min-width: 140px; }
 
-/* NOVO: Para layout de campos na mesma linha */
-.form-row {
-    display: flex;
-    flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
-    gap: 15px;
-}
-.form-row .form-group {
-    flex-grow: 1;
-    min-width: 150px; /* Garante que não fiquem muito espremidos */
-    margin-bottom: 0; /* Remove a margem de baixo quando em linha */
-}
-/* Adiciona a margem de volta para a linha inteira */
-.form-row + .form-group {
-    margin-top: 20px;
-}
+/* Botões do Modal */
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.btn-secondary { background: transparent; border: 1px solid var(--border-color); color: var(--text-light); padding: 8px 16px; border-radius: 6px; cursor: pointer; }
+.btn-danger { background-color: var(--danger-color); border: none; color: white; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-right: auto; }
 
-
-/* ATUALIZADO: Botões de Ação */
-.form-actions {
-    display: flex; /* Habilita o alinhamento flex */
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
-    border-top: 1px solid var(--border-color); /* Linha divisória */
-    padding-top: 20px; /* Espaçamento acima dos botões */
-}
-.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-
-/* NOVO: Botão de Excluir */
-.btn-danger {
-    background-color: var(--danger-color);
-    border: 1px solid var(--danger-color);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-right: auto; /* Joga ele para a esquerda */
+.form-group select option {
+    background-color: #1e4d6b; /* A mesma cor azul dos filtros */
+    color: white;              /* Garante que o texto fique branco */
+    padding: 10px;             /* Um pouco de respiro */
 }

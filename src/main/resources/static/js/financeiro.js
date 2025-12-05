@@ -1,139 +1,333 @@
-// --- CONFIGURAÇÃO DA API ---
-const API_BASE = 'http://localhost:8080/api/financeiro';
-const API_TRANSACTIONS = API_BASE + '/transacoes';
-const API_SALDO = API_BASE + '/saldo';
-
-// --- ELEMENTOS DO DOM ---
-const receitasTotal = document.getElementById('receitas-total');
-const despesasTotal = document.getElementById('despesas-total');
-const balancoTotal = document.getElementById('balanco-total');
-const transactionsBody = document.getElementById('transactions-body');
-const transactionForm = document.getElementById('transaction-form');
-
-const addTransactionBtn = document.getElementById('add-transaction-btn');
-const transactionModal = document.getElementById('transaction-modal');
-const closeModalBtn = document.getElementById('close-modal-btn');
-const cancelBtn = document.getElementById('cancel-btn');
+const API_BASE = 'http://localhost:8080/api';
+const API_TRANSACTIONS = API_BASE + '/financeiro/transacoes';
+const API_SALDO = API_BASE + '/financeiro/saldo';
+const API_PAYROLL = API_BASE + '/rh/payroll';
+const API_CONTRACTS = API_BASE + '/rh/contracts';
 
 
-// --- FUNÇÕES DE UTILIDADE ---
-
+// Formatador de Moeda (R$)
 function formatCurrency(value) {
+    if (value === null || value === undefined) return 'R$ 0,00';
     if (typeof value !== 'number') value = parseFloat(value) || 0;
     return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
+// Formatador de Data (DD/MM/AAAA)
 function formatDate(dateString) {
     if (!dateString) return '';
-    // A data do Java vem como YYYY-MM-DD
+    // Adiciona horário para garantir que o navegador não volte 1 dia por causa do fuso
     const date = new Date(dateString + 'T00:00:00');
     return new Intl.DateTimeFormat('pt-BR').format(date);
 }
 
 
-// --- 1. FUNÇÃO PRINCIPAL DE BUSCA ---
+window.mudarAba = function(aba) {
+    // Esconder todas as seções
+    document.getElementById('cashflow-view').style.display = 'none';
+    document.getElementById('payroll-view').style.display = 'none';
+    document.getElementById('contracts-view').style.display = 'none';
+
+    // Resetar botões para cinza
+    document.getElementById('btn-tab-cashflow').className = 'btn-secondary';
+    document.getElementById('btn-tab-payroll').className = 'btn-secondary';
+    document.getElementById('btn-tab-contracts').className = 'btn-secondary';
+
+    // Ativar a aba selecionada (Azul)
+    document.getElementById(aba + '-view').style.display = 'block';
+    document.getElementById('btn-tab-' + aba).className = 'btn-primary';
+
+    // Carregar dados da aba específica
+    if (aba === 'cashflow') fetchFinanceiroData();
+    if (aba === 'payroll') fetchPayroll();
+    if (aba === 'contracts') fetchContracts();
+}
+
 
 async function fetchFinanceiroData() {
     try {
-        // 1. Buscar Saldo (Cartões)
-        const summaryResponse = await fetch(API_SALDO);
-        const summary = await summaryResponse.json();
+        // 1. Buscar Saldo
+        const resSaldo = await fetch(API_SALDO);
+        const dadosSaldo = await resSaldo.json();
 
-        // 2. Buscar Transações (Tabela)
-        const transResponse = await fetch(API_TRANSACTIONS);
-        const transactions = await transResponse.json();
+        document.getElementById('receitas-total').textContent = formatCurrency(dadosSaldo.totalReceitas);
+        document.getElementById('despesas-total').textContent = formatCurrency(dadosSaldo.totalDespesas);
 
-        // Chamar as funções de renderização
-        renderSummary(summary);
-        renderTransactions(transactions);
+        const elBalanco = document.getElementById('balanco-total');
+        elBalanco.textContent = formatCurrency(dadosSaldo.saldoAtual);
 
-    } catch (error) {
-        console.error("Erro ao buscar dados da API Java:", error);
-        // Exibir erro ou valores zerados em caso de falha
-        transactionsBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--negative-value);">Falha ao carregar dados. Verifique o servidor Java.</td></tr>`;
-        renderSummary({ saldoAtual: 0, totalReceitas: 0, totalDespesas: 0 });
-    }
-}
+        // Ajustar cor do texto do balanço (Verde ou Vermelho)
+        elBalanco.classList.remove('positive', 'negative');
+        elBalanco.classList.add(dadosSaldo.saldoAtual >= 0 ? 'positive' : 'negative');
 
-// --- 2. FUNÇÕES DE RENDERIZAÇÃO ---
+        // 2. Buscar Lista de Transações
+        const resTrans = await fetch(API_TRANSACTIONS);
+        const transacoes = await resTrans.json();
+        const tbody = document.getElementById('transactions-body');
+        tbody.innerHTML = '';
 
-function renderSummary(summary) {
-    const saldoAtual = summary.saldoAtual;
-    const totalReceitas = summary.totalReceitas;
-    const totalDespesas = summary.totalDespesas;
+        // Ordenar por data (mais recente primeiro)
+        transacoes.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    receitasTotal.textContent = formatCurrency(totalReceitas);
-    despesasTotal.textContent = formatCurrency(totalDespesas);
-    balancoTotal.textContent = formatCurrency(saldoAtual);
+        transacoes.forEach(t => {
+            const isExpense = t.type.toLowerCase() === 'despesa';
+            const classeValor = isExpense ? 'negative' : 'positive';
+            const icone = isExpense ? 'bxs-up-arrow-circle' : 'bxs-down-arrow-circle';
+            const sinal = isExpense ? '- ' : '+ ';
 
-    // Ajustar a cor do Balanço
-    balancoTotal.classList.remove('positive', 'negative');
-    if (saldoAtual >= 0) {
-        balancoTotal.classList.add('positive');
-    } else {
-        balancoTotal.classList.add('negative');
-    }
-}
-
-function renderTransactions(transactions) {
-    transactionsBody.innerHTML = '';
-
-    // Ordenar as transações pela data (mais recente primeiro)
-    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    transactions.forEach(t => {
-        const isExpense = t.type === 'despesa';
-        const valuePrefix = isExpense ? '- ' : '+ ';
-        const valueClass = isExpense ? 'negative' : 'positive';
-        const typeIcon = isExpense ? 'bxs-up-arrow-circle' : 'bxs-down-arrow-circle';
-
-        const row = `
-            <tr>
+            const row = `<tr>
                 <td>${formatDate(t.date)}</td>
                 <td>${t.description}</td>
                 <td>${t.category}</td>
-                <td>
-                    <span class="transaction-type ${valueClass}">
-                        <i class='bx ${typeIcon}'></i> ${isExpense ? 'Despesa' : 'Receita'}
-                    </span>
-                </td>
-                <td class="${valueClass}">${valuePrefix} ${formatCurrency(t.value)}</td>
-                <td class="table-actions">
-                    <a href="#" onclick="handleEditClick(${t.id})"><i class='bx bx-edit'></i></a>
-                    <a href="#" onclick="handleDeleteClick(${t.id})"><i class='bx bx-trash'></i></a>
-                </td>
-            </tr>
-        `;
-        transactionsBody.insertAdjacentHTML('beforeend', row);
+                <td><span class="transaction-type ${classeValor}"><i class='bx ${icone}'></i> ${t.type}</span></td>
+                <td class="${classeValor}">${sinal}${formatCurrency(t.value)}</td>
+                <td class="table-actions"><a href="#" onclick="deletarTransacao(${t.id})"><i class='bx bx-trash'></i></a></td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    } catch (e) { console.error("Erro Financeiro:", e); }
+}
+
+// Listener: Salvar Transação
+const formTrans = document.getElementById('transaction-form');
+if (formTrans) {
+    formTrans.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            type: document.getElementById('input-tipo').value,
+            description: document.getElementById('input-descricao').value,
+            value: document.getElementById('input-valor').value,
+            date: document.getElementById('input-data').value,
+            category: document.getElementById('input-categoria').value,
+            responsible: document.getElementById('input-responsavel').value
+        };
+        // Chama a função genérica que tem SweetAlert
+        await enviarDados(API_TRANSACTIONS, data, 'Transação Salva!', 'transaction-modal', fetchFinanceiroData);
+    });
+}
+
+// Ação: Deletar Transação (Com SweetAlert)
+window.deletarTransacao = (id) => {
+    Swal.fire({
+        title: 'Tem certeza?',
+        text: "Essa ação não pode ser desfeita!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await fetch(`${API_TRANSACTIONS}/${id}`, { method: 'DELETE' });
+            fetchFinanceiroData(); // Atualiza a tabela
+            Swal.fire('Deletado!', 'Transação removida.', 'success');
+        }
     });
 }
 
 
-// --- 3. EVENT LISTENERS E INICIALIZAÇÃO ---
+async function fetchPayroll() {
+    try {
+        const res = await fetch(API_PAYROLL);
+        const itens = await res.json();
 
-// Iniciar a busca de dados assim que o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', fetchFinanceiroData);
+        const resResumo = await fetch(API_PAYROLL + '/resumo');
+        const resumo = await resResumo.json();
 
-// Controle do Modal (Copied from your base script)
-addTransactionBtn.addEventListener('click', () => {
-    transactionModal.classList.add('visible');
-    // NOTE: Você precisará implementar o formulário (transaction-form) no HTML
-});
+        document.getElementById('payroll-total').textContent = formatCurrency(resumo.totalCost);
+        document.getElementById('payroll-pending').textContent = formatCurrency(resumo.totalPending);
 
-closeModalBtn.addEventListener('click', () => {
-    transactionModal.classList.remove('visible');
-});
+        const tbody = document.getElementById('payroll-body');
+        tbody.innerHTML = '';
 
-cancelBtn.addEventListener('click', () => {
-    transactionModal.classList.remove('visible');
-});
+        itens.forEach(p => {
+            const statusStyle = p.status.toLowerCase() === 'pendente' ? 'color: orange;' : 'color: #33ff99;';
+            const row = `<tr>
+                <td>${p.name}</td>
+                <td>${p.role}</td>
+                <td>${formatCurrency(p.value)}</td>
+                <td>${formatDate(p.paymentDate)}</td>
+                <td style="${statusStyle} font-weight:bold;">${p.status.toUpperCase()}</td>
+                <td class="table-actions"><a href="#" onclick="deletarPayroll(${p.id})"><i class='bx bx-trash'></i></a></td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    } catch (e) { console.error("Erro Payroll:", e); }
+}
 
-transactionModal.addEventListener('click', (event) => {
-    if (event.target === transactionModal) {
-        transactionModal.classList.remove('visible');
+// Listener: Salvar Pagamento
+const formPayroll = document.getElementById('payroll-form');
+if (formPayroll) {
+    formPayroll.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = {
+            name: document.getElementById('pay-name').value,
+            role: document.getElementById('pay-role').value,
+            value: document.getElementById('pay-value').value,
+            paymentDate: document.getElementById('pay-date').value,
+            status: document.getElementById('pay-status').value
+        };
+        await enviarDados(API_PAYROLL, data, 'Pagamento Registrado!', 'payroll-modal', fetchPayroll);
+    });
+}
+
+// Ação: Deletar Payroll (Com SweetAlert)
+window.deletarPayroll = (id) => {
+    Swal.fire({
+        title: 'Remover Pagamento?',
+        text: "Confirma a exclusão deste registro?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, remover!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await fetch(`${API_PAYROLL}/${id}`, { method: 'DELETE' });
+            fetchPayroll();
+            Swal.fire('Removido!', 'Registro de pagamento apagado.', 'success');
+        }
+    });
+}
+
+async function fetchContracts() {
+    try {
+        const res = await fetch(API_CONTRACTS);
+        const contratos = await res.json();
+        const tbody = document.getElementById('contracts-body');
+        tbody.innerHTML = '';
+
+        contratos.forEach(c => {
+            // Lógica de Vencimento
+            const hoje = new Date();
+            const fim = new Date(c.endDate);
+            const diffDias = Math.ceil((fim - hoje) / (1000 * 60 * 60 * 24));
+
+            let statusHTML = '<span style="color: #33ff99">Vigente</span>';
+            if (diffDias < 0) statusHTML = '<span style="color: #ff4d4d; font-weight:bold">VENCIDO</span>';
+            else if (diffDias < 90) statusHTML = `<span style="color: orange; font-weight:bold">Vence em ${diffDias} dias</span>`;
+
+            const row = `<tr>
+                <td>${c.name}</td>
+                <td>${c.position}</td>
+                <td>${formatCurrency(c.salario)}</td>
+                <td>${formatDate(c.startDate)}</td>
+                <td>${formatDate(c.endDate)}</td>
+                <td>${statusHTML}</td>
+                <td class="table-actions"><a href="#" onclick="deletarContrato(${c.id})"><i class='bx bx-trash'></i></a></td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    } catch (e) { console.error("Erro Contratos:", e); }
+}
+
+// Listener: Salvar Contrato
+const formContract = document.getElementById('contract-form');
+if (formContract) {
+    formContract.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Mapeamento correto para o Java (Contract.java)
+        const data = {
+            id: null,
+            name: document.getElementById('cont-nome').value,
+            age: parseInt(document.getElementById('cont-idade').value),
+            position: document.getElementById('cont-posicao').value,
+            salario: parseFloat(document.getElementById('cont-salary').value),
+            startDate: document.getElementById('cont-start').value,
+            endDate: document.getElementById('cont-end').value,
+            documentUrl: "pendente.pdf"
+        };
+
+        await enviarDados(API_CONTRACTS, data, 'Contrato Salvo!', 'contract-modal', fetchContracts);
+    });
+}
+
+// Ação: Deletar Contrato (Com SweetAlert)
+window.deletarContrato = (id) => {
+    Swal.fire({
+        title: 'Encerrar Contrato?',
+        text: "O jogador/funcionário será removido da base.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, excluir!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            await fetch(`${API_CONTRACTS}/${id}`, { method: 'DELETE' });
+            fetchContracts();
+            Swal.fire('Excluído!', 'O contrato foi encerrado.', 'success');
+        }
+    });
+}
+
+
+async function enviarDados(url, data, msgSucesso, modalId, callbackUpdate) {
+    try {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+            // 1. Fecha o Modal
+            document.getElementById(modalId).classList.remove('visible');
+
+            // 2. Limpa o formulário
+            document.querySelector(`#${modalId} form`).reset();
+
+            // 3. Atualiza a tabela na tela
+            callbackUpdate();
+
+            // 4. Mostra alerta
+            Swal.fire({
+                icon: 'success',
+                title: 'Sucesso!',
+                text: msgSucesso,
+                timer: 1500,
+                showConfirmButton: false
+            });
+
+        } else {
+            // Erro vindo do Java (ex: Idade inválida)
+            const errorText = await res.text();
+            Swal.fire({
+                icon: 'error',
+                title: 'Atenção',
+                text: errorText // Mostra a mensagem que veio do Java
+            });
+        }
+    } catch (e) {
+        console.error(e);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro de conexão',
+            text: 'Não foi possível conectar ao servidor.'
+        });
     }
-});
+}
 
-// Nota: A lógica de salvar (POST) e deletar (DELETE) precisa ser implementada
-// usando 'fetch' para os respectivos endpoints no FinanceiroApiController.java.
-// Ex: transactionForm.addEventListener('submit', async (e) => { ... fetch(API_TRANSACTIONS, {method: 'POST'}) ... })
+
+window.abrirModalPayroll = () => document.getElementById('payroll-modal').classList.add('visible');
+window.fecharModalPayroll = () => document.getElementById('payroll-modal').classList.remove('visible');
+
+window.abrirModalContract = () => document.getElementById('contract-modal').classList.add('visible');
+window.fecharModalContract = () => document.getElementById('contract-modal').classList.remove('visible');
+
+// Modal Transação (Controle Manual)
+const modalTransacao = document.getElementById('transaction-modal');
+const btnAddTransacao = document.getElementById('add-transaction-btn');
+const btnCloseTransacao = document.getElementById('close-modal-btn');
+const btnCancelTransacao = document.getElementById('cancel-btn');
+
+if (btnAddTransacao) btnAddTransacao.addEventListener('click', () => modalTransacao.classList.add('visible'));
+if (btnCloseTransacao) btnCloseTransacao.addEventListener('click', () => modalTransacao.classList.remove('visible'));
+if (btnCancelTransacao) btnCancelTransacao.addEventListener('click', () => modalTransacao.classList.remove('visible'));
+
+// Inicialização
+window.onload = () => {
+    console.log("Financeiro JS carregado.");
+    mudarAba('cashflow');
+};

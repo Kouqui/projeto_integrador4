@@ -1,81 +1,99 @@
+//Criação pelo autor: Kauã Kouqui
+
 package com.fut.fut360.controller;
 
-import com.fut.fut360.model.Atleta;
+import com.fut.fut360.Model.*;
+import com.fut.fut360.Repository.AtletaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 public class AtletasController {
 
+    // Define o caminho da pasta de uploads na raiz do projeto
+    public static String UPLOAD_DIRECTORY = "uploads";
+
+    @Autowired
+    private AtletaRepository atletaRepository;
+
     @GetMapping("/atletas")
     public String exibirPaginaAtletas(Model model) {
-
-        List<Atleta> listaDeAtletas = new ArrayList<>();
-
-        listaDeAtletas.add(new Atleta(
-                "Neymar Jr.", "Atacante", "Profissional",
-                "https://img.a.transfermarkt.technology/portrait/header/68290-1692601435.jpg?lm=1",
-                "Neymar da Silva Santos Júnior", "05/02/1992", 33, "Brasileiro", "1,75 m", "68 kg", "Ambidestro",
-                10, 850, 8, 5, 2, 0,
-                "Recuperar 100% da forma física pós-lesão.", "Participar de 15 gols na temporada (G+A).",
-                "25/10: Demonstrou melhora na intensidade. Foco em fortalecimento.",
-                "R$ 40.000.000,00", "01/08/2023", "31/07/2025", "R$ 200.000.000,00",
-                // Dados do "SofaScore de Treino"
-                8.2, // Nota Geral
-                8.0, 9.0, 7.5, // Tática, Técnica, Físico
-                52, 55, // Passes
-                7, 10, // Chutes
-                8, 12, // Dribles
-                2, 4, // Desarmes, Interceptações
-                7.2, 31.5, 8 // Km, Vel. Max, Sprints
-        ));
-
-        listaDeAtletas.add(new Atleta(
-                "Lionel Messi", "Atacante", "Profissional",
-                "https://img.a.transfermarkt.technology/portrait/header/28003-1740766555.jpg?lm=1",
-                "Lionel Andrés Messi Cuccittini", "24/06/1987", 38, "Argentino", "1,70 m", "67 kg", "Esquerdo",
-                15, 1350, 12, 10, 1, 0,
-                "Liderar a equipe nos playoffs.", "Manter média de participação em gol > 1.0 por jogo.",
-                "24/10: Excelente visão de jogo no último treino. Dosando carga física.",
-                "R$ 35.000.000,00", "05/07/2023", "31/12/2025", "R$ 150.000.000,00",
-                // Dados do "SofaScore de Treino"
-                9.4, // Nota Geral
-                9.5, 9.8, 8.0, // Tática, Técnica, Físico
-                68, 70, // Passes
-                8, 9, // Chutes
-                15, 16, // Dribles
-                1, 2, // Desarmes, Interceptações
-                6.8, 28.0, 5 // Km, Vel. Max, Sprints
-        ));
-
-        listaDeAtletas.add(new Atleta(
-                "Cristiano Ronaldo", "Atacante", "Profissional",
-                "https://img.a.transfermarkt.technology/portrait/header/8198-1748102259.jpg?lm=1",
-                "Cristiano Ronaldo dos Santos Aveiro", "05/02/1985", 40, "Português", "1,87 m", "83 kg", "Destro",
-                14, 1260, 18, 4, 3, 0,
-                "Ser artilheiro da temporada (Meta: 30+ gols).", "Manter índice de 90% nos treinos físicos.",
-                "23/10: Foco absoluto em finalização. Cobrou 50 faltas após o treino.",
-                "R$ 38.000.000,00", "01/01/2023", "30/06/2025", "R$ 180.000.000,00",
-                // Dados do "SofaScore de Treino"
-                9.0, // Nota Geral
-                8.5, 9.0, 9.5, // Tática, Técnica, Físico
-                30, 32, // Passes
-                10, 12, // Chutes
-                5, 7, // Dribles
-                0, 1, // Desarmes, Interceptações
-                8.5, 33.2, 14 // Km, Vel. Max, Sprints
-        ));
-
+        List<Atleta> listaDeAtletas = atletaRepository.findAll();
         model.addAttribute("atletas", listaDeAtletas);
 
-        // Não vamos adicionar o "atletaNovo" pois não há banco para salvar
+        // Envia objetos vazios para o formulário
+        model.addAttribute("atletaNovo", new Atleta());
+        model.addAttribute("contratoNovo", new Contrato());
+        model.addAttribute("treinoNovo", new Treino());
+        model.addAttribute("estatisticaNova", new EstatisticaTemporada());
 
         return "atletas";
     }
 
-    // Sem o @PostMapping("/atletas/salvar")
+    @PostMapping("/atletas/salvar")
+    public String salvarNovoAtleta(
+            @ModelAttribute("atletaNovo") Atleta atletaNovo,
+            @ModelAttribute("contratoNovo") Contrato contratoNovo,
+            @ModelAttribute("estatisticaNova") EstatisticaTemporada estatisticaNova,
+            @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
+
+        // --- LÓGICA DE SALVAMENTO DA FOTO ---
+        if (imageFile != null && !imageFile.isEmpty()) {
+            // 1. Gera nome único para não substituir fotos iguais
+            String nomeOriginal = imageFile.getOriginalFilename();
+            // Pega a extensão (.jpg, .png)
+            String extensao = "";
+            if (nomeOriginal != null && nomeOriginal.contains(".")) {
+                extensao = nomeOriginal.substring(nomeOriginal.lastIndexOf("."));
+            }
+            String nomeArquivoFinal = UUID.randomUUID().toString() + extensao;
+
+            // 2. Cria o caminho e a pasta se não existir
+            Path caminhoPasta = Paths.get(UPLOAD_DIRECTORY);
+            if (!Files.exists(caminhoPasta)) {
+                Files.createDirectories(caminhoPasta);
+            }
+
+            // 3. Salva o arquivo na pasta
+            Path caminhoArquivo = caminhoPasta.resolve(nomeArquivoFinal);
+            Files.copy(imageFile.getInputStream(), caminhoArquivo);
+
+            // 4. Salva APENAS o nome do arquivo no objeto Atleta
+            atletaNovo.setPhoto(nomeArquivoFinal);
+        } else {
+            // Se não enviou foto, define uma padrão (você deve ter essa imagem na pasta uploads)
+            atletaNovo.setPhoto("default-player.png");
+        }
+
+        // --- RESTANTE DA LÓGICA DE SALVAMENTO ---
+
+        // Amarra contrato
+        contratoNovo.setAtivo(true);
+        atletaNovo.addContrato(contratoNovo);
+
+        // Amarra estatísticas (se existirem dados)
+        if (estatisticaNova.getTemporada() == null || estatisticaNova.getTemporada().isEmpty()) {
+            estatisticaNova.setTemporada(String.valueOf(LocalDate.now().getYear()));
+        }
+        atletaNovo.addEstatistica(estatisticaNova);
+
+        // Salva no banco
+        atletaRepository.save(atletaNovo);
+
+        return "redirect:/atletas";
+    }
 }

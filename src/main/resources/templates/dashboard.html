@@ -1,3 +1,4 @@
+<!--- ARQUIVO AUTORIA: Guilherme Braz Lourenço (24019760) --->
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -29,9 +30,7 @@
         <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
       </ul>
     </nav>
-    <div class="sidebar-footer">
-      <a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a>
-    </div>
+
   </aside>
 
   <main class="main-content">
@@ -40,24 +39,56 @@
         <h2>Dashboard</h2>
         <p>Visão geral do seu clube</p>
       </div>
-      <div class="user-info">
-        <span>Kauê Farias</span>
-        <div class="user-avatar">K</div>
-        <button class="logout-btn"><i class='bx bx-log-out'></i></button>
-      </div>
+        <div class="user-info">
+            <span>Kauê Farias</span>
+            <div class="user-avatar">K</div>
+
+            <a th:href="@{/logout}" title="Sair" style="cursor: pointer; color: white; font-size: 24px; text-decoration: none; margin-left: 15px; z-index: 999;">
+                <i class='bx bx-log-out'></i>
+            </a>
+        </div>
     </header>
 
     <section class="dashboard-grid">
-      <div class="card"><div class="card-header"><h3><i class='bx bx-wallet'></i> Saldo em Caixa</h3></div><div class="card-body"><p class="financial-value positive">R$ 1.250.780,50</p><span class="card-comparison">+5.2% vs. mês anterior</span></div></div>
-      <div class="card"><div class="card-header"><h3><i class='bx bx-money-withdraw'></i> Folha Salarial (Mês)</h3></div><div class="card-body"><p class="financial-value negative">R$ 450.000,00</p><span class="card-comparison">Vencimento em 5 dias</span></div></div>
-      <div class="card card-large"><div class="card-header"><h3><i class='bx bx-calendar-event'></i> Próximos Eventos</h3><a href="#" class="card-action-link">Ver Calendário Completo</a></div><div class="card-body"><ul class="event-list"><li><div class="event-date professional">15 OUT</div><div class="event-details"><p>Jogo: Fut360 FC vs. Adversário FC</p><span>Campeonato Estadual - 19:00h - Estádio Principal</span></div></li><li><div class="event-date sub-17">16 OUT</div><div class="event-details"><p>Treino Físico - Sub-17</p><span>CT Secundário - 09:00h</span></div></li><li><div class="event-date general">17 OUT</div><div class="event-details"><p>Reunião de Planejamento</p><span>Sala da Diretoria - 15:00h</span></div></li></ul></div></div>
+      <div class="card">
+        <div class="card-header"><h3><i class='bx bx-wallet'></i> Saldo em Caixa</h3></div>
+        <div class="card-body">
+          <p class="financial-value" th:classappend="${saldoAtual >= 0 ? 'positive' : 'negative'}" th:text="${#numbers.formatCurrency(saldoAtual)}">R$ 0,00</p>
+          <span class="card-comparison" th:text="'Receitas: ' + ${#numbers.formatCurrency(totalReceitas)} + ' | Despesas: ' + ${#numbers.formatCurrency(totalDespesas)}">Resumo financeiro</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3><i class='bx bx-money-withdraw'></i> Folha Salarial (Mês)</h3></div>
+        <div class="card-body">
+          <p class="financial-value negative" th:text="${#numbers.formatCurrency(folhaSalarial)}">R$ 0,00</p>
+          <span class="card-comparison" th:text="'Vencimento em ' + ${diasAteVencimento} + ' dias | Pendente: ' + ${#numbers.formatCurrency(folhaPendente)}">Informações de pagamento</span>
+        </div>
+      </div>
+      <div class="card card-large">
+        <div class="card-header">
+          <h3><i class='bx bx-calendar-event'></i> Próximos Eventos</h3>
+          <a th:href="@{/calendario}" class="card-action-link">Ver Calendário Completo</a>
+        </div>
+        <div class="card-body">
+          <ul class="event-list" th:if="${!proximosEventos.isEmpty()}">
+            <li th:each="evento : ${proximosEventos}">
+              <div class="event-date" th:classappend="${evento.categoria == 'PROFISSIONAL' ? 'professional' : (evento.categoria == 'SUB17' ? 'sub-17' : 'general')}" th:text="${#temporals.format(evento.dataEvento, 'dd MMM')}">15 OUT</div>
+              <div class="event-details">
+                <p th:text="${evento.titulo}">Título do Evento</p>
+                <span th:text="${evento.tipo + ' - ' + (evento.horaInicio != null ? #temporals.format(evento.horaInicio, 'HH:mm') + 'h' : '') + (evento.local != null ? ' - ' + evento.local : '')}">Detalhes</span>
+              </div>
+            </li>
+          </ul>
+          <p th:if="${proximosEventos.isEmpty()}" style="text-align: center; color: #888;">Nenhum evento próximo agendado</p>
+        </div>
+      </div>
       <div class="card card-full-width">
         <div class="card-header">
           <h3><i class='bx bx-line-chart'></i> Desempenho Recente no Treino</h3>
-          <a href="#" class="card-action-link">Ver Relatório Completo</a>
+          <a th:href="@{/atletas}" class="card-action-link">Ver Relatório Completo</a>
         </div>
         <div class="card-body">
-          <table class="performance-table">
+          <table class="performance-table" th:if="${!topAtletas.isEmpty()}">
             <thead>
             <tr>
               <th>Jogador</th>
@@ -68,43 +99,42 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/9d4edd/FFFFFF?text=GR" alt="Gabriel Reis"><div class="player-cell-info"><span>Gabriel Reis</span><p>Profissional</p></div></div></td>
-              <td>Atacante</td>
-              <td><span class="rating-badge rating-perfect">10.0</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 100%;"></div></div></td>
-              <td><div class="trend-icon trend-up"><i class='bx bxs-up-arrow'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/00aaff/FFFFFF?text=CE" alt="Carlos Eduardo"><div class="player-cell-info"><span>Carlos Eduardo</span><p>Profissional</p></div></div></td>
-              <td>Atacante</td>
-              <td><span class="rating-badge rating-great">9.2</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 95%;"></div></div></td>
-              <td><div class="trend-icon trend-up"><i class='bx bxs-up-arrow'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/33ff99/000000?text=LM" alt="Lucas Martins"><div class="player-cell-info"><span>Lucas Martins</span><p>Profissional</p></div></div></td>
-              <td>Zagueiro</td>
-              <td><span class="rating-badge rating-good">8.5</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 92%;"></div></div></td>
-              <td><div class="trend-icon trend-stable"><i class='bx bxs-minus-square'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/ffc107/000000?text=BS" alt="Bruno Silva"><div class="player-cell-info"><span>Bruno Silva</span><p>Profissional</p></div></div></td>
-              <td>Meio-Campo</td>
-              <td><span class="rating-badge rating-medium">7.8</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 80%;"></div></div></td>
-              <td><div class="trend-icon trend-stable"><i class='bx bxs-minus-square'></i></div></td>
-            </tr>
-            <tr>
-              <td><div class="player-cell"><img src="https://via.placeholder.com/40/ff4d4d/FFFFFF?text=FL" alt="Fernando Lima"><div class="player-cell-info"><span>Fernando Lima</span><p>Sub-20</p></div></div></td>
-              <td>Lateral</td>
-              <td><span class="rating-badge rating-low">4.8</span></td>
-              <td><div class="performance-bar-container"><div class="performance-bar" style="width: 55%;"></div></div></td>
-              <td><div class="trend-icon trend-down"><i class='bx bxs-down-arrow'></i></div></td>
+            <tr th:each="atleta : ${topAtletas}">
+              <td>
+                <div class="player-cell">
+                  <img th:src="@{/uploads/{filename}(filename=${atleta.photo})}" th:alt="${atleta.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                  <div class="player-cell-info">
+                    <span th:text="${atleta.name}">Nome</span>
+                    <p th:text="${atleta.categoria}">Categoria</p>
+                  </div>
+                </div>
+              </td>
+              <td th:text="${atleta.posicao}">Posição</td>
+              <td>
+                <span class="rating-badge" 
+                      th:classappend="${atleta.treinos[0].treinoNotaGeral >= 9.5 ? 'rating-perfect' : 
+                                       (atleta.treinos[0].treinoNotaGeral >= 8.5 ? 'rating-great' : 
+                                       (atleta.treinos[0].treinoNotaGeral >= 7.5 ? 'rating-good' : 
+                                       (atleta.treinos[0].treinoNotaGeral >= 6.0 ? 'rating-medium' : 'rating-low')))}"
+                      th:text="${#numbers.formatDecimal(atleta.treinos[0].treinoNotaGeral, 1, 1)}">0.0</span>
+              </td>
+              <td>
+                <div class="performance-bar-container">
+                  <div class="performance-bar" th:style="'width: ' + ${atleta.treinos[0].treinoNotaGeral * 10} + '%;'"></div>
+                </div>
+              </td>
+              <td>
+                <div class="trend-icon" 
+                     th:classappend="${atleta.treinos[0].treinoNotaGeral >= 8.5 ? 'trend-up' : 
+                                      (atleta.treinos[0].treinoNotaGeral >= 7.0 ? 'trend-stable' : 'trend-down')}">
+                  <i class='bx' th:classappend="${atleta.treinos[0].treinoNotaGeral >= 8.5 ? 'bxs-up-arrow' : 
+                                                  (atleta.treinos[0].treinoNotaGeral >= 7.0 ? 'bxs-minus-square' : 'bxs-down-arrow')}"></i>
+                </div>
+              </td>
             </tr>
             </tbody>
           </table>
+          <p th:if="${topAtletas.isEmpty()}" style="text-align: center; color: #888; padding: 20px;">Nenhum dado de treino disponível</p>
         </div>
       </div>
     </section>

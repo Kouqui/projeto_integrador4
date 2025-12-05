@@ -1,3 +1,4 @@
+### Criado pelo autor: Kauã Kouqui/Kaue Farias
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
@@ -27,3 +28,45 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+# ===========================================
+# CONFIGURAÇÕES LOCAIS / SEGREDOS
+# ===========================================
+
+# Arquivos de ambiente com senhas, tokens e configs locais
+.env
+.env.*
+application-local.properties
+application-secret.properties
+src/main/resources/application.properties
+
+# ===========================================
+# DIRETÓRIOS GERADOS AUTOMATICAMENTE
+# ===========================================
+
+# Maven
+/target/
+
+# Gradle
+.gradle/
+/build/
+
+# Uploads de arquivos feitos pelo usuário
+/uploads/
+
+# Logs
+*.log
+/logs/
+/**/logs/
+
+# Cache diversos
+*.iml
+*.ipr
+*.iws
+
+# Java / Kotlin
+*.class
+
+# Arquivos de sistema
+Thumbs.db
+/target/

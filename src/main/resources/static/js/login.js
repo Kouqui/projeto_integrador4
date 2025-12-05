@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788 e KAUÃ KOUQUI UEMURA RA:24027746
+
 // 1. Pega os elementos do HTML que vamos usar
 const openModalLink = document.getElementById('open-modal-link');
 const contactModal = document.getElementById('contact-modal');

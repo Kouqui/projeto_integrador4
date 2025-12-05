@@ -1,81 +1,54 @@
-package com.fut.fut360.service;
+package com.fut.fut360.service; // Verifique se o pacote é .service ou .Service
 
-import com.fut.fut360.model.Transaction;
+import com.fut.fut360.Model.Transaction;
+import com.fut.fut360.Repository.TransactionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Service // Define que esta é uma classe de Serviço do Spring
+@Service
 public class TransactionService {
 
-    // Simula a base de dados (em memória)
-    private final List<Transaction> storage = new ArrayList<>();
-    private final AtomicLong idCounter = new AtomicLong(0);
+    @Autowired
+    private TransactionRepository repository; // <--- Conexão real com o MySQL
 
-    // Construtor com dados de exemplo
-    public TransactionService() {
-
-        save(new Transaction(null, "receita", "Patrocínio Máster", new BigDecimal("100800.00"), LocalDate.of(2025, 10, 10), "Patrocinio", "Kauê"));
-        save(new Transaction(null, "receita", "Patrocínio", new BigDecimal("35000.00"), LocalDate.of(2025, 10, 12), "Patrocinio", "Nike"));
-        save(new Transaction(null, "despesa", "Salário Comissão Técnica", new BigDecimal("52350.00"), LocalDate.of(2025, 10, 12), "Folha Salarial", "Administrador"));
-    }
-
-    // [C/U] Salva ou Atualiza uma transação
+    // [C/U] Salva ou Atualiza no Banco
     public Transaction save(Transaction transaction) {
-        // Validação básica
-        if (transaction.getValue() == null || transaction.getValue().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Valor da transação deve ser positivo.");
-        }
-
-        if (transaction.getId() == null) {
-            // Novo registro (CREATE)
-            transaction.setId(idCounter.incrementAndGet());
-            storage.add(transaction);
-        } else {
-            // Atualizar registro (UPDATE)
-            storage.stream()
-                    .filter(t -> t.getId().equals(transaction.getId()))
-                    .findFirst()
-                    .ifPresent(existing -> {
-                        existing.setType(transaction.getType());
-                        existing.setDescription(transaction.getDescription());
-                        existing.setValue(transaction.getValue());
-                        existing.setDate(transaction.getDate());
-                        existing.setCategory(transaction.getCategory());
-                        existing.setResponsible(transaction.getResponsible());
-                    });
-        }
-        return transaction;
+        // O repositório decide sozinho se é INSERT ou UPDATE baseado no ID
+        return repository.save(transaction);
     }
 
-    // [R] Lista todas as transações
+    // [R] Busca tudo do Banco
     public List<Transaction> findAll() {
-        return new ArrayList<>(storage);
+        return repository.findAll();
     }
 
-    // [D] Deleta uma transação por ID
+    // [D] Deleta do Banco
     public void deleteById(Long id) {
-        storage.removeIf(t -> t.getId().equals(id));
+        repository.deleteById(id);
     }
 
-    // [R - Resumo] Calcula o Saldo Consolidado
+    // [R - Resumo] Calcula os totais usando os dados do Banco
     public Map<String, BigDecimal> calculateSummary() {
+        // Busca dados reais do banco
+        List<Transaction> allTransactions = repository.findAll();
+
         BigDecimal totalReceitas = BigDecimal.ZERO;
         BigDecimal totalDespesas = BigDecimal.ZERO;
 
-        for (Transaction t : storage) {
-            if ("receita".equalsIgnoreCase(t.getType())) {
-                totalReceitas = totalReceitas.add(t.getValue());
-            } else if ("despesa".equalsIgnoreCase(t.getType())) {
-                totalDespesas = totalDespesas.add(t.getValue());
+        for (Transaction t : allTransactions) {
+            // Verifica se o valor não é nulo para evitar erros
+            if (t.getValue() != null) {
+                if ("receita".equalsIgnoreCase(t.getType())) {
+                    totalReceitas = totalReceitas.add(t.getValue());
+                } else if ("despesa".equalsIgnoreCase(t.getType())) {
+                    totalDespesas = totalDespesas.add(t.getValue());
+                }
             }
         }
 

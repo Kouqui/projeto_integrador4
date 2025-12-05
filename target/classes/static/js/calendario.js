@@ -1,142 +1,278 @@
-// Espera o HTML carregar antes de rodar o script
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. Seleção de Elementos do DOM ---
+    // --- ESTADO DA APLICAÇÃO ---
+    let currentViewDate = new Date();
+    let events = [];
 
-    // Modal e seus componentes
+    // --- ELEMENTOS DO DOM ---
+    const grid = document.getElementById('calendar-grid');
+    const monthDisplay = document.getElementById('current-month-display');
+    const prevBtn = document.getElementById('prev-month-btn');
+    const nextBtn = document.getElementById('next-month-btn');
+    const filterCategory = document.getElementById('filter-category');
+    const filterType = document.getElementById('filter-type');
+
+    // Modais
     const eventModal = document.getElementById('event-modal');
-    const modalTitle = document.getElementById('modal-title');
+    const deleteModal = document.getElementById('delete-modal'); // NOVO
+
+    // Botões de fechar e ação
     const closeModalBtn = document.getElementById('close-modal-btn');
     const cancelBtn = document.getElementById('cancel-btn');
     const eventForm = document.getElementById('event-form');
-
-    // Botão principal "Agendar Evento"
     const addEventBtn = document.getElementById('add-event-btn');
-
-    // Pega TODOS os itens de evento que já estão no calendário
-    const allEventItems = document.querySelectorAll('.event-item');
-
-    // Campos do formulário dentro do modal
-    const eventTitleInput = document.getElementById('event-title');
-    const eventDateInput = document.getElementById('event-date');
-    const eventTimeStartInput = document.getElementById('event-time-start');
-    const eventTimeEndInput = document.getElementById('event-time-end');
-    const eventTypeInput = document.getElementById('event-type');
-    const eventCategoryInput = document.getElementById('event-category');
-    const eventLocationInput = document.getElementById('event-location');
-    const eventDescriptionInput = document.getElementById('event-description');
-
-    // Campos condicionais
-    const opponentGroup = document.getElementById('opponent-group');
-    const eventOpponentInput = document.getElementById('event-opponent');
-
-    // Botões de Ação
     const deleteBtn = document.getElementById('delete-btn');
 
-    // --- 2. Funções Auxiliares ---
+    // Botões do Modal de Confirmação (NOVO)
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 
-    const openModal = () => {
-        eventModal.classList.add('visible');
+    // Inputs
+    const inputId = document.getElementById('event-id');
+    const inputTitle = document.getElementById('event-title');
+    const inputDate = document.getElementById('event-date');
+    const inputStart = document.getElementById('event-time-start');
+    const inputEnd = document.getElementById('event-time-end');
+    const inputType = document.getElementById('event-type');
+    const inputCategory = document.getElementById('event-category');
+    const inputLocation = document.getElementById('event-location');
+    const inputOpponent = document.getElementById('event-opponent');
+    const inputDesc = document.getElementById('event-description');
+    const opponentGroup = document.getElementById('opponent-group');
+
+    // --- FUNÇÃO PARA BUSCAR EVENTOS ---
+    async function fetchEvents() {
+        try {
+            const response = await fetch('/api/eventos');
+            if (response.ok) {
+                events = await response.json();
+                renderCalendar();
+            }
+        } catch (error) {
+            console.error("Erro de conexão:", error);
+        }
     }
 
-    const closeModal = () => {
-        eventModal.classList.remove('visible');
+    // --- RENDERIZAÇÃO ---
+    function renderCalendar() {
+        const existingDays = grid.querySelectorAll('.calendar-day');
+        existingDays.forEach(day => day.remove());
+
+        const year = currentViewDate.getFullYear();
+        const month = currentViewDate.getMonth();
+
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+        monthDisplay.textContent = `${monthNames[month]} ${year}`;
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const lastDay = new Date(year, month + 1, 0).getDate();
+        const prevLastDay = new Date(year, month, 0).getDate();
+        const today = new Date();
+
+        for (let i = firstDayIndex; i > 0; i--) {
+            const dayDiv = document.createElement('div');
+            dayDiv.classList.add('calendar-day', 'day-other-month');
+            dayDiv.innerHTML = `<span class="day-number">${prevLastDay - i + 1}</span>`;
+            grid.appendChild(dayDiv);
+        }
+
+        for (let i = 1; i <= lastDay; i++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.classList.add('calendar-day');
+            const currentDayString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+
+            if (i === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                dayDiv.classList.add('day-today');
+            }
+            dayDiv.innerHTML = `<span class="day-number">${i}</span>`;
+
+            const catVal = filterCategory.value;
+            const typeVal = filterType.value;
+
+            const daysEvents = events.filter(ev => {
+                const dateMatch = ev.dataEvento === currentDayString;
+                const catMatch = catVal === 'all' || ev.categoria === catVal;
+                const typeMatch = typeVal === 'all' || ev.tipo === typeVal;
+                return dateMatch && catMatch && typeMatch;
+            });
+
+            daysEvents.forEach(ev => {
+                const evEl = document.createElement('div');
+                evEl.classList.add('event-item');
+
+                const typeClass = 'event-' + ev.tipo.toLowerCase();
+                if (['jogo', 'reuniao', 'treino'].includes(ev.tipo.toLowerCase())) {
+                    evEl.classList.add(typeClass);
+                } else {
+                    evEl.classList.add('event-outro');
+                }
+
+                evEl.textContent = ev.titulo;
+
+                evEl.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openModalEdit(ev);
+                });
+
+                dayDiv.appendChild(evEl);
+            });
+
+            grid.appendChild(dayDiv);
+        }
+
+        const totalSlots = firstDayIndex + lastDay;
+        const nextDays = 42 - totalSlots;
+        for (let i = 1; i <= nextDays; i++) {
+            const dayDiv = document.createElement('div');
+            dayDiv.classList.add('calendar-day', 'day-other-month');
+            dayDiv.innerHTML = `<span class="day-number">${i}</span>`;
+            grid.appendChild(dayDiv);
+        }
     }
 
-    // Função para mostrar/esconder o campo "Adversário"
-    const toggleOpponentField = () => {
-        if (eventTypeInput.value === 'JOGO') {
+    // --- FUNÇÕES AUXILIARES ---
+    function toggleOpponentField() {
+        if (inputType.value === 'JOGO') {
             opponentGroup.classList.remove('hidden');
         } else {
             opponentGroup.classList.add('hidden');
-            eventOpponentInput.value = ''; // Limpa o campo se não for um jogo
         }
     }
 
-    // Função para limpar e resetar o formulário para "Novo Evento"
-    const resetFormForNewEvent = () => {
-        modalTitle.textContent = 'Agendar Novo Evento'; // Muda o título
-        eventForm.reset(); // Limpa todos os campos do formulário
+    function openModal() { eventModal.classList.add('visible'); }
+    function closeModal() { eventModal.classList.remove('visible'); }
 
-        // Pega a data de hoje no formato YYYY-MM-DD
-        const today = new Date().toISOString().split('T')[0];
-        eventDateInput.value = today; // Define a data para hoje
+    function resetForm() {
+        eventForm.reset();
+        inputId.value = '';
+        document.getElementById('modal-title').textContent = 'Agendar Novo Evento';
+        deleteBtn.style.display = 'none';
 
-        deleteBtn.style.display = 'none'; // Esconde o botão de excluir
-        toggleOpponentField(); // Garante que o campo adversário esteja no estado correto
+        const now = new Date();
+        const todayString = now.toISOString().split('T')[0];
+        inputDate.value = todayString;
+        inputDate.setAttribute('min', todayString);
+
+        toggleOpponentField();
     }
 
-    // --- 3. Lógica para ABRIR MODAL (para Agendar Novo Evento) ---
-    addEventBtn.addEventListener('click', () => {
-        resetFormForNewEvent(); // Limpa e prepara o formulário
+    function openModalEdit(ev) {
+        document.getElementById('modal-title').textContent = 'Editar Evento';
+        inputDate.removeAttribute('min');
+
+        inputId.value = ev.id;
+        inputTitle.value = ev.titulo;
+        inputDate.value = ev.dataEvento;
+        inputStart.value = ev.horaInicio || '';
+        inputEnd.value = ev.horaFim || '';
+        inputType.value = ev.tipo;
+        inputCategory.value = ev.categoria;
+        inputLocation.value = ev.local || '';
+        inputOpponent.value = ev.adversario || '';
+        inputDesc.value = ev.description || '';
+
+        deleteBtn.style.display = 'block';
+        toggleOpponentField();
         openModal();
+    }
+
+    // --- LISTENERS ---
+    prevBtn.addEventListener('click', () => {
+        currentViewDate.setMonth(currentViewDate.getMonth() - 1);
+        renderCalendar();
     });
-
-    // --- 4. Lógica para ABRIR MODAL (para Ver/Editar Evento Existente) ---
-    allEventItems.forEach(item => {
-        item.addEventListener('click', () => {
-            // Pega os dados 'data-*' do evento clicado
-            const { title, date, timeStart, timeEnd, type, category, location, opponent, description } = item.dataset;
-
-            // Preenche o formulário do modal com os dados
-            modalTitle.textContent = 'Detalhes do Evento'; // Muda o título
-
-            eventTitleInput.value = title;
-            eventDateInput.value = date;
-            eventTimeStartInput.value = timeStart;
-            eventTimeEndInput.value = timeEnd;
-            eventTypeInput.value = type;
-            eventCategoryInput.value = category;
-            eventLocationInput.value = location;
-            eventOpponentInput.value = opponent;
-            eventDescriptionInput.value = description;
-
-            deleteBtn.style.display = 'block'; // Mostra o botão de excluir
-            toggleOpponentField(); // Verifica se deve mostrar o campo "Adversário"
-
-            openModal();
-        });
+    nextBtn.addEventListener('click', () => {
+        currentViewDate.setMonth(currentViewDate.getMonth() + 1);
+        renderCalendar();
     });
-
-    // --- 5. Lógica de Interação do Modal ---
-
-    // "Ouvinte" para o dropdown de "Tipo"
-    eventTypeInput.addEventListener('change', toggleOpponentField);
-
-    // Fecha ao clicar no 'X'
+    filterCategory.addEventListener('change', renderCalendar);
+    filterType.addEventListener('change', renderCalendar);
+    addEventBtn.addEventListener('click', () => { resetForm(); openModal(); });
     closeModalBtn.addEventListener('click', closeModal);
-
-    // Fecha ao clicar em 'Cancelar'
     cancelBtn.addEventListener('click', closeModal);
+    eventModal.addEventListener('click', (e) => { if (e.target === eventModal) closeModal(); });
+    inputType.addEventListener('change', toggleOpponentField);
 
-    // Fecha ao clicar fora do modal (no fundo escuro)
-    eventModal.addEventListener('click', (event) => {
-        if (event.target === eventModal) {
-            closeModal();
+
+    // --- SALVAR ---
+    eventForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!inputId.value) {
+            const selectedDate = new Date(inputDate.value + 'T00:00:00');
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+                alert("Não é possível agendar eventos em datas passadas.");
+                return;
+            }
+        }
+
+        const eventData = {
+            id: inputId.value ? parseInt(inputId.value) : null,
+            titulo: inputTitle.value,
+            dataEvento: inputDate.value,
+            horaInicio: inputStart.value || null,
+            horaFim: inputEnd.value || null,
+            tipo: inputType.value,
+            categoria: inputCategory.value,
+            local: inputLocation.value,
+            adversario: inputOpponent.value,
+            descricao: inputDesc.value
+        };
+
+        try {
+            const response = await fetch('/api/eventos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(eventData)
+            });
+
+            if (response.ok) {
+                fetchEvents();
+                closeModal();
+            } else {
+                alert("Erro ao salvar evento.");
+            }
+        } catch (error) {
+            console.error("Erro ao salvar:", error);
         }
     });
 
-    // Ação do Botão "Excluir"
+    // --- LÓGICA DO MODAL DE EXCLUSÃO (NOVA) ---
+
+    // 1. Quando clicar em "Excluir" no formulário, ABRE o modalzinho
     deleteBtn.addEventListener('click', () => {
-        // Aqui você colocaria a lógica real de exclusão (ex: fetch para o backend)
-        if (confirm('Tem certeza que deseja excluir este evento?')) {
-            alert('Evento excluído!'); // Apenas para teste
-            closeModal();
-            // Aqui você também removeria o evento do DOM (da tela)
+        deleteModal.classList.add('visible');
+    });
+
+    // 2. Botão "Cancelar" do modalzinho
+    cancelDeleteBtn.addEventListener('click', () => {
+        deleteModal.classList.remove('visible');
+    });
+
+    // 3. Botão "Sim, Excluir" do modalzinho (Faz o DELETE real)
+    confirmDeleteBtn.addEventListener('click', async () => {
+        const idAtual = inputId.value;
+        if (idAtual) {
+            try {
+                const response = await fetch(`/api/eventos/${idAtual}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    fetchEvents(); // Recarrega calendário
+                    deleteModal.classList.remove('visible'); // Fecha modalzinho
+                    closeModal(); // Fecha modal grande
+                } else {
+                    alert("Erro ao excluir.");
+                }
+            } catch (error) {
+                console.error("Erro ao excluir:", error);
+            }
         }
     });
 
-    // Ação do Botão "Salvar" (Submit do formulário)
-    eventForm.addEventListener('submit', (e) => {
-        e.preventDefault(); // Impede que a página recarregue
-
-        // Aqui você pegaria todos os dados dos inputs e enviaria para o seu backend
-
-        const TítuloSalvo = eventTitleInput.value;
-        alert('Evento "' + TítuloSalvo + '" foi salvo!'); // Apenas para teste
-
-        closeModal();
-        // Aqui você atualizaria o calendário no DOM (na tela)
-    });
-
+    // Inicialização
+    fetchEvents();
 });
