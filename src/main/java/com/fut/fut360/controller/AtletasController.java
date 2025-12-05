@@ -1,9 +1,6 @@
 package com.fut.fut360.controller;
 
-import com.fut.fut360.Model.Atleta;
-import com.fut.fut360.Model.Contrato;
-import com.fut.fut360.Model.EstatisticaTemporada;
-import com.fut.fut360.Model.Treino;
+import com.fut.fut360.Model.*;
 import com.fut.fut360.Repository.AtletaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,27 +15,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 @Controller
 public class AtletasController {
 
-    public static String UPLOAD_DIRECTORY = System.getProperty("user.dir") + "/uploads/";
+    // Define o caminho da pasta de uploads na raiz do projeto
+    public static String UPLOAD_DIRECTORY = "uploads";
 
     @Autowired
     private AtletaRepository atletaRepository;
 
     @GetMapping("/atletas")
-    public String exibirPaginaAtletas(Model Model) {
+    public String exibirPaginaAtletas(Model model) {
         List<Atleta> listaDeAtletas = atletaRepository.findAll();
-        Model.addAttribute("atletas", listaDeAtletas);
+        model.addAttribute("atletas", listaDeAtletas);
 
-        // Objetos para os formulários
-        Model.addAttribute("atletaNovo", new Atleta());
-        Model.addAttribute("contratoNovo", new Contrato());
-        Model.addAttribute("estatisticaNova", new EstatisticaTemporada());
-        Model.addAttribute("treinoNovo", new Treino());
+        // Envia objetos vazios para o formulário
+        model.addAttribute("atletaNovo", new Atleta());
+        model.addAttribute("contratoNovo", new Contrato());
+        model.addAttribute("treinoNovo", new Treino());
+        model.addAttribute("estatisticaNova", new EstatisticaTemporada());
 
         return "atletas";
     }
@@ -47,33 +46,50 @@ public class AtletasController {
     public String salvarNovoAtleta(
             @ModelAttribute("atletaNovo") Atleta atletaNovo,
             @ModelAttribute("contratoNovo") Contrato contratoNovo,
+            @ModelAttribute("estatisticaNova") EstatisticaTemporada estatisticaNova,
             @RequestParam("imageFile") MultipartFile imageFile) throws IOException {
 
-        // 1. Upload
+        // --- LÓGICA DE SALVAMENTO DA FOTO ---
         if (imageFile != null && !imageFile.isEmpty()) {
-            String originalFilename = imageFile.getOriginalFilename();
-            String extension = "";
-            if (originalFilename != null && originalFilename.contains(".")) {
-                extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            // 1. Gera nome único para não substituir fotos iguais
+            String nomeOriginal = imageFile.getOriginalFilename();
+            // Pega a extensão (.jpg, .png)
+            String extensao = "";
+            if (nomeOriginal != null && nomeOriginal.contains(".")) {
+                extensao = nomeOriginal.substring(nomeOriginal.lastIndexOf("."));
             }
-            String uniqueFilename = UUID.randomUUID().toString() + extension;
-            Path uploadPath = Paths.get(UPLOAD_DIRECTORY);
-            Path filePath = uploadPath.resolve(uniqueFilename);
+            String nomeArquivoFinal = UUID.randomUUID().toString() + extensao;
 
-            if (!Files.exists(uploadPath)) {
-                Files.createDirectories(uploadPath);
+            // 2. Cria o caminho e a pasta se não existir
+            Path caminhoPasta = Paths.get(UPLOAD_DIRECTORY);
+            if (!Files.exists(caminhoPasta)) {
+                Files.createDirectories(caminhoPasta);
             }
-            Files.copy(imageFile.getInputStream(), filePath);
-            atletaNovo.setPhoto(uniqueFilename);
+
+            // 3. Salva o arquivo na pasta
+            Path caminhoArquivo = caminhoPasta.resolve(nomeArquivoFinal);
+            Files.copy(imageFile.getInputStream(), caminhoArquivo);
+
+            // 4. Salva APENAS o nome do arquivo no objeto Atleta
+            atletaNovo.setPhoto(nomeArquivoFinal);
         } else {
-            atletaNovo.setPhoto("default.png");
+            // Se não enviou foto, define uma padrão (você deve ter essa imagem na pasta uploads)
+            atletaNovo.setPhoto("default-player.png");
         }
 
-        // 2. Contrato
+        // --- RESTANTE DA LÓGICA DE SALVAMENTO ---
+
+        // Amarra contrato
         contratoNovo.setAtivo(true);
         atletaNovo.addContrato(contratoNovo);
 
-        // 3. Salvar (Sem estatísticas agora)
+        // Amarra estatísticas (se existirem dados)
+        if (estatisticaNova.getTemporada() == null || estatisticaNova.getTemporada().isEmpty()) {
+            estatisticaNova.setTemporada(String.valueOf(LocalDate.now().getYear()));
+        }
+        atletaNovo.addEstatistica(estatisticaNova);
+
+        // Salva no banco
         atletaRepository.save(atletaNovo);
 
         return "redirect:/atletas";

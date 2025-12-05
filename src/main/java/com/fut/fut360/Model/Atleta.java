@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList; // Importante
 import java.util.List;
 
 @Entity
@@ -40,57 +41,68 @@ public class Atleta {
     @Column(name = "foto_url")
     private String photo;
 
-    // --- RELACIONAMENTOS (CORRIGIDO com FetchType.EAGER) ---
-    // (Adicione fetch = FetchType.EAGER em todas as 4 listas)
+    // --- RELACIONAMENTOS ---
+    // Inicializamos com 'new ArrayList<>()' para evitar NULL, mas os métodos helper garantem segurança extra
 
     @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Contrato> contratos;
+    @OrderBy("id DESC")
+    private List<Contrato> contratos = new ArrayList<>();
 
     @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<Treino> treinos;
+    @OrderBy("id DESC")
+    private List<Treino> treinos = new ArrayList<>();
 
     @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<EstatisticaTemporada> estatisticas;
+    @OrderBy("id DESC")
+    private List<EstatisticaTemporada> estatisticas = new ArrayList<>();
 
     @OneToMany(mappedBy = "atleta", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<RegistroCarreira> registros;
+    @OrderBy("id DESC")
+    private List<RegistroCarreira> registros = new ArrayList<>();
 
-    // Construtor vazio (Obrigatório pelo JPA)
     public Atleta() {}
 
-    // --- MÉTODO DE CÁLCULO DE IDADE ---
-    // (Lógica de negócio movida do HTML para o Java)
-    public int getAge() {
-        if (this.birthdate == null) {
-            return 0;
-        }
-        return Period.between(this.birthdate, LocalDate.now()).getYears();
-    }
-    // --- MÉTODOS HELPER (FACILITADORES) ---
-    // (Adicione isso no final da sua classe Atleta.java)
+    // --- MÉTODOS HELPER BLINDADOS (CORREÇÃO DO ERRO) ---
 
     public void addContrato(Contrato contrato) {
         if (this.contratos == null) {
-            this.contratos = new java.util.ArrayList<>();
+            this.contratos = new ArrayList<>();
         }
         this.contratos.add(contrato);
-        contrato.setAtleta(this); // Amarra o filho ao pai
+        contrato.setAtleta(this);
     }
 
     public void addTreino(Treino treino) {
         if (this.treinos == null) {
-            this.treinos = new java.util.ArrayList<>();
+            this.treinos = new ArrayList<>();
         }
         this.treinos.add(treino);
-        treino.setAtleta(this); // Amarra o filho ao pai
+        treino.setAtleta(this);
     }
 
     public void addEstatistica(EstatisticaTemporada est) {
+        if (this.estatisticas == null) {
+            this.estatisticas = new ArrayList<>();
+        }
         this.estatisticas.add(est);
         est.setAtleta(this);
     }
 
-    // --- GETTERS E SETTERS COMPLETOS ---
+    public void addRegistro(RegistroCarreira reg) {
+        if (this.registros == null) {
+            this.registros = new ArrayList<>();
+        }
+        this.registros.add(reg);
+        reg.setAtleta(this);
+    }
+
+    // --- LÓGICA DE NEGÓCIO ---
+    public int getAge() {
+        if (this.birthdate == null) return 0;
+        return Period.between(this.birthdate, LocalDate.now()).getYears();
+    }
+
+    // --- GETTERS E SETTERS ---
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getFullname() { return fullname; }
@@ -113,13 +125,16 @@ public class Atleta {
     public void setCategoria(String categoria) { this.categoria = categoria; }
     public String getPhoto() { return photo; }
     public void setPhoto(String photo) { this.photo = photo; }
+
     public List<Contrato> getContratos() { return contratos; }
     public void setContratos(List<Contrato> contratos) { this.contratos = contratos; }
+
     public List<Treino> getTreinos() { return treinos; }
     public void setTreinos(List<Treino> treinos) { this.treinos = treinos; }
+
     public List<EstatisticaTemporada> getEstatisticas() { return estatisticas; }
     public void setEstatisticas(List<EstatisticaTemporada> estatisticas) { this.estatisticas = estatisticas; }
+
     public List<RegistroCarreira> getRegistros() { return registros; }
     public void setRegistros(List<RegistroCarreira> registros) { this.registros = registros; }
-
 }
