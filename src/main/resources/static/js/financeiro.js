@@ -1,3 +1,5 @@
+//Criação pelos autores: Jefferson Andrey Dias Cardoso e Kauã Kouqui - Ra: 24017498 e Ra: 24027746//
+
 const API_BASE = 'http://localhost:8080/api';
 const API_TRANSACTIONS = API_BASE + '/financeiro/transacoes';
 const API_SALDO = API_BASE + '/financeiro/saldo';
@@ -222,18 +224,21 @@ async function fetchContracts() {
 }
 
 // Listener: Salvar Contrato
+// Listener: Salvar Contrato
 const formContract = document.getElementById('contract-form');
 if (formContract) {
     formContract.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Mapeamento correto para o Java (Contract.java)
         const data = {
             id: null,
             name: document.getElementById('cont-nome').value,
             age: parseInt(document.getElementById('cont-idade').value),
             position: document.getElementById('cont-posicao').value,
             salario: parseFloat(document.getElementById('cont-salary').value),
+
+            clausula: parseFloat(document.getElementById('cont-clausula').value),
+
             startDate: document.getElementById('cont-start').value,
             endDate: document.getElementById('cont-end').value,
             documentUrl: "pendente.pdf"

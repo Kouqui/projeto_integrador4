@@ -1,3 +1,5 @@
+//Criação pelo autor: Jefferson Andrey Dias Cardoso - Ra: 24017498
+
 package com.fut.fut360.controller;
 
 import com.fut.fut360.Model.Contract;
@@ -22,11 +24,9 @@ import java.util.Map;
  * O Controller MVC ('FinanceiroController') serve o HTML.
  */
 @Controller
-
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*") // Permite acesso de qualquer lugar (útil para testes)
 public class FinanceiroApiController {
 
-    // Injeção de todos os Serviços necessários
     private final TransactionService transactionService;
     private final PayrollService payrollService;
     private final ContractService contractService;
@@ -40,12 +40,11 @@ public class FinanceiroApiController {
 
     @GetMapping("/financeiro")
     public String exibirPaginaFinanceira() {
-        return "Financeiro"; // Retorna o arquivo financeiro.html
+        return "Financeiro";
     }
 
     // ======================================================================
-    // MÓDULO 1: TRANSAÇÕES FINANCEIRAS (FLUXO DE CAIXA)
-    // ENDPOINTS: /api/financeiro/...
+    // MÓDULO 1: TRANSAÇÕES FINANCEIRAS
     // ======================================================================
 
     @GetMapping("/api/financeiro/transacoes")
@@ -75,7 +74,7 @@ public class FinanceiroApiController {
     }
 
     // ======================================================================
-    // MÓDULO 2: FOLHA SALARIAL (RECURSOS HUMANOS)
+    // MÓDULO 2: FOLHA SALARIAL
     // ======================================================================
 
     @GetMapping("/api/rh/payroll")
@@ -83,9 +82,6 @@ public class FinanceiroApiController {
     public ResponseEntity<List<PayrollItem>> listarPagamentos() {
         return ResponseEntity.ok(payrollService.findAll());
     }
-
-    // ... (restante dos endpoints de Folha Salarial e Contratos) ...
-    // ... (incluídos no código anterior, mas omitidos aqui por brevidade) ...
 
     @PostMapping("/api/rh/payroll")
     @ResponseBody
@@ -116,14 +112,28 @@ public class FinanceiroApiController {
     @PostMapping("/api/rh/contracts")
     @ResponseBody
     public ResponseEntity<?> salvarContrato(@RequestBody Contract contract) {
+        try {
+            // 1. Validação básica de idade (se veio preenchida)
+            if (contract.getAge() != null && (contract.getAge() < 16 || contract.getAge() > 100)) {
+                return ResponseEntity.badRequest().body("Erro: A idade deve ser entre 16 e 100 anos.");
+            }
 
-        if (contract.getAge() < 16 || contract.getAge() > 120) {
-            return ResponseEntity.badRequest().body("Erro: A idade deve ser entre 16 e 120 anos.");
+            // 2. Tenta salvar (O Service vai verificar se o Atleta existe)
+            Contract salva = contractService.save(contract);
+
+            // 3. Se der certo, retorna o contrato criado (201 Created)
+            return new ResponseEntity<>(salva, HttpStatus.CREATED);
+
+        } catch (IllegalArgumentException e) {
+            // 4. CAPTURA O ERRO DO SERVICE: "Atleta não encontrado"
+            // Retorna erro 400 Bad Request com a mensagem explicativa para o SweetAlert
+            return ResponseEntity.badRequest().body(e.getMessage());
+
+        } catch (Exception e) {
+            // 5. Erro genérico de servidor
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno no servidor ao salvar contrato.");
         }
-
-
-        Contract salva = contractService.save(contract);
-        return new ResponseEntity<>(salva, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/rh/contracts/{id}")
