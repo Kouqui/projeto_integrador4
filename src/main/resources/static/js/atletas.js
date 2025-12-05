@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+    // Criado pelo autor: Kauã Kouqui
     // ==================================================================
     // 0. LÓGICA DE FILTROS (BUSCA EM TEMPO REAL) - RESTAURADA
     // ==================================================================
