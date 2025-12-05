@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+
 package com.fut.fut360.service;
 
 import com.fut.fut360.Repository.AtletaRepository;

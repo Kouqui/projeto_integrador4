@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+
 package com.fut.fut360.Repository; // <--- R MAIÚSCULO (igual sua pasta)
 
 import com.fut.fut360.Model.Evento; // <--- M MAIÚSCULO (importando da sua pasta Model)

@@ -1,3 +1,6 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+//é o interceptador para cotabilizar as paginas ele que da a conexão para ele conseguir conectar
+
 package com.fut.fut360.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
