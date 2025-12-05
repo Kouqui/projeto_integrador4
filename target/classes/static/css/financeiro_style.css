@@ -6,6 +6,7 @@
     --bg-light: #133a4a;
     --text-light: #e6f1ff;
     --text-dark: #8892b0;
+    --text-grey: #a0a0a0; /* Adicionado para labels */
     --card-bg: rgba(255, 255, 255, 0.05);
     --border-color: rgba(255, 255, 255, 0.2);
     --positive-value: #33ff99;
@@ -46,19 +47,81 @@ body {
 .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; justify-content: center; align-items: center; font-weight: 600; }
 .logout-btn { background: none; border: none; color: var(--text-dark); font-size: 24px; cursor: pointer; transition: color 0.3s ease; }
 
+/* --- NAVEGAÇÃO DE ABAS (BOTÕES NO TOPO) --- */
+.view-navigation button {
+    padding: 10px 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+}
+
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+
+
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-light);
+    border-color: var(--text-light);
+
+
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
 /* --- ESTILOS ESPECÍFICOS DA PÁGINA FINANCEIRA --- */
 .summary-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 30px; }
 .card { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; }
 .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; color: var(--text-dark); font-weight: 500; }
 .card-header i { font-size: 22px; }
 .financial-value { font-size: 28px; font-weight: 600; }
-.positive { color: var(--positive-value); }
-.negative { color: var(--negative-value); }
+.positive { color: var(--positive-value) !important; }
+.negative { color: var(--negative-value) !important; }
+
 .transactions-section { background-color: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: 12px; }
 .transactions-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .transactions-header h3 { font-size: 20px; }
-.btn-primary { background: linear-gradient(90deg, var(--primary-color), var(--secondary-color)); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+
+/* Botão Primário Genérico (usado em vários lugares) */
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3); }
+
+/* Tabela */
 .transactions-table { width: 100%; border-collapse: collapse; }
 .transactions-table th, .transactions-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
 .transactions-table th { color: var(--text-dark); font-size: 14px; text-transform: uppercase; }
@@ -68,14 +131,31 @@ body {
 .table-actions a:hover { color: var(--primary-color); }
 
 /* --- ESTILOS DO MODAL --- */
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
 .modal-overlay.visible { display: flex; }
 .modal-content { background-color: var(--bg-light); border: 1px solid var(--border-color); padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-.modal-header h2 { font-size: 22px; }
+.modal-header h2 { font-size: 22px; color: var(--text-light); }
 .close-button { font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none;}
+
+/* Formulários */
 .form-group { margin-bottom: 20px; }
-.form-group label { display: block; margin-bottom: 8px; color: var(--text-dark); }
-.form-group input, .form-group select { width: 100%; padding: 12px; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-light); font-size: 16px; }
+.form-group label { display: block; margin-bottom: 8px; color: var(--text-grey); font-size: 14px; }
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg-dark); /* Fundo escuro para input */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light); /* Texto claro */
+    font-size: 16px;
+}
+.form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
 .form-actions { display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px; }
-.btn-secondary { background: none; border: 1px solid var(--border-color); color: var(--text-light); padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+
+/* Utilitários */
+.hidden { display: none !important; }
