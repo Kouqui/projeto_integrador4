@@ -1,3 +1,5 @@
+//Criação pelo autor: Jefferson Andrey Dias Cardoso - Ra: 24017498
+
 package com.fut.fut360.Model;
 
 import jakarta.persistence.*;

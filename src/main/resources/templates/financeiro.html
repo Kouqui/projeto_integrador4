@@ -1,3 +1,5 @@
+<!--Criação pelos autores: Jefferson Andrey Dias Cardoso e Kauã Kouqui - Ra: 24017498 e Ra: 24027746 -->
+
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -202,12 +204,40 @@
                         <button class="close-button" onclick="fecharModalContract()"><i class='bx bx-x'></i></button>
                     </div>
                     <form id="contract-form">
-                        <div class="form-group"><label for="cont-nome">Nome do Atleta</label><input type="text" id="cont-nome" required placeholder="Ex: Neymar"></div>
-                        <div class="form-group"><label for="cont-idade">Idade</label><input type="number" id="cont-idade" required min="16" max="100"></div>
-                        <div class="form-group"><label for="cont-posicao">Posição</label><input type="text" id="cont-posicao" required placeholder="Ex: Atacante"></div>
-                        <div class="form-group"><label for="cont-salary">Salário (R$)</label><input type="number" id="cont-salary" step="0.01" required></div>
-                        <div class="form-group"><label for="cont-start">Data Início</label><input type="date" id="cont-start" required></div>
-                        <div class="form-group"><label for="cont-end">Data Fim</label><input type="date" id="cont-end" required></div>
+                        <div class="form-group">
+                            <label for="cont-nome">Nome do Atleta</label>
+                            <input type="text" id="cont-nome" required placeholder="Ex: Neymar">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-idade">Idade</label>
+                            <input type="number" id="cont-idade" required min="16" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-posicao">Posição</label>
+                            <input type="text" id="cont-posicao" required placeholder="Ex: Atacante">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-salary">Salário (R$)</label>
+                            <input type="number" id="cont-salary" step="0.01" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-clausula">Cláusula de Rescisão (R$)</label>
+                            <input type="number" id="cont-clausula" step="0.01" placeholder="Ex: 5000000">
+                        </div>
+                        <div class="form-group">
+                            <label for="cont-start">Data Início</label>
+                            <input type="date" id="cont-start" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cont-end">Data Fim</label>
+                            <input type="date" id="cont-end" required>
+                        </div>
+
                         <div class="form-actions">
                             <button type="button" class="btn-secondary" onclick="fecharModalContract()">Cancelar</button>
                             <button type="submit" class="btn-primary">Salvar</button>
