@@ -1,3 +1,4 @@
+//Criado pelo autor: Kauã Kouqui
 package com.fut.fut360.config;
 
 import org.springframework.context.annotation.Configuration;

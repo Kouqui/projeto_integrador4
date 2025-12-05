@@ -1,3 +1,4 @@
+//Criação pelo autor: Kauã Kouqui
 package com.fut.fut360.Repository;
 import com.fut.fut360.Model.RegistroCarreira;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,3 +1,5 @@
+//Criação pelo autor: Kauã Kouqui
+
 package com.fut.fut360.Model;
 
 import jakarta.persistence.*;
