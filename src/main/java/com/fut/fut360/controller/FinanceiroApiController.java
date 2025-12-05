@@ -107,10 +107,6 @@ public class FinanceiroApiController {
         return ResponseEntity.ok(payrollService.calculatePayrollSummary());
     }
 
-    // ======================================================================
-    // MÓDULO 3: CONTRATOS DE ATLETAS (RECURSOS HUMANOS)
-    // ======================================================================
-
     @GetMapping("/api/rh/contracts")
     @ResponseBody
     public ResponseEntity<List<Contract>> listarContratos() {
@@ -119,8 +115,13 @@ public class FinanceiroApiController {
 
     @PostMapping("/api/rh/contracts")
     @ResponseBody
-    public ResponseEntity<Contract> salvarContrato(@RequestBody Contract contract) {
-        // ... (Lógica de validação do contrato) ...
+    public ResponseEntity<?> salvarContrato(@RequestBody Contract contract) {
+
+        if (contract.getAge() < 16 || contract.getAge() > 120) {
+            return ResponseEntity.badRequest().body("Erro: A idade deve ser entre 16 e 120 anos.");
+        }
+
+
         Contract salva = contractService.save(contract);
         return new ResponseEntity<>(salva, HttpStatus.CREATED);
     }
