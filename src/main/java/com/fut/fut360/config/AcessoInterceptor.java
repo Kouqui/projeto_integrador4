@@ -1,3 +1,6 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+//feito para monitorar e conferir o trafego das paginas
+
 package com.fut.fut360.config;
 
 import com.fut.fut360.service.SystemService;

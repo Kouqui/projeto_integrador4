@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+
 package com.fut.fut360.Model; // <--- O 'M' TEM QUE SER MAIÚSCULO IGUAL SUA PASTA
 
 import jakarta.persistence.*;

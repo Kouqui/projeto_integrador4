@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788, E KAUÃ KOUQUI UEMURA RA:24027746
+
 package com.fut.fut360;
 
 import com.fut.fut360.Model.Usuario;
