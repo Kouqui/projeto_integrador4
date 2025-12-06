@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- ESTADO DA APLICAÇÃO ---

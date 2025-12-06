@@ -1,3 +1,5 @@
+//CRIAÇÃO PELO AUTOR: KAUÊ FARIAS LOURENÇO RA:24788788
+
 package com.fut.fut360.controller;
 
 import com.fut.fut360.Model.EstatisticaTemporada;

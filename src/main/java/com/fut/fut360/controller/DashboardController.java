@@ -1,4 +1,4 @@
-//Criação pelo autor: Kauã Kouqui, Guilherme Braz
+//ARQUIVO AUTORIA: Kauã Kouqui, Guilherme Braz (24019760)
 package com.fut.fut360.controller;
 
 import com.fut.fut360.Repository.AtletaRepository;
