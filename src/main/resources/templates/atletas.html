@@ -1,14 +1,18 @@
 <!-- Criado pelo autor: Kauã Kouqui -->
+
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atletas - Fut360</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+            rel="stylesheet">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/atletas_style.css}">
 </head>
 <body>
@@ -18,35 +22,71 @@
             <img th:src="@{/images/logo_fut_360.png}" alt="Logo Fut360" class="sidebar-logo">
             <h1 class="sidebar-title">Fut360</h1>
         </div>
+
         <nav class="sidebar-nav">
             <ul>
-                <li><a th:href="@{/dashboard}"><i class='bx bxs-dashboard'></i><span>Dashboard</span></a></li>
-                <li><a th:href="@{/financeiro}"><i class='bx bx-dollar-circle'></i><span>Financeiro</span></a></li>
-                <li><a th:href="@{/calendario}"><i class='bx bx-calendar'></i><span>Calendário</span></a></li>
-                <li class="active"><a th:href="@{/atletas}"><i class='bx bx-run'></i><span>Atletas</span></a></li>
-                <li><a th:href="@{/relatorios}"><i class='bx bxs-report'></i><span>Relatórios</span></a></li>
+                <li><a th:href="@{/dashboard}"><i class="bx bxs-dashboard"></i><span>Dashboard</span></a></li>
+                <li><a th:href="@{/financeiro}"><i class="bx bx-dollar-circle"></i><span>Financeiro</span></a></li>
+                <li><a th:href="@{/calendario}"><i class="bx bx-calendar"></i><span>Calendário</span></a></li>
+                <li class="active"><a th:href="@{/atletas}"><i class="bx bx-run"></i><span>Atletas</span></a></li>
+                <li><a th:href="@{/relatorios}"><i class="bx bxs-report"></i><span>Relatórios</span></a></li>
             </ul>
         </nav>
-        <div class="sidebar-footer"><a href="#"><i class='bx bx-cog'></i><span>Configurações</span></a></div>
+
+        <div class="sidebar-footer">
+            <a href="#"><i class="bx bx-cog"></i><span>Configurações</span></a>
+        </div>
     </aside>
 
     <main class="main-content">
         <header class="header">
-            <div class="header-title"><h2>Gestão de Atletas</h2><p>Visualize e gerencie o elenco do seu clube</p></div>
-            <div class="user-info"><span>Kauê Farias</span><div class="user-avatar">K</div><button class="logout-btn"><i class='bx bx-log-out'></i></button></div>
+            <div class="header-title">
+                <h2>Gestão de Atletas</h2>
+                <p>Visualize e gerencie o elenco do seu clube</p>
+            </div>
+
+            <div class="user-info">
+                <span>Kauê Farias</span>
+                <div class="user-avatar">K</div>
+                <button class="logout-btn" type="button">
+                    <i class="bx bx-log-out"></i>
+                </button>
+            </div>
         </header>
 
         <div class="controls-bar">
             <div class="search-filter-group">
-                <div class="search-bar"><i class='bx bx-search'></i><input type="text" id="search-input" placeholder="Buscar atleta por nome..."></div>
-                <select id="category-filter"><option value="all">Todas Categorias</option><option value="Profissional">Profissional</option><option value="Sub-20">Sub-20</option><option value="Sub-17">Sub-17</option></select>
-                <select id="position-filter"><option value="all">Todas Posições</option><option value="Goleiro">Goleiro</option><option value="Zagueiro">Zagueiro</option><option value="Lateral">Lateral</option><option value="Meio-Campo">Meio-Campo</option><option value="Atacante">Atacante</option></select>
+                <div class="search-bar">
+                    <i class="bx bx-search"></i>
+                    <input type="text" id="search-input" placeholder="Buscar atleta por nome...">
+                </div>
+
+                <select id="category-filter">
+                    <option value="all">Todas Categorias</option>
+                    <option value="Profissional">Profissional</option>
+                    <option value="Sub-20">Sub-20</option>
+                    <option value="Sub-17">Sub-17</option>
+                </select>
+
+                <select id="position-filter">
+                    <option value="all">Todas Posições</option>
+                    <option value="Goleiro">Goleiro</option>
+                    <option value="Zagueiro">Zagueiro</option>
+                    <option value="Lateral">Lateral</option>
+                    <option value="Meio-Campo">Meio-Campo</option>
+                    <option value="Atacante">Atacante</option>
+                </select>
             </div>
-            <button class="btn-primary" id="add-athlete-btn"><i class='bx bx-plus'></i> Adicionar Atleta</button>
+
+            <button class="btn-primary" id="add-athlete-btn" type="button">
+                <i class="bx bx-plus"></i> Adicionar Atleta
+            </button>
         </div>
 
-        <section class="athlete-grid" id="athlete-grid-container" th:unless="${#lists.isEmpty(atletas)}">
-            <div class="athlete-card" th:each="atleta : ${atletas}"
+        <section class="athlete-grid" id="athlete-grid-container"
+                 th:unless="${#lists.isEmpty(atletas)}">
+            <div class="athlete-card"
+                 th:each="atleta : ${atletas}"
                  th:data-id="${atleta.id}"
                  th:data-name="${atleta.name}"
                  th:data-position="${atleta.posicao}"
@@ -56,7 +96,9 @@
                  th:data-birthdate="${atleta.birthdate != null ? #temporals.format(atleta.birthdate, 'dd/MM/yyyy') : 'N/A'}"
                  th:data-age="${atleta.getAge()}"
                  th:data-nationality="${atleta.nacionalidade}"
-                 th:data-height="${atleta.alturaCm}" th:data-weight="${atleta.pesoKg}" th:data-foot="${atleta.foot}"
+                 th:data-height="${atleta.alturaCm}"
+                 th:data-weight="${atleta.pesoKg}"
+                 th:data-foot="${atleta.foot}"
 
                  th:data-salary="${!atleta.contratos.isEmpty() ? #numbers.formatCurrency(atleta.contratos[0].salario) : 'N/A'}"
                  th:data-release-clause="${!atleta.contratos.isEmpty() ? #numbers.formatCurrency(atleta.contratos[0].releaseClause) : 'N/A'}"
@@ -91,7 +133,6 @@
                  th:data-meta1="${!atleta.registros.isEmpty() ? atleta.registros[0].descricao : 'Nenhuma meta definida.'}"
                  th:data-meta2="${!atleta.registros.isEmpty() && atleta.registros.size() > 1 ? atleta.registros[1].descricao : ''}"
                  th:data-observation="${!atleta.registros.isEmpty() && atleta.registros.size() > 2 ? atleta.registros[2].descricao : 'Sem observações.'}">
-
                 <img th:src="@{/uploads/{filename}(filename=${atleta.photo})}"
                      th:alt="'Foto de ' + ${atleta.name}"
                      class="athlete-photo">
@@ -104,138 +145,232 @@
     </main>
 </div>
 
+<!-- MODAL PERFIL ATLETA -->
 <div id="athlete-modal" class="modal-overlay">
-    <div class="modal-content">
-        <button class="close-button" id="close-modal-btn">&times;</button>
+    <div class="modal-content athlete-modal-content">
+        <button class="close-button" id="close-modal-btn" type="button">&times;</button>
+
         <div class="modal-left">
             <img src="" id="modal-photo" class="modal-photo" alt="Foto do Jogador">
             <h2 id="modal-name" class="modal-name"></h2>
             <p id="modal-position" class="modal-position"></p>
         </div>
+
         <div class="modal-right">
             <div class="modal-tabs">
-                <button class="tab-link active" data-tab="ficha-tecnica">Ficha Técnica</button>
-                <button class="tab-link" data-tab="desempenho">Desempenho</button>
-                <button class="tab-link" data-tab="carreira-metas">Carreira & Metas</button>
-                <button class="tab-link" type="button" data-tab="financeiro">Financeiro</button>
+                <button class="tab-link active" data-tab="ficha-tecnica" type="button">Ficha Técnica</button>
+                <button class="tab-link" data-tab="desempenho" type="button">Desempenho</button>
+                <button class="tab-link" data-tab="financeiro" type="button">Financeiro</button>
             </div>
 
-            <div id="ficha-tecnica" class="tab-content active">
-                <h3 class="info-section-title"><i class='bx bx-id-card'></i> Dados Pessoais</h3>
-                <div class="info-grid">
-                    <div class="info-item"><label>Nome Completo</label><p id="modal-fullname"></p></div>
-                    <div class="info-item"><label>Nascimento</label><p id="modal-birthdate"></p></div>
-                    <div class="info-item"><label>Idade</label><p id="modal-age"></p></div>
-                    <div class="info-item"><label>Nacionalidade</label><p id="modal-nationality"></p></div>
-                </div>
-                <h3 class="info-section-title" style="margin-top: 30px;"><i class='bx bx-body'></i> Físico</h3>
-                <div class="info-grid">
-                    <div class="info-item"><label>Altura</label><p id="modal-height"></p></div>
-                    <div class="info-item"><label>Peso</label><p id="modal-weight"></p></div>
-                    <div class="info-item"><label>Pé Preferido</label><p id="modal-foot"></p></div>
-                </div>
-            </div>
+            <!-- Painéis das abas com altura fixa e scroll interno -->
+            <div class="modal-tab-panels">
+                <div id="ficha-tecnica" class="tab-content active">
+                    <h3 class="info-section-title">
+                        <i class="bx bx-id-card"></i> Dados Pessoais
+                    </h3>
 
-            <div id="desempenho" class="tab-content">
-                <div class="info-section-title">
-                    <span><i class='bx bx-line-chart'></i> Último Treino</span>
-                    <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;" id="show-add-treino-modal-btn">Novo</button>
-                </div>
-
-                <div class="main-rating-box">
-                    <label>Nota Geral</label>
-                    <span class="rating-badge" id="modal-treino-nota-geral">--</span>
-                </div>
-
-                <div class="sub-rating-grid">
-                    <div class="sub-rating-box"><label>Tática</label><p id="modal-treino-nota-tatica">--</p></div>
-                    <div class="sub-rating-box"><label>Técnica</label><p id="modal-treino-nota-tecnica">--</p></div>
-                    <div class="sub-rating-box"><label>Física</label><p id="modal-treino-nota-fisica">--</p></div>
-                </div>
-
-                <div class="stats-list-container">
-                    <div class="stat-row">
-                        <span class="stat-label">Passes</span>
-                        <div class="stat-bar-bg"><div class="stat-bar-fill" id="modal-treino-passes-bar"></div></div>
-                        <span class="stat-value" id="modal-treino-passes"></span>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nome Completo</label>
+                            <p id="modal-fullname"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Nascimento</label>
+                            <p id="modal-birthdate"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Idade</label>
+                            <p id="modal-age"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Nacionalidade</label>
+                            <p id="modal-nationality"></p>
+                        </div>
                     </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Chutes</span>
-                        <div class="stat-bar-bg"><div class="stat-bar-fill" id="modal-treino-chutes-bar"></div></div>
-                        <span class="stat-value" id="modal-treino-chutes"></span>
-                    </div>
-                    <div class="stat-row">
-                        <span class="stat-label">Dribles</span>
-                        <div class="stat-bar-bg"><div class="stat-bar-fill" id="modal-treino-dribles-bar"></div></div>
-                        <span class="stat-value" id="modal-treino-dribles"></span>
+
+                    <h3 class="info-section-title mt-30">
+                        <i class="bx bx-body"></i> Físico
+                    </h3>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Altura</label>
+                            <p id="modal-height"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Peso</label>
+                            <p id="modal-weight"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Pé Preferido</label>
+                            <p id="modal-foot"></p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="info-grid" style="margin-top: 20px;">
-                    <div class="info-item"><label>Desarmes</label><p id="modal-treino-desarmes"></p></div>
-                    <div class="info-item"><label>Intercept.</label><p id="modal-treino-interceptacoes"></p></div>
-                    <div class="info-item"><label>Distância</label><p id="modal-treino-km"></p></div>
-                    <div class="info-item"><label>Vel. Máx</label><p id="modal-treino-vel-max"></p></div>
+                <div id="desempenho" class="tab-content">
+                    <div class="info-section-title info-section-header">
+                        <span><i class="bx bx-line-chart"></i> Último Treino</span>
+                        <button class="btn-primary btn-small" id="show-add-treino-modal-btn" type="button">
+                            Novo
+                        </button>
+                    </div>
+
+                    <div class="main-rating-box">
+                        <label>Nota Geral</label>
+                        <span class="rating-badge" id="modal-treino-nota-geral">--</span>
+                    </div>
+
+                    <div class="sub-rating-grid">
+                        <div class="sub-rating-box">
+                            <label>Tática</label>
+                            <p id="modal-treino-nota-tatica">--</p>
+                        </div>
+                        <div class="sub-rating-box">
+                            <label>Técnica</label>
+                            <p id="modal-treino-nota-tecnica">--</p>
+                        </div>
+                        <div class="sub-rating-box">
+                            <label>Física</label>
+                            <p id="modal-treino-nota-fisica">--</p>
+                        </div>
+                    </div>
+
+                    <div class="stats-list-container">
+                        <div class="stat-row">
+                            <span class="stat-label">Passes</span>
+                            <div class="stat-bar-bg">
+                                <div class="stat-bar-fill" id="modal-treino-passes-bar"></div>
+                            </div>
+                            <span class="stat-value" id="modal-treino-passes"></span>
+                        </div>
+
+                        <div class="stat-row">
+                            <span class="stat-label">Chutes</span>
+                            <div class="stat-bar-bg">
+                                <div class="stat-bar-fill" id="modal-treino-chutes-bar"></div>
+                            </div>
+                            <span class="stat-value" id="modal-treino-chutes"></span>
+                        </div>
+
+                        <div class="stat-row">
+                            <span class="stat-label">Dribles</span>
+                            <div class="stat-bar-bg">
+                                <div class="stat-bar-fill" id="modal-treino-dribles-bar"></div>
+                            </div>
+                            <span class="stat-value" id="modal-treino-dribles"></span>
+                        </div>
+                    </div>
+
+                    <div class="info-grid mt-20">
+                        <div class="info-item">
+                            <label>Desarmes</label>
+                            <p id="modal-treino-desarmes"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Intercept.</label>
+                            <p id="modal-treino-interceptacoes"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Distância</label>
+                            <p id="modal-treino-km"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Vel. Máx</label>
+                            <p id="modal-treino-vel-max"></p>
+                        </div>
+                    </div>
+
+                    <div class="info-section-title info-section-header mt-30">
+                        <span><i class="bx bx-trophy"></i> Temporada Atual</span>
+                        <button class="btn-primary btn-small" id="show-add-stats-modal-btn" type="button">
+                            Editar
+                        </button>
+                    </div>
+
+                    <div class="season-grid">
+                        <div class="info-item">
+                            <label>Jogos</label>
+                            <p id="modal-games"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Gols</label>
+                            <p id="modal-goals"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Assist.</label>
+                            <p id="modal-assists"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Minutos</label>
+                            <p id="modal-minutes"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Amarelos</label>
+                            <p id="modal-yellow"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Vermelhos</label>
+                            <p id="modal-red"></p>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="info-section-title" style="margin-top: 30px;">
-                    <span><i class='bx bx-trophy'></i> Temporada Atual</span>
-                    <button class="btn-primary" style="padding: 6px 12px; font-size: 12px;" id="show-add-stats-modal-btn">Editar</button>
-                </div>
-                <div class="season-grid">
-                    <div class="info-item"><label>Jogos</label><p id="modal-games"></p></div>
-                    <div class="info-item"><label>Gols</label><p id="modal-goals"></p></div>
-                    <div class="info-item"><label>Assist.</label><p id="modal-assists"></p></div>
-                    <div class="info-item"><label>Minutos</label><p id="modal-minutes"></p></div>
-                    <div class="info-item"><label>Amarelos</label><p id="modal-yellow"></p></div>
-                    <div class="info-item"><label>Vermelhos</label><p id="modal-red"></p></div>
-                </div>
-            </div>
+                <div id="financeiro" class="tab-content">
+                    <h3 class="info-section-title">
+                        <i class="bx bx-money"></i> Dados Contratuais
+                    </h3>
 
-            <div id="carreira-metas" class="tab-content">
-                <h3 class="info-section-title"><i class='bx bx-target-lock'></i> Metas da Temporada</h3>
-                <ul class="goals-list">
-                    <li id="modal-meta-1"></li>
-                    <li id="modal-meta-2"></li>
-                </ul>
-                <h3 class="info-section-title" style="margin-top: 30px;"><i class='bx bx-note'></i> Relatório Técnico</h3>
-                <div class="observation-log">
-                    <blockquote id="modal-observation"></blockquote>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Salário Mensal</label>
+                            <p id="modal-salary"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Multa Rescisória</label>
+                            <p id="modal-release-clause"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Início</label>
+                            <p id="modal-contract-start"></p>
+                        </div>
+                        <div class="info-item">
+                            <label>Fim</label>
+                            <p id="modal-contract-end"></p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
-            <div id="financeiro" class="tab-content">
-                <h3 class="info-section-title"><i class='bx bx-money'></i> Dados Contratuais</h3>
-                <div class="info-grid">
-                    <div class="info-item"><label>Salário Mensal</label><p id="modal-salary"></p></div>
-                    <div class="info-item"><label>Multa Rescisória</label><p id="modal-release-clause"></p></div>
-                    <div class="info-item"><label>Início</label><p id="modal-contract-start"></p></div>
-                    <div class="info-item"><label>Fim</label><p id="modal-contract-end"></p></div>
-                </div>
-            </div>
-        </div>
+            </div> <!-- /.modal-tab-panels -->
+        </div> <!-- /.modal-right -->
     </div>
 </div>
 
+<!-- MODAL NOVO ATLETA -->
 <div id="add-athlete-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 700px; display: block;">
-        <button class="close-button" id="close-add-modal-btn">&times;</button>
-        <h2 class="info-section-title" style="text-align: center; border: none; margin-bottom: 5px;">Novo Atleta</h2>
+    <div class="modal-content modal-narrow">
+        <button class="close-button" id="close-add-modal-btn" type="button">&times;</button>
+        <h2 class="info-section-title no-border text-center">
+            Novo Atleta
+        </h2>
 
-        <form th:action="@{/atletas/salvar}" th:object="${atletaNovo}" method="post" enctype="multipart/form-data" class="modal-form-body">
+        <form th:action="@{/atletas/salvar}" th:object="${atletaNovo}"
+              method="post" enctype="multipart/form-data"
+              class="modal-form-body">
 
-            <div class="modal-left" style="margin: 0 auto 20px; width: 100%; padding: 0; border: none; background: none;">
-                <div class="info-item" style="text-align: center; max-width: 300px; margin: 0 auto;">
+            <div class="modal-photo-field">
+                <div class="info-item">
                     <label>Foto</label>
                     <input type="file" name="imageFile" accept="image/png, image/jpeg">
                 </div>
             </div>
 
-            <div id="add-ficha" class="tab-content active" style="padding: 20px 0; display: block;">
+            <div id="add-ficha" class="form-section">
                 <div class="form-group">
                     <label>Nome Completo</label>
                     <input type="text" th:field="*{fullname}" placeholder="Ex: Lucas Rodrigues Moura da Silva">
                 </div>
+
                 <div class="form-grid-2">
                     <div class="form-group">
                         <label>Nome Curto (Camisa)</label>
@@ -246,16 +381,33 @@
                         <input type="date" th:field="*{birthdate}">
                     </div>
                 </div>
+
                 <div class="form-grid-3">
-                    <div class="form-group"><label>Nacionalidade</label><input type="text" th:field="*{nacionalidade}" value="Brasileiro"></div>
-                    <div class="form-group"><label>Altura (cm)</label><input type="number" th:field="*{alturaCm}" placeholder="180"></div>
-                    <div class="form-group"><label>Peso (kg)</label><input type="number" step="0.1" th:field="*{pesoKg}" placeholder="75.5"></div>
-                </div>
-                <div class="form-grid-3">
-                    <div class="form-group"><label>Pé</label>
-                        <select th:field="*{foot}"><option value="Destro">Destro</option><option value="Canhoto">Canhoto</option><option value="Ambidestro">Ambidestro</option></select>
+                    <div class="form-group">
+                        <label>Nacionalidade</label>
+                        <input type="text" th:field="*{nacionalidade}" value="Brasileiro">
                     </div>
-                    <div class="form-group"><label>Posição</label>
+                    <div class="form-group">
+                        <label>Altura (cm)</label>
+                        <input type="number" th:field="*{alturaCm}" placeholder="180">
+                    </div>
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <input type="number" step="0.1" th:field="*{pesoKg}" placeholder="75.5">
+                    </div>
+                </div>
+
+                <div class="form-grid-3">
+                    <div class="form-group">
+                        <label>Pé</label>
+                        <select th:field="*{foot}">
+                            <option value="Destro">Destro</option>
+                            <option value="Canhoto">Canhoto</option>
+                            <option value="Ambidestro">Ambidestro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Posição</label>
                         <select th:field="*{posicao}">
                             <option value="Goleiro">Goleiro</option>
                             <option value="Zagueiro">Zagueiro</option>
@@ -264,8 +416,13 @@
                             <option value="Atacante">Atacante</option>
                         </select>
                     </div>
-                    <div class="form-group"><label>Categoria</label>
-                        <select th:field="*{categoria}"><option value="Profissional">Profissional</option><option value="Sub-20">Sub-20</option><option value="Sub-17">Sub-17</option></select>
+                    <div class="form-group">
+                        <label>Categoria</label>
+                        <select th:field="*{categoria}">
+                            <option value="Profissional">Profissional</option>
+                            <option value="Sub-20">Sub-20</option>
+                            <option value="Sub-17">Sub-17</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -277,65 +434,132 @@
     </div>
 </div>
 
+<!-- MODAL NOVO TREINO -->
 <div id="add-treino-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 700px; display: block;">
-        <button class="close-button" id="close-add-treino-modal-btn">&times;</button>
-        <h2 class="info-section-title" style="text-align: center; border: none;">Novo Treino</h2>
+    <div class="modal-content modal-narrow">
+        <button class="close-button" id="close-add-treino-modal-btn" type="button">&times;</button>
+        <h2 class="info-section-title no-border text-center">Novo Treino</h2>
 
         <form th:action="@{/treino/salvar}" method="post" class="modal-form-body">
-            <input type="hidden" id="form-treino-id" name="id" />
-            <input type="hidden" id="treino-atleta-id" name="atletaId" />
+            <input type="hidden" id="form-treino-id" name="id">
+            <input type="hidden" id="treino-atleta-id" name="atletaId">
 
             <h3 class="form-section-title">Notas</h3>
             <div class="form-grid-2">
-                <div class="form-group"><label>Tática</label><input type="number" step="0.1" id="input-treino-tatica" name="treinoNotaTatica"></div>
-                <div class="form-group"><label>Física</label><input type="number" step="0.1" id="input-treino-fisica" name="treinoNotaFisica"></div>
+                <div class="form-group">
+                    <label>Tática</label>
+                    <input type="number" step="0.1" id="input-treino-tatica" name="treinoNotaTatica">
+                </div>
+                <div class="form-group">
+                    <label>Física</label>
+                    <input type="number" step="0.1" id="input-treino-fisica" name="treinoNotaFisica">
+                </div>
             </div>
 
             <h3 class="form-section-title">Estatísticas Técnicas</h3>
             <div class="form-grid-3">
-                <div class="form-group"><label>Passes Certos</label><input type="number" id="input-treino-passes-c" name="treinoPassesCertos"></div>
-                <div class="form-group"><label>Passes Total</label><input type="number" id="input-treino-passes-t" name="treinoPassesTotal"></div>
-                <div class="form-group"><label>Chutes Certos</label><input type="number" id="input-treino-chutes-c" name="treinoChutesCertos"></div>
-                <div class="form-group"><label>Chutes Total</label><input type="number" id="input-treino-chutes-t" name="treinoChutesTotal"></div>
-                <div class="form-group"><label>Dribles Certos</label><input type="number" id="input-treino-dribles-c" name="treinoDriblesCertos"></div>
-                <div class="form-group"><label>Dribles Total</label><input type="number" id="input-treino-dribles-t" name="treinoDriblesTotal"></div>
-                <div class="form-group"><label>Desarmes</label><input type="number" id="input-treino-desarmes" name="treinoDesarmes"></div>
-                <div class="form-group"><label>Interceptações</label><input type="number" id="input-treino-interceptacoes" name="treinoInterceptacoes"></div>
+                <div class="form-group">
+                    <label>Passes Certos</label>
+                    <input type="number" id="input-treino-passes-c" name="treinoPassesCertos">
+                </div>
+                <div class="form-group">
+                    <label>Passes Total</label>
+                    <input type="number" id="input-treino-passes-t" name="treinoPassesTotal">
+                </div>
+                <div class="form-group">
+                    <label>Chutes Certos</label>
+                    <input type="number" id="input-treino-chutes-c" name="treinoChutesCertos">
+                </div>
+                <div class="form-group">
+                    <label>Chutes Total</label>
+                    <input type="number" id="input-treino-chutes-t" name="treinoChutesTotal">
+                </div>
+                <div class="form-group">
+                    <label>Dribles Certos</label>
+                    <input type="number" id="input-treino-dribles-c" name="treinoDriblesCertos">
+                </div>
+                <div class="form-group">
+                    <label>Dribles Total</label>
+                    <input type="number" id="input-treino-dribles-t" name="treinoDriblesTotal">
+                </div>
+                <div class="form-group">
+                    <label>Desarmes</label>
+                    <input type="number" id="input-treino-desarmes" name="treinoDesarmes">
+                </div>
+                <div class="form-group">
+                    <label>Interceptações</label>
+                    <input type="number" id="input-treino-interceptacoes" name="treinoInterceptacoes">
+                </div>
             </div>
 
             <h3 class="form-section-title">GPS</h3>
             <div class="form-grid-3">
-                <div class="form-group"><label>Dist. (km)</label><input type="number" step="0.1" id="input-treino-km" name="treinoKmPercorridos"></div>
-                <div class="form-group"><label>Vel. Max</label><input type="number" step="0.1" id="input-treino-vel" name="treinoVelocidadeMax"></div>
-                <div class="form-group"><label>Sprints</label><input type="number" id="input-treino-sprints" name="treinoSprints"></div>
+                <div class="form-group">
+                    <label>Dist. (km)</label>
+                    <input type="number" step="0.1" id="input-treino-km" name="treinoKmPercorridos">
+                </div>
+                <div class="form-group">
+                    <label>Vel. Max</label>
+                    <input type="number" step="0.1" id="input-treino-vel" name="treinoVelocidadeMax">
+                </div>
+                <div class="form-group">
+                    <label>Sprints</label>
+                    <input type="number" id="input-treino-sprints" name="treinoSprints">
+                </div>
             </div>
 
-            <div class="form-actions"><button type="submit" class="btn-primary">Salvar Treino</button></div>
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Salvar Treino</button>
+            </div>
         </form>
     </div>
 </div>
 
+<!-- MODAL ESTATÍSTICAS -->
 <div id="add-stats-modal" class="modal-overlay">
-    <div class="modal-content" style="max-width: 700px; display: block;">
-        <button class="close-button" id="close-add-stats-modal-btn">&times;</button>
-        <h2 class="info-section-title" style="text-align: center; border: none;">Atualizar Estatísticas</h2>
+    <div class="modal-content modal-narrow">
+        <button class="close-button" id="close-add-stats-modal-btn" type="button">&times;</button>
+        <h2 class="info-section-title no-border text-center">Atualizar Estatísticas</h2>
 
         <form th:action="@{/estatisticas/salvar}" method="post" class="modal-form-body">
-            <input type="hidden" id="stats-atleta-id" name="atletaId" />
-            <input type="hidden" id="stats-id" name="id" />
+            <input type="hidden" id="stats-atleta-id" name="atletaId">
+            <input type="hidden" id="stats-id" name="id">
 
-            <div class="form-group"><label>Temporada</label><input type="text" id="input-stats-temp" name="temporada" placeholder="2025"></div>
-            <div class="form-grid-3">
-                <div class="form-group"><label>Jogos</label><input type="number" id="input-stats-jogos" name="games"></div>
-                <div class="form-group"><label>Gols</label><input type="number" id="input-stats-gols" name="goals"></div>
-                <div class="form-group"><label>Assist.</label><input type="number" id="input-stats-assists" name="assists"></div>
-                <div class="form-group"><label>Minutos</label><input type="number" id="input-stats-min" name="minutes"></div>
-                <div class="form-group"><label>Amarelos</label><input type="number" id="input-stats-y" name="yellow"></div>
-                <div class="form-group"><label>Vermelhos</label><input type="number" id="input-stats-r" name="red"></div>
+            <div class="form-group">
+                <label>Temporada</label>
+                <input type="text" id="input-stats-temp" name="temporada" placeholder="2025">
             </div>
 
-            <div class="form-actions"><button type="submit" class="btn-primary">Salvar Estatísticas</button></div>
+            <div class="form-grid-3">
+                <div class="form-group">
+                    <label>Jogos</label>
+                    <input type="number" id="input-stats-jogos" name="games">
+                </div>
+                <div class="form-group">
+                    <label>Gols</label>
+                    <input type="number" id="input-stats-gols" name="goals">
+                </div>
+                <div class="form-group">
+                    <label>Assist.</label>
+                    <input type="number" id="input-stats-assists" name="assists">
+                </div>
+                <div class="form-group">
+                    <label>Minutos</label>
+                    <input type="number" id="input-stats-min" name="minutes">
+                </div>
+                <div class="form-group">
+                    <label>Amarelos</label>
+                    <input type="number" id="input-stats-y" name="yellow">
+                </div>
+                <div class="form-group">
+                    <label>Vermelhos</label>
+                    <input type="number" id="input-stats-r" name="red">
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-primary">Salvar Estatísticas</button>
+            </div>
         </form>
     </div>
 </div>

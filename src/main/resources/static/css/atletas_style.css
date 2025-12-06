@@ -1,5 +1,6 @@
 /* --- Criado pelo autor: Kauã Kouqui --- */
-/* --- ESTILOS GLOBAIS E VARIÁVEIS --- */
+
+/* --- VARIÁVEIS --- */
 :root {
     --primary-color: #00aaff;
     --secondary-color: #0072ff;
@@ -19,7 +20,12 @@
     --rating-purple: #9d4edd;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* RESET BÁSICO */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
     font-family: 'Poppins', sans-serif;
@@ -31,28 +37,63 @@ body {
 }
 
 /* SCROLLBAR */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-dark); }
+::-webkit-scrollbar {
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-dark);
+}
 
 /* --- LAYOUT PRINCIPAL --- */
-.dashboard-container { display: flex; width: 100%; height: 100%; }
+.dashboard-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
 
 .sidebar {
-    min-width: 260px; width: 260px;
+    min-width: 260px;
+    width: 260px;
     background-color: var(--bg-light);
-    display: flex; flex-direction: column;
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     border-right: 1px solid var(--border-color);
     height: 100%;
 }
-.sidebar-header { display: flex; align-items: center; gap: 15px; margin-bottom: 40px; }
-.sidebar-logo { width: 50px; height: auto; }
-.sidebar-title { font-size: 24px; font-weight: 600; }
-.sidebar-nav ul { list-style: none; }
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.sidebar-logo {
+    width: 50px;
+    height: auto;
+}
+
+.sidebar-title {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
 .sidebar-nav li a {
-    display: flex; align-items: center; gap: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
     padding: 15px 20px;
     color: var(--text-dark);
     text-decoration: none;
@@ -60,12 +101,20 @@ body {
     border-radius: 8px;
     transition: all 0.3s ease;
 }
-.sidebar-nav li a:hover, .sidebar-nav li.active a {
+
+.sidebar-nav li a:hover,
+.sidebar-nav li.active a {
     background-color: var(--card-bg);
     color: var(--text-light);
 }
-.sidebar-nav i { font-size: 22px; }
-.sidebar-footer { margin-top: auto; }
+
+.sidebar-nav i {
+    font-size: 22px;
+}
+
+.sidebar-footer {
+    margin-top: auto;
+}
 
 .main-content {
     flex-grow: 1;
@@ -74,19 +123,69 @@ body {
     overflow-y: auto;
 }
 
-.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.header-title h2 { font-size: 28px; font-weight: 600; }
-.header-title p { color: var(--text-dark); font-size: 16px; }
-.user-info { display: flex; align-items: center; gap: 15px; }
-.user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); display: flex; justify-content: center; align-items: center; font-weight: 600; }
-.logout-btn { background: none; border: none; color: var(--text-dark); font-size: 24px; cursor: pointer; }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
 
-/* --- ESTILOS DA PÁGINA DE ATLETAS --- */
-.controls-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
-.search-filter-group { display: flex; gap: 15px; flex-wrap: wrap; }
-.search-bar { position: relative; }
+.header-title h2 {
+    font-size: 28px;
+    font-weight: 600;
+}
 
-/* INPUTS DA BARRA DE PESQUISA */
+.header-title p {
+    color: var(--text-dark);
+    font-size: 16px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 600;
+}
+
+.logout-btn {
+    background: none;
+    border: none;
+    color: var(--text-dark);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* --- CONTROLES / FILTROS --- */
+.controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.search-filter-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-bar {
+    position: relative;
+}
+
+/* INPUT DE BUSCA */
 .search-bar input {
     background-color: var(--card-bg);
     border: none !important;
@@ -97,7 +196,15 @@ body {
     font-size: 14px;
     width: 250px;
 }
-.search-bar i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--text-dark); }
+
+.search-bar i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dark);
+}
+
 .controls-bar select {
     background-color: var(--card-bg);
     border: none !important;
@@ -109,6 +216,7 @@ body {
     cursor: pointer;
 }
 
+/* BOTÕES */
 .btn-primary {
     background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     color: white;
@@ -117,36 +225,107 @@ body {
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
-    display: flex; align-items: center; gap: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3); }
 
-/* GRID DE ATLETAS */
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+}
+
+.btn-small {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* UTILITÁRIOS */
+.mt-20 {
+    margin-top: 20px;
+}
+.mt-30 {
+    margin-top: 30px;
+}
+.text-center {
+    text-align: center;
+}
+
+/* --- GRID DE ATLETAS --- */
 .athlete-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 25px;
     padding-bottom: 40px;
 }
-.athlete-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; padding: 20px; cursor: pointer; transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.athlete-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2); border-color: var(--primary-color); }
-.athlete-photo { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; margin-bottom: 15px; border: 3px solid var(--border-color); }
-.athlete-name { font-size: 18px; font-weight: 600; margin-bottom: 5px; }
-.athlete-info { color: var(--text-dark); font-size: 14px; }
-.athlete-category { font-size: 12px; font-weight: 500; color: var(--primary-color); background: rgba(0, 170, 255, 0.1); padding: 3px 8px; border-radius: 20px; display: inline-block; margin-top: 10px; }
 
-/* ===== MODAL ===== */
+.athlete-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    padding: 20px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.athlete-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-color);
+}
+
+.athlete-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 3px solid var(--border-color);
+}
+
+.athlete-name {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.athlete-info {
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.athlete-category {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--primary-color);
+    background: rgba(0, 170, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+/* ===== MODAL GENÉRICO ===== */
 .modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
     display: none;
-    justify-content: center; align-items: center;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
     padding: 20px;
 }
-.modal-overlay.visible { display: flex; }
+
+.modal-overlay.visible {
+    display: flex;
+}
 
 .modal-content {
     background-color: var(--bg-light);
@@ -161,78 +340,302 @@ body {
     max-height: 90vh;
     overflow-y: auto;
 }
-.close-button { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-light); cursor: pointer; background: none; border: none; }
-.modal-left { text-align: center; min-width: 200px; }
-.modal-photo { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); margin-bottom: 15px; }
-.modal-name { font-size: 24px; font-weight: 600; }
-.modal-position { color: var(--text-dark); }
-.modal-right { width: 100%; }
-.modal-tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 25px; }
-.tab-link { background: none; border: none; color: var(--text-dark); font-family: 'Poppins', sans-serif; font-size: 16px; padding-bottom: 10px; cursor: pointer; border-bottom: 3px solid transparent; }
-.tab-link.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
-.tab-content { display: none; animation: fadeIn 0.3s; }
-.tab-content.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; }
-.info-item { background-color: var(--card-bg); padding: 15px; border-radius: 8px; }
-.info-item label { display: block; font-size: 12px; color: var(--text-dark); margin-bottom: 5px; text-transform: uppercase; }
-.info-item p { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 10px; }
-.info-item p span { font-size: 14px; color: var(--text-dark); font-weight: 400; }
-.info-item-full { grid-column: 1 / -1; }
+/* Modal de formulário (mais estreito) */
+.modal-narrow {
+    max-width: 700px;
+}
 
-/* --- ESTATÍSTICAS & SOFASCORE --- */
-.main-rating-box { background-color: var(--card-bg); border-radius: 12px; padding: 20px; text-align: center; grid-column: 1 / -1; margin-bottom: 20px; border: 1px solid var(--border-color); }
-.main-rating-box label { font-size: 12px; color: var(--text-dark); text-transform: uppercase; }
-.rating-badge { font-size: 42px; font-weight: 700; padding: 5px 20px; border-radius: 10px; display: inline-block; margin-top: 5px; }
-.rating-low { background: rgba(255, 77, 77, 0.2); color: var(--negative-value); }
-.rating-medium { background: rgba(255, 193, 7, 0.2); color: var(--stable-value); }
-.rating-good { background: rgba(51, 255, 153, 0.2); color: var(--positive-value); }
-.rating-great { background: rgba(0, 170, 255, 0.2); color: var(--rating-blue); }
-.rating-perfect { background: rgba(157, 78, 221, 0.2); color: var(--rating-purple); }
+/* Modal de atleta com altura fixa */
+.athlete-modal-content {
+    max-height: 80vh;
+    height: 80vh;
+}
 
-.sub-rating-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; grid-column: 1 / -1; margin-bottom: 30px; }
-.sub-rating-box { background-color: var(--card-bg); border-radius: 8px; padding: 15px; text-align: center; border: 1px solid var(--border-color); }
-.sub-rating-box label { font-size: 12px; color: var(--text-dark); text-transform: uppercase; }
-.sub-rating-box p { font-size: 24px; font-weight: 600; margin-top: 5px; }
+/* Botão fechar */
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    color: var(--text-light);
+    cursor: pointer;
+    background: none;
+    border: none;
+}
 
-/* --- BARRAS DE PROGRESSO (CORRIGIDO - PRETO E AZUL) --- */
+/* COLUNA ESQUERDA DO MODAL */
+.modal-left {
+    text-align: center;
+    min-width: 200px;
+}
+
+.modal-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.modal-name {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.modal-position {
+    color: var(--text-dark);
+}
+
+/* COLUNA DIREITA DO MODAL (ABAS) */
+.modal-right {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Abas */
+.modal-tabs {
+    display: flex;
+    gap: 20px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 25px;
+}
+
+.tab-link {
+    background: none;
+    border: none;
+    color: var(--text-dark);
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    padding-bottom: 10px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-link.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+}
+
+/* Área que contém os painéis das abas */
+.modal-tab-panels {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Conteúdo das abas */
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* GRID DE INFO */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.info-item {
+    background-color: var(--card-bg);
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.info-item label {
+    display: block;
+    font-size: 12px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+}
+
+.info-item p {
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.info-item p span {
+    font-size: 14px;
+    color: var(--text-dark);
+    font-weight: 400;
+}
+
+.info-item-full {
+    grid-column: 1 / -1;
+}
+
+/* TÍTULOS DE SEÇÃO DENTRO DO MODAL */
+.info-section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Versão sem borda (títulos de modais de formulário) */
+.info-section-title.no-border {
+    border-bottom: none;
+    margin-bottom: 10px;
+}
+
+/* Header de seção com botão à direita (Último Treino / Temporada Atual) */
+.info-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* --- ESTATÍSTICAS & NOTAS --- */
+.main-rating-box {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    grid-column: 1 / -1;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.main-rating-box label {
+    font-size: 12px;
+    color: var(--text-dark);
+    text-transform: uppercase;
+}
+
+.rating-badge {
+    font-size: 42px;
+    font-weight: 700;
+    padding: 5px 20px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.rating-low {
+    background: rgba(255, 77, 77, 0.2);
+    color: var(--negative-value);
+}
+
+.rating-medium {
+    background: rgba(255, 193, 7, 0.2);
+    color: var(--stable-value);
+}
+
+.rating-good {
+    background: rgba(51, 255, 153, 0.2);
+    color: var(--positive-value);
+}
+
+.rating-great {
+    background: rgba(0, 170, 255, 0.2);
+    color: var(--rating-blue);
+}
+
+.rating-perfect {
+    background: rgba(157, 78, 221, 0.2);
+    color: var(--rating-purple);
+}
+
+.sub-rating-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    grid-column: 1 / -1;
+    margin-bottom: 30px;
+}
+
+.sub-rating-box {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.sub-rating-box label {
+    font-size: 12px;
+    color: var(--text-dark);
+    text-transform: uppercase;
+}
+
+.sub-rating-box p {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* --- BARRAS DE PROGRESSO --- */
 .stat-row {
     display: grid;
-    grid-template-columns: 100px 1fr 110px; /* Rótulo | Barra | Valor */
+    grid-template-columns: 100px 1fr 110px;
     align-items: center;
     gap: 15px;
     margin-bottom: 15px;
 }
-.stat-label { font-size: 14px; color: var(--text-dark); text-align: left; }
-.stat-value { font-size: 14px; font-weight: 600; color: var(--text-light); text-align: right; }
 
-/* Trilho da barra */
+.stat-label {
+    font-size: 14px;
+    color: var(--text-dark);
+    text-align: left;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-light);
+    text-align: right;
+}
+
 .stat-bar-bg {
     background-color: rgba(0, 0, 0, 0.6);
     height: 10px;
     border-radius: 5px;
     width: 100%;
     overflow: hidden;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-/* Preenchimento da barra */
 .stat-bar-fill {
     height: 100%;
     border-radius: 5px;
-    background-color: var(--primary-color); /* Azul */
-    width: 0%; /* Controlado pelo JS */
+    background-color: var(--primary-color);
+    width: 0%;
     transition: width 0.8s ease;
 }
 
-/* --- GRID DA TEMPORADA (CORRIGIDO PARA 3 COLUNAS) --- */
+/* --- GRID DA TEMPORADA --- */
 .season-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
     width: 100%;
 }
+
 .season-grid .info-item {
     background-color: var(--card-bg);
     padding: 15px;
@@ -244,7 +647,11 @@ body {
     justify-content: center;
     align-items: center;
 }
-.season-grid .info-item:hover { border-color: var(--border-color); }
+
+.season-grid .info-item:hover {
+    border-color: var(--border-color);
+}
+
 .season-grid .info-item p {
     font-size: 22px;
     font-weight: 700;
@@ -252,17 +659,63 @@ body {
     margin-top: 5px;
 }
 
-/* --- FORMULÁRIOS --- */
-.modal-form-body { display: flex; flex-direction: column; width: 100%; }
-.form-section-title { font-size: 16px; font-weight: 600; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 20px; margin-top: 10px; }
-.modal-right .form-section-title:first-of-type, .modal-form-body .form-section-title:first-of-type { margin-top: 0; }
-.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
-.form-group { display: flex; flex-direction: column; margin-bottom: 15px; }
-.form-group label { font-size: 13px; color: var(--text-dark); margin-bottom: 8px; font-weight: 500; }
+/* --- FORMULÁRIOS (MODAIS) --- */
+.modal-form-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
-.form-group input, .form-group select, .modal-content .info-item input, .modal-content .info-item select {
-    width: 100%; padding: 12px 15px;
+.form-section {
+    padding: 20px 0;
+}
+
+.form-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.modal-right .form-section-title:first-of-type,
+.modal-form-body .form-section-title:first-of-type {
+    margin-top: 0;
+}
+
+.form-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-grid-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.modal-content .info-item input,
+.modal-content .info-item select {
+    width: 100%;
+    padding: 12px 15px;
     background-color: var(--card-bg);
     border: none !important;
     outline: none !important;
@@ -270,35 +723,90 @@ body {
     color: var(--text-light);
     font-size: 14px;
     font-family: 'Poppins', sans-serif;
-    -webkit-appearance: none; -moz-appearance: none; appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
 }
-fieldset .form-group input, fieldset .form-group select { border: none !important; outline: none !important; }
 
 .form-group input[type="number"]::-webkit-inner-spin-button,
-.form-group input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-.form-group input[type="number"] { -moz-appearance: textfield; }
+.form-group input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
 
-.form-group input:focus, .form-group select:focus, .modal-content .info-item input:focus {
-    outline: none; border: none;
+.form-group input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.modal-content .info-item input:focus,
+.modal-content .info-item select:focus {
+    outline: none;
+    border: none;
     box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.2);
 }
-.form-actions { display: flex; justify-content: flex-end; margin-top: 30px; padding-top: 20px; border-top: 1px solid var(--border-color); }
-.form-fieldset { border: none; padding: 0; margin: 0; }
-.form-legend { display: none; }
-.modal-content .info-item input[type="file"] { font-size: 12px; padding: 10px; background-color: var(--card-bg); border: none; }
 
-.info-section-title { font-size: 18px; font-weight: 500; color: var(--text-light); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-.goals-list { list-style: none; padding-left: 5px; }
-.goals-list li { position: relative; padding-left: 30px; margin-bottom: 10px; font-size: 15px; }
-.goals-list li::before { content: '\ea61'; font-family: 'boxicons' !important; font-size: 20px; color: var(--primary-color); position: absolute; left: 0; top: 0; }
-.observation-log { background-color: var(--card-bg); border-radius: 8px; padding: 15px; }
-.observation-log blockquote { border-left: 3px solid var(--primary-color); padding-left: 15px; margin: 0; font-style: italic; color: var(--text-dark); }
-.observation-log span { display: block; font-size: 12px; color: var(--text-dark); margin-top: 8px; }
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+}
 
-/* --- MELHORIA NOS SELECTS (OPÇÕES MAIS CLARAS) --- */
-/* Isso garante que as opções tenham fundo sólido e sejam legíveis */
+.modal-content .info-item input[type="file"] {
+    font-size: 12px;
+    padding: 10px;
+    background-color: var(--card-bg);
+    border: none;
+}
+
+/* Campo de foto no modal de novo atleta */
+.modal-photo-field {
+    margin: 0 auto 20px;
+    max-width: 300px;
+    text-align: center;
+}
+
+/* SELECTS (OPÇÕES) */
 select option {
     background-color: var(--bg-light);
     color: white;
     padding: 10px;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 900px) {
+    .dashboard-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .modal-content {
+        flex-direction: column;
+        max-height: 90vh;
+    }
+
+    .modal-left {
+        min-width: 100%;
+    }
+
+    .modal-right {
+        width: 100%;
+    }
+
+    .form-grid-2,
+    .form-grid-3 {
+        grid-template-columns: 1fr;
+    }
 }
