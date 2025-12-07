@@ -1,10 +1,6 @@
 package com.fut.fut360.service;
 
-import com.fut.fut360.Model.Evento;
-import com.fut.fut360.Model.EventoEstatistica;
-import com.fut.fut360.Model.Transaction;
-import com.fut.fut360.Repository.EventoEstatisticaRepository;
-import com.fut.fut360.Repository.EventoRepository;
+import com.fut.fut360.model.Transaction;
 import com.fut.fut360.util.PdfGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 @Service
 public class RelatoriosService {
@@ -23,29 +18,18 @@ public class RelatoriosService {
     @Autowired
     private TransactionService transactionService;
 
-    @Autowired
-    private EventoRepository eventoRepository;
-
-    @Autowired
-    private EventoEstatisticaRepository eventoEstatisticaRepository;
-
+    /**
+     * Gera um relatório de Fluxo de Caixa para um mês e ano específicos.
+     * Mostra todas as receitas e despesas do período, com saldo final.
+     */
     public byte[] gerarRelatorioFluxoCaixa(String mes, String ano) {
         int mesInt = Integer.parseInt(mes);
         int anoInt = Integer.parseInt(ano);
 
+        // Busca todas as transações
         List<Transaction> todasTransacoes = transactionService.findAll();
-        
-        // DEBUG: Verificar quantas transações foram encontradas
-        System.out.println("========================================");
-        System.out.println("DEBUG - Total de transações no banco: " + todasTransacoes.size());
-        System.out.println("DEBUG - Buscando por: Mês=" + mesInt + ", Ano=" + anoInt);
-        
-        // DEBUG: Mostrar todas as datas das transações
-        for (Transaction t : todasTransacoes) {
-            System.out.println("DEBUG - Transação: " + t.getDescription() + " | Data: " + t.getDate() + " | Tipo: " + t.getType() + " | Valor: " + t.getValue());
-        }
-        System.out.println("========================================");
 
+        // Filtra transações do mês específico
         List<Transaction> transacoesMes = todasTransacoes.stream()
                 .filter(t -> {
                     LocalDate data = t.getDate();
@@ -53,6 +37,7 @@ public class RelatoriosService {
                 })
                 .toList();
 
+        // Calcula totais do mês
         BigDecimal receitasMes = BigDecimal.ZERO;
         BigDecimal despesasMes = BigDecimal.ZERO;
 
@@ -127,9 +112,14 @@ public class RelatoriosService {
         return PdfGenerator.gerarPdfSimples(conteudo);
     }
 
+    /**
+     * Gera relatório filtrando por categoria específica.
+     * Mostra todas as transações (receitas e despesas) dessa categoria.
+     */
     public byte[] gerarRelatorioCategoria(String categoria) {
         List<Transaction> todasTransacoes = transactionService.findAll();
 
+        // Filtra por categoria (case insensitive) ou "Todas"
         List<Transaction> transacoesFiltradas;
         if ("Todas".equalsIgnoreCase(categoria)) {
             transacoesFiltradas = todasTransacoes;
@@ -206,138 +196,49 @@ public class RelatoriosService {
         return PdfGenerator.gerarPdfSimples(conteudo);
     }
 
-    public byte[] gerarRelatorioPosJogo(Long eventoId) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    /**
+     * Relatório Pós-Jogo (mantido simulado pois não há dados de jogos no sistema).
+     */
+    public byte[] gerarRelatorioPosJogo(String jogo) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        // Busca o evento
-        Optional<Evento> eventoOpt = eventoRepository.findById(eventoId);
-        if (eventoOpt.isEmpty()) {
-            String erro = """
-                    ╔═══════════════════════════════════════════════════════════════════╗
-                    ║         RELATÓRIO TÉCNICO PÓS-JOGO - FUT360                       ║
-                    ╚═══════════════════════════════════════════════════════════════════╝
+        String conteudo = """
+                ╔═══════════════════════════════════════════════════════════════════╗
+                ║         RELATÓRIO TÉCNICO PÓS-JOGO - FUT360                       ║
+                ╚═══════════════════════════════════════════════════════════════════╝
 
-                    ERRO: Evento não encontrado com ID: %d
-                    Data de Geração: %s
-                    """.formatted(eventoId, LocalDate.now().format(dateFormatter));
-            return PdfGenerator.gerarPdfSimples(erro);
-        }
+                Partida: %s
+                Data de Geração: %s
 
-        Evento evento = eventoOpt.get();
+                ═══════════════════════════════════════════════════════════════════
+                                    ESTATÍSTICAS DA PARTIDA
+                ═══════════════════════════════════════════════════════════════════
 
-        // Busca as estatísticas do evento
-        Optional<EventoEstatistica> estatisticasOpt = eventoEstatisticaRepository.findByEventId(eventoId);
+                Posse de Bola:         55%%
+                Chutes a Gol:          12
+                Escanteios:            8
+                Faltas:                14
+                Cartões Amarelos:      2
+                Cartões Vermelhos:     0
 
-        String conteudo;
+                ═══════════════════════════════════════════════════════════════════
+                                         RESULTADO FINAL
+                ═══════════════════════════════════════════════════════════════════
 
-        if (estatisticasOpt.isEmpty()) {
-            // Caso não existam estatísticas cadastradas
-            conteudo = """
-                    ╔═══════════════════════════════════════════════════════════════════╗
-                    ║         RELATÓRIO TÉCNICO PÓS-JOGO - FUT360                       ║
-                    ╚═══════════════════════════════════════════════════════════════════╝
+                Fut360 FC  2  x  1  Adversário FC
 
-                    Partida: %s
-                    Data: %s
-                    Horário: %s - %s
-                    Local: %s
-                    Adversário: %s
-                    Data de Geração: %s
+                ═══════════════════════════════════════════════════════════════════
+                                          OBSERVAÇÕES
+                ═══════════════════════════════════════════════════════════════════
 
-                    ═══════════════════════════════════════════════════════════════════
-                                        ESTATÍSTICAS DA PARTIDA
-                    ═══════════════════════════════════════════════════════════════════
+                Boa atuação da equipe no segundo tempo.
+                Destaque para o meio-campo que controlou o jogo.
 
-                    ATENÇÃO: As estatísticas desta partida ainda não foram cadastradas
-                    no sistema.
-
-                    ═══════════════════════════════════════════════════════════════════
-                                              OBSERVAÇÕES
-                    ═══════════════════════════════════════════════════════════════════
-
-                    %s
-
-                    ═══════════════════════════════════════════════════════════════════
-                    """.formatted(
-                    evento.getTitulo(),
-                    evento.getDataEvento().format(dateFormatter),
-                    evento.getHoraInicio() != null ? evento.getHoraInicio().format(timeFormatter) : "N/A",
-                    evento.getHoraFim() != null ? evento.getHoraFim().format(timeFormatter) : "N/A",
-                    evento.getLocal() != null ? evento.getLocal() : "N/A",
-                    evento.getAdversario() != null ? evento.getAdversario() : "N/A",
-                    LocalDate.now().format(dateFormatter),
-                    evento.getDescricao() != null ? evento.getDescricao() : "Sem observações"
-            );
-        } else {
-            // Caso existam estatísticas cadastradas
-            EventoEstatistica stats = estatisticasOpt.get();
-
-            conteudo = """
-                    ╔═══════════════════════════════════════════════════════════════════╗
-                    ║         RELATÓRIO TÉCNICO PÓS-JOGO - FUT360                       ║
-                    ╚═══════════════════════════════════════════════════════════════════╝
-
-                    Partida: %s
-                    Data: %s
-                    Horário: %s - %s
-                    Local: %s
-                    Adversário: %s
-                    Data de Geração: %s
-
-                    ═══════════════════════════════════════════════════════════════════
-                                        ESTATÍSTICAS DA PARTIDA
-                    ═══════════════════════════════════════════════════════════════════
-
-                                                  Time Casa    x    Time Adversário
-                    ───────────────────────────────────────────────────────────────────
-                    Posse de Bola:                  %s          %s
-                    Chutes a Gol:                   %d          %d
-                    Escanteios:                     %d          %d
-                    Faltas:                         %d          %d
-                    Cartões Amarelos:               %d          %d
-                    Cartões Vermelhos:              %d          %d
-
-                    ═══════════════════════════════════════════════════════════════════
-                                             RESULTADO FINAL
-                    ═══════════════════════════════════════════════════════════════════
-
-                                        %s    %d  x  %d    %s
-
-                    ═══════════════════════════════════════════════════════════════════
-                                              OBSERVAÇÕES
-                    ═══════════════════════════════════════════════════════════════════
-
-                    %s
-
-                    ═══════════════════════════════════════════════════════════════════
-                    """.formatted(
-                    evento.getTitulo(),
-                    evento.getDataEvento().format(dateFormatter),
-                    evento.getHoraInicio() != null ? evento.getHoraInicio().format(timeFormatter) : "N/A",
-                    evento.getHoraFim() != null ? evento.getHoraFim().format(timeFormatter) : "N/A",
-                    evento.getLocal() != null ? evento.getLocal() : "N/A",
-                    evento.getAdversario() != null ? evento.getAdversario() : "N/A",
-                    LocalDate.now().format(dateFormatter),
-                    stats.getPosseBolaTime1() != null ? stats.getPosseBolaTime1() : "N/A",
-                    stats.getPosseBolaTime2() != null ? stats.getPosseBolaTime2() : "N/A",
-                    stats.getChutesAGolTime1() != null ? stats.getChutesAGolTime1() : 0,
-                    stats.getChutesAGolTime2() != null ? stats.getChutesAGolTime2() : 0,
-                    stats.getEscanteiosTime1() != null ? stats.getEscanteiosTime1() : 0,
-                    stats.getEscanteiosTime2() != null ? stats.getEscanteiosTime2() : 0,
-                    stats.getFaltasTime1() != null ? stats.getFaltasTime1() : 0,
-                    stats.getFaltasTime2() != null ? stats.getFaltasTime2() : 0,
-                    stats.getCartoesAmarelosTime1() != null ? stats.getCartoesAmarelosTime1() : 0,
-                    stats.getCartoesAmarelosTime2() != null ? stats.getCartoesAmarelosTime2() : 0,
-                    stats.getCartoesVermelhosTime1() != null ? stats.getCartoesVermelhosTime1() : 0,
-                    stats.getCartoesVermelhosTime2() != null ? stats.getCartoesVermelhosTime2() : 0,
-                    "FUT360",
-                    stats.getGolsTime1() != null ? stats.getGolsTime1() : 0,
-                    stats.getGolsTime2() != null ? stats.getGolsTime2() : 0,
-                    evento.getAdversario() != null ? evento.getAdversario() : "Adversário",
-                    evento.getDescricao() != null ? evento.getDescricao() : "Sem observações"
-            );
-        }
+                ───────────────────────────────────────────────────────────────────
+                NOTA: Este relatório contém dados simulados. A integração com o
+                sistema de gerenciamento de jogos está em desenvolvimento.
+                ═══════════════════════════════════════════════════════════════════
+                """.formatted(jogo, LocalDate.now().format(formatter));
 
         return PdfGenerator.gerarPdfSimples(conteudo);
     }
