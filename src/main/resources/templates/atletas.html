@@ -128,11 +128,7 @@
                  th:data-treino-interceptacoes="${!atleta.treinos.isEmpty() ? atleta.treinos[0].treinoInterceptacoes : 0}"
                  th:data-treino-km-percorridos="${!atleta.treinos.isEmpty() ? atleta.treinos[0].treinoKmPercorridos : 0}"
                  th:data-treino-velocidade-max="${!atleta.treinos.isEmpty() ? atleta.treinos[0].treinoVelocidadeMax : 0}"
-                 th:data-treino-sprints="${!atleta.treinos.isEmpty() ? atleta.treinos[0].treinoSprints : 0}"
-
-                 th:data-meta1="${!atleta.registros.isEmpty() ? atleta.registros[0].descricao : 'Nenhuma meta definida.'}"
-                 th:data-meta2="${!atleta.registros.isEmpty() && atleta.registros.size() > 1 ? atleta.registros[1].descricao : ''}"
-                 th:data-observation="${!atleta.registros.isEmpty() && atleta.registros.size() > 2 ? atleta.registros[2].descricao : 'Sem observações.'}">
+                 th:data-treino-sprints="${!atleta.treinos.isEmpty() ? atleta.treinos[0].treinoSprints : 0}">
                 <img th:src="@{/uploads/{filename}(filename=${atleta.photo})}"
                      th:alt="'Foto de ' + ${atleta.name}"
                      class="athlete-photo">

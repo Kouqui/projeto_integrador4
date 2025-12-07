@@ -769,11 +769,18 @@ body {
     text-align: center;
 }
 
-/* SELECTS (OPÇÕES) */
+/* --- SELECTS (OPÇÕES MAIS ESCURAS E LEGÍVEIS) --- */
 select option {
-    background-color: var(--bg-light);
-    color: white;
+    background-color: var(--bg-dark);   /* fundo bem escuro no dropdown */
+    color: var(--text-light);          /* texto claro */
     padding: 10px;
+}
+
+/* Destaque ao passar o mouse ou quando a opção está selecionada na lista */
+select option:hover,
+select option:checked {
+    background-color: var(--primary-color);
+    color: #ffffff;
 }
 
 /* --- RESPONSIVIDADE --- */
