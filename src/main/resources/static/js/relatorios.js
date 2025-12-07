@@ -14,7 +14,46 @@ document.addEventListener("DOMContentLoaded", function() {
     if (btnPosJogo) {
         btnPosJogo.addEventListener("click", gerarRelatorioPosJogo);
     }
+
+    // Carregar eventos dinamicamente
+    carregarEventos();
 });
+
+function carregarEventos() {
+    fetch('/api/relatorios/eventos')
+        .then(response => response.json())
+        .then(eventos => {
+            const select = document.getElementById('game-select');
+            select.innerHTML = ''; // Limpa as opções existentes
+
+            if (eventos.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Nenhum evento cadastrado';
+                select.appendChild(option);
+                return;
+            }
+
+            eventos.forEach(evento => {
+                const option = document.createElement('option');
+                option.value = evento.id;
+
+                // Formata a data
+                const data = new Date(evento.dataEvento);
+                const dataFormatada = data.toLocaleDateString('pt-BR');
+
+                // Monta o texto da opção
+                const adversario = evento.adversario || 'Adversário não informado';
+                option.textContent = `${dataFormatada} - ${evento.titulo} vs. ${adversario}`;
+
+                select.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao carregar eventos:', error);
+            alert('Erro ao carregar a lista de eventos');
+        });
+}
 
 /**
  * Função auxiliar para realizar o download do arquivo
@@ -23,8 +62,9 @@ document.addEventListener("DOMContentLoaded", function() {
  */
 function baixarArquivo(url) {
     // Verifica se os parâmetros estão preenchidos
-    if (url.includes("=undefined") || url.includes("=null") || url.includes("=")) {
-       // Validação básica para evitar chamadas com campos vazios, se necessário
+    if (url.includes("=undefined") || url.includes("=null")) {
+        alert("Erro: parâmetros inválidos na URL");
+        return;
     }
 
     console.log("Baixando relatório de: " + url);
@@ -59,14 +99,14 @@ function gerarRelatorioCategoria() {
 }
 
 function gerarRelatorioPosJogo() {
-    const jogo = document.getElementById("game-select").value;
+    const eventoId = document.getElementById("game-select").value;
 
-    if (!jogo) {
+    if (!eventoId) {
         alert("Por favor, selecione um Jogo.");
         return;
     }
 
     // Monta a URL conforme definido no RelatoriosController
-    const url = `/api/relatorios/pos-jogo?jogo=${encodeURIComponent(jogo)}`;
+    const url = `/api/relatorios/pos-jogo?eventoId=${eventoId}`;
     baixarArquivo(url);
 }
