@@ -1,9 +1,11 @@
 package com.fut.fut360.Repository;
 
-import com.fut.fut360.Model.Contract;
+import com.fut.fut360.Model.Contract; // ou .Model.Contract
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@Repository
 public interface ContractRepository extends JpaRepository<Contract, Long> {
+
+    // Esse comando mágico busca só quem tem salário (ignora os NULL)
+    List<Contract> findBySalarioIsNotNull();
 }
